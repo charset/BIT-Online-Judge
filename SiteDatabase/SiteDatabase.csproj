@@ -80,7 +80,6 @@
     <Compile Include="Entities\SubmissionLanguage.cs" />
     <Compile Include="Entities\SubmissionVerdict.cs" />
     <Compile Include="Entities\TeamProfileEntity.cs" />
-    <Compile Include="Entities\UserAuthorizationEntity.cs" />
     <Compile Include="Entities\UserGroup.cs" />
     <Compile Include="Entities\UserProfileEntity.cs" />
     <Compile Include="Entities\UserTeamRelationEntity.cs" />

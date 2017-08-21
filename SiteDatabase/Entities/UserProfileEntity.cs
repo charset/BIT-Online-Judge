@@ -16,6 +16,21 @@
         public string Username { get; set; }
 
         /// <summary>
+        /// 获取或设置用户密码哈希值。
+        /// </summary>
+        public byte[] PasswordHash { get; set; }
+
+        /// <summary>
+        /// 获取或设置用户的组织名称。
+        /// </summary>
+        public string Organization { get; set; }
+
+        /// <summary>
+        /// 获取或设置用户的权限集。
+        /// </summary>
+        public UserGroup UserGroup { get; set; }
+
+        /// <summary>
         /// 获取或设置包含用户信息的文件名。
         /// </summary>
         public string ProfileFileName { get; set; }
@@ -26,6 +41,9 @@
         public UserProfileEntity()
         {
             Username = string.Empty;
+            PasswordHash = new byte[0];
+            Organization = string.Empty;
+            UserGroup = UserGroup.Guests;
             ProfileFileName = string.Empty;
         }
     }

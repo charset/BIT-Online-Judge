@@ -1,4 +1,4 @@
-﻿namespace BITOJ.Core
+﻿namespace BITOJ.Core.Data
 {
     /// <summary>
     /// 编码题目数据访问权限。

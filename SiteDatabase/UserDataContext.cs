@@ -2,7 +2,6 @@ namespace BITOJ.Data
 {
     using BITOJ.Data.Entities;
     using System;
-    using System.Collections.Generic;
     using System.Data.Entity;
     using System.Linq;
 
@@ -17,27 +16,6 @@ namespace BITOJ.Data
         public UserDataContext()
             : base("name=UserDataContext")
         {
-        }
-
-        /// <summary>
-        /// 将给定的用户权限实体数据添加至数据库中。
-        /// </summary>
-        /// <param name="entity">要添加的用户权限实体数据。</param>
-        /// <exception cref="ArgumentNullException"/>
-        /// <exception cref="InvalidOperationException"/>
-        /// <remarks>
-        /// 若给定的实体数据已经存在于数据库中，抛出 InvalidOperationException 异常。
-        /// 若要更新给定的实体数据，请使用 UpdateUserAuthorizationEntity 方法。
-        /// </remarks>
-        public void AddUserAuthorizationEntity(UserAuthorizationEntity entity)
-        {
-            if (entity == null)
-                throw new ArgumentNullException(nameof(entity));
-            if (QueryUserAuthorizationEntity(entity.Username) != null)
-                throw new InvalidOperationException("给定的实体数据已经存在于数据库中。");
-
-            UserAuthorization.Add(entity);
-            SaveChanges();
         }
 
         /// <summary>
@@ -75,8 +53,6 @@ namespace BITOJ.Data
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
-            if (QueryTeamProfileEntityByName(entity.Name) != null)
-                throw new InvalidOperationException("给定的队伍信息实体对象已经存在于数据库中。");
 
             TeamProfiles.Add(entity);
             SaveChanges();
@@ -97,30 +73,30 @@ namespace BITOJ.Data
         }
 
         /// <summary>
-        /// 使用给定的用户名查询用户权限实体数据。
+        /// 获取所有的用户个人信息实体对象。
         /// </summary>
-        /// <param name="username">要查询的用户名。</param>
-        /// <returns>用户名对应的用户权限实体数据。如果未找到给定用户名的用户权限实体数据，返回 null。</returns>
-        /// <exception cref="ArgumentNullException"/>
-        public UserAuthorizationEntity QueryUserAuthorizationEntity(string username)
+        /// <returns>一个可查询对象，包含了所有的用户个人信息实体对象。</returns>
+        public IQueryable<UserProfileEntity> GetAllUserProfiles()
         {
-            if (username == null)
-                throw new ArgumentNullException(nameof(username));
-
-            return UserAuthorization.Find(username);
+            return UserProfiles;
         }
 
         /// <summary>
-        /// 使用给定的用户组查询用户权限实体数据。
+        /// 获取所有的队伍信息实体对象。
         /// </summary>
-        /// <param name="userGroup">要查询的用户组。</param>
-        /// <returns>给定用户组中所有的用户实体数据。</returns>
-        public IQueryable<UserAuthorizationEntity> QueryUserAuthorizationEntities(UserGroup userGroup)
+        /// <returns>一个可查询对象，包含了所有的用户权限信息实体对象。</returns>
+        public IQueryable<TeamProfileEntity> GetAllTeamProfiles()
         {
-            var entities = from item in UserAuthorization
-                           where item.Group == userGroup
-                           select item;
-            return entities;
+            return TeamProfiles;
+        }
+
+        /// <summary>
+        /// 获取所有的用户 - 队伍关系实体对象。
+        /// </summary>
+        /// <returns>一个可查询对象，包含了所有的用户 - 队伍关系实体对象。</returns>
+        public IQueryable<UserTeamRelationEntity> GetAllUserTeamRelations()
+        {
+            return UserTeams;
         }
 
         /// <summary>
@@ -148,42 +124,6 @@ namespace BITOJ.Data
         }
 
         /// <summary>
-        /// 使用给定的队伍名称查询队伍信息实体数据。
-        /// </summary>
-        /// <param name="teamName">要查询的队伍名称。</param>
-        /// <returns>
-        /// 一个可查询对象，该对象可查询到给定队伍名称所对应的队伍信息实体对象。
-        /// </returns>
-        /// <exception cref="ArgumentNullException"/>
-        public IQueryable<TeamProfileEntity> QueryTeamProfileEntityByName(string teamName)
-        {
-            if (teamName == null)
-                throw new ArgumentNullException(nameof(teamName));
-
-            var entities = from item in TeamProfiles
-                           where item.Name == teamName
-                           select item;
-            return entities;
-        }
-
-        /// <summary>
-        /// 使用给定的用户名查询指定用户的所有用户 - 队伍关系实体对象。
-        /// </summary>
-        /// <param name="username">要查询的用户名。</param>
-        /// <returns>一个可查询对象，该对象可查询到与指定用户相关联的所有用户 - 队伍关系实体对象。</returns>
-        /// <exception cref="ArgumentNullException"/>
-        public IQueryable<UserTeamRelationEntity> QueryUserTeamRelationEntitiesByUsername(string username)
-        {
-            if (username == null)
-                throw new ArgumentNullException(nameof(username));
-
-            var entities = from item in UserTeams
-                           where item.Username == username
-                           select item;
-            return entities;
-        }
-
-        /// <summary>
         /// 使用给定的队伍 ID 查询给定队伍的所有用户 - 队伍关系实体对象。
         /// </summary>
         /// <param name="teamId">要查询的队伍 ID 。</param>
@@ -194,37 +134,6 @@ namespace BITOJ.Data
                            where item.TeamId == teamId
                            select item;
             return entities;
-        }
-
-        /// <summary>
-        /// 更新数据库中给定的用户权限实体数据。
-        /// </summary>
-        /// <param name="entity">要更新的实体数据。</param>
-        /// <exception cref="ArgumentNullException"/>
-        /// <exception cref="InvalidOperationException"/>
-        /// <remarks>
-        /// 若给定的实体数据未在数据库中找到，抛出 InvalidOperationException 异常。
-        /// 若要将给定的实体数据添加至数据库中，请调用 AddAuthorizationEntity 方法。
-        /// </remarks>
-        public void UpdateUserAuthorizationEntity(UserAuthorizationEntity entity)
-        {
-            if (entity == null)
-                throw new ArgumentNullException(nameof(entity));
-
-            UserAuthorizationEntity targetEntity = QueryUserAuthorizationEntity(entity.Username);
-            if (targetEntity == null)
-            {
-                // 给定的数据实体不在数据库中。
-                throw new InvalidOperationException("给定的数据实体不在数据库中。");
-            }
-
-            // 复制给定的用户权限实体数据到数据库中。
-            targetEntity.PasswordHash = new byte[entity.PasswordHash.Length];
-            Buffer.BlockCopy(entity.PasswordHash, 0, targetEntity.PasswordHash, 0, entity.PasswordHash.Length);
-            targetEntity.Group = entity.Group;
-
-            // 更新数据库。
-            SaveChanges();
         }
 
         /// <summary>
@@ -276,20 +185,6 @@ namespace BITOJ.Data
         }
 
         /// <summary>
-        /// 从数据库中删除给定的用户权限实体数据。
-        /// </summary>
-        /// <param name="entity">要删除的实体数据。</param>
-        /// <exception cref="ArgumentNullException"/>
-        public void RemoveUserAuthorizationEntity(UserAuthorizationEntity entity)
-        {
-            if (entity == null)
-                throw new ArgumentNullException(nameof(entity));
-
-            UserAuthorization.Remove(entity);
-            SaveChanges();
-        }
-
-        /// <summary>
         /// 从数据库中删除给定的用户信息实体数据。
         /// </summary>
         /// <param name="entity">要删除的用户信息实体数据。</param>
@@ -332,9 +227,88 @@ namespace BITOJ.Data
         }
 
         /// <summary>
-        /// 获取或设置用户权限数据集。
+        /// 根据指定的组织名称从给定的数据源中查询具有相同组织名称的用户信息实体对象。
         /// </summary>
-        protected virtual DbSet<UserAuthorizationEntity> UserAuthorization { get; set; }
+        /// <param name="source">数据源。</param>
+        /// <param name="organization">组织名称。</param>
+        /// <returns>一个可查询对象，包含了所有的满足条件的用户信息实体对象。</returns>
+        /// <exception cref="ArgumentNullException"/>
+        public static IQueryable<UserProfileEntity> QueryUserProfileEntitiesByOrganization(
+            IQueryable<UserProfileEntity> source, string organization)
+        {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (organization == null)
+                throw new ArgumentNullException(nameof(organization));
+
+            var entities = from item in source
+                           where item.Organization == organization
+                           select item;
+            return entities;
+        }
+
+        /// <summary>
+        /// 根据指定的用户权限组从给定的数据源中查询用户信息实体对象。
+        /// </summary>
+        /// <param name="source">数据源。</param>
+        /// <param name="userGroup">用户权限组。</param>
+        /// <returns>一个可查询对象，包含了所有的满足条件的用户信息实体对象。</returns>
+        /// <exception cref="ArgumentNullException"/>
+        public static IQueryable<UserProfileEntity> QueryUserProfileEntitiesByUsergroup(
+            IQueryable<UserProfileEntity> source, UserGroup userGroup)
+        {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+
+            var entities = from item in source
+                           where item.UserGroup == userGroup
+                           select item;
+            return entities;
+        }
+
+        /// <summary>
+        /// 使用给定的队伍名称从给定的数据源中查询队伍信息实体数据。
+        /// </summary>
+        /// <param name="source">数据源。</param>
+        /// <param name="teamName">要查询的队伍名称。</param>
+        /// <returns>
+        /// 一个可查询对象，该对象可查询到给定队伍名称所对应的队伍信息实体对象。
+        /// </returns>
+        /// <exception cref="ArgumentNullException"/>
+        public static IQueryable<TeamProfileEntity> QueryTeamProfileEntityByName(IQueryable<TeamProfileEntity> source,
+            string teamName)
+        {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (teamName == null)
+                throw new ArgumentNullException(nameof(teamName));
+
+            var entities = from item in source
+                           where item.Name == teamName
+                           select item;
+            return entities;
+        } 
+
+        /// <summary>
+        /// 使用给定的用户名从给定的数据源中查询指定用户的所有用户 - 队伍关系实体对象。
+        /// </summary>
+        /// <param name="source">数据源。</param>
+        /// <param name="username">要查询的用户名。</param>
+        /// <returns>一个可查询对象，该对象可查询到与指定用户相关联的所有用户 - 队伍关系实体对象。</returns>
+        /// <exception cref="ArgumentNullException"/>
+        public static IQueryable<UserTeamRelationEntity> QueryUserTeamRelationEntitiesByUsername(
+            IQueryable<UserTeamRelationEntity> source, string username)
+        {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (username == null)
+                throw new ArgumentNullException(nameof(username));
+
+            var entities = from item in source
+                           where item.Username == username
+                           select item;
+            return entities;
+        }
 
         /// <summary>
         /// 获取或设置用户信息数据集。

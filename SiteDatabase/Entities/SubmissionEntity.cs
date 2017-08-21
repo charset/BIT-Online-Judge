@@ -1,6 +1,7 @@
 ﻿namespace BITOJ.Data.Entities
 {
     using System;
+    using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
     /// <summary>
@@ -10,8 +11,9 @@
     public sealed class SubmissionEntity
     {
         /// <summary>
-        /// 获取或设置提交 ID 。
+        /// 获取或设置提交 ID 。不应在外部代码中手动修改此属性值。
         /// </summary>
+        [Key][DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         /// <summary>

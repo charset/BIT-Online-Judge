@@ -21,10 +21,16 @@
         public int AcceptedSubmissions { get; set; }
 
         /// <summary>
+        /// 获取或设置用户提交 ID 集合。
+        /// </summary>
+        [JsonProperty("subs")]
+        public ICollection<int> Submissions { get; set; }
+
+        /// <summary>
         /// 获取或设置一个集合对象，该对象中包含了当前用户所有已经尝试的题目 ID 。
         /// </summary>
         [JsonProperty("attmpted_prob")]
-        public ICollection<string> AtteptedProblemId { get; set; }
+        public ICollection<string> AttemptedProblemId { get; set; }
 
         /// <summary>
         /// 获取或设置一个集合对象，该对象中包含了当前用户所有已经 AC 的题目 ID。
@@ -40,7 +46,8 @@
         {
             TotalSubmissions = 0;
             AcceptedSubmissions = 0;
-            AtteptedProblemId = new List<string>();
+            Submissions = new List<int>();
+            AttemptedProblemId = new List<string>();
             AcceptedProblemId = new List<string>();
         }
     }

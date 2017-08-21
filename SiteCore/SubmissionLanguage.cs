@@ -1,4 +1,4 @@
-﻿namespace BITOJ.Core.Data
+﻿namespace BITOJ.Core
 {
     /// <summary>
     /// 编码用户提交所使用的语言。

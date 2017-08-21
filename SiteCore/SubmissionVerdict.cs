@@ -1,4 +1,4 @@
-﻿namespace BITOJ.Core.Data
+﻿namespace BITOJ.Core
 {
     /// <summary>
     /// 编码一个用户提交的判题结果。
