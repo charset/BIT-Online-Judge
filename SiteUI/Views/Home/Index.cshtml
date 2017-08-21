@@ -1,0 +1,36 @@
+﻿@{
+    ViewBag.Title = "BIT Online Judge - Home";
+}
+
+<div class="jumbotron">
+    <h1>BIT Online Judge</h1>
+    <small>Welcome to BIT Online Judge!</small>
+
+    <br />
+    <br />
+    <div class="row">
+        <div class="col-lg-4">
+            <h3>Questions &amp; Answers</h3>
+            <p style="color: gray; line-height: 28px">
+                Any questions? Just give a look at our questions list to check if they help.
+            </p>
+            @Html.ActionLink("Go to Q & A >", "Instruction", "Home", new { @class = "btn btn-primary" })
+        </div>
+        <div class="col-lg-4">
+            <h3>Problem Archieve</h3>
+            <p style="color: gray; line-height: 28px">
+                Wanna some practice? Go and enjoy all the problems in the problem archieve.
+            </p>
+            @Html.ActionLink("Go to archieve >", "Index", "Archieve", new { @class = "btn btn-primary" })
+        </div>
+        <div class="col-lg-4">
+            <h3>Contests</h3>
+            <p style="color: gray; line-height: 28px">
+                Take part in a contest here and give yourself a challenge,
+                or create your own contest.
+            </p>
+            @Html.ActionLink("Go to contests >", "Index", "Contest", new { @class = "btn btn-primary" })
+        </div>
+    </div>
+</div>
+

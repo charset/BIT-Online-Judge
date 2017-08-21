@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style type="text/css">
+        .bgimg {
+            position: fixed;
+            left: 0px;
+            bottom: 0px;
+            width: 300px;
+            z-index: -1;
+        }
+    </style>
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navdivResponsive">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="~/Views/Home/Index.cshtml">
+                    <img src="~/Resources/BIT_Logo_trans.png" width="25"/>
+                    <span>BITOJ</span>
+                </a>
+            </div>
+            <div class="navbar-collapse collapse" id="navdivResponsive">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Instruction", "Instruction", "Home", new { @class = "active" })</li>
+                    <li>@Html.ActionLink("Archieve", "Index", "Archieve")</li>
+                    <li>@Html.ActionLink("Contests", "Index", "Contest")</li>
+                    <li>@Html.ActionLink("Status", "Index", "Status")</li>
+                    <li>@Html.ActionLink("About", "About", "Home")</li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href=""><span class="glyphicon glyphicon-user"></span> Register</a></li>
+                    <li><a href=""><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container body-content">
+        @RenderBody()
+
+        <hr />
+        <footer class="text-right">
+            <p>BIT Online Judge Platform, Version 1.0</p>
+            <p>Website server time: @DateTime.Now UTC+8</p>
+            <p>
+                Copyright &copy; 
+                <a href="http://www.bit.edu.cn" target="_blank">Beijing Institute of Technology</a> 
+                &amp; 
+                <a href="http://ss.bit.edu.cn/index.htm" target="_blank">BITSS</a> ACM Team 2017. All rights reserved.
+            </p>
+        </footer>
+    </div>
+
+    <img class="bgimg" src="~/Resources/BIT_Logo.jpg" />
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>
