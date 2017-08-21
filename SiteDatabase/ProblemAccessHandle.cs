@@ -10,7 +10,7 @@
     /// <summary>
     /// 封装对本地题目库中一道题目的访问接口。
     /// </summary>
-    public sealed class ProblemEntryHandle
+    public sealed class ProblemAccessHandle
     {
         private static readonly string ProblemConfigurationFileName = "config.json";
         private static readonly string ProblemDescriptionFileName = "description";
@@ -22,20 +22,20 @@
         private static readonly string ProblemSourceFileName = "source";
         private static readonly string ProblemResourcesDirectoryName = "Resources";
 
-        private static readonly Dictionary<ProblemEntryParts, string> PartFileName;
+        private static readonly Dictionary<ProblemParts, string> PartFileName;
 
-        static ProblemEntryHandle()
+        static ProblemAccessHandle()
         {
             // 初始化 PartFileName 。
-            PartFileName = new Dictionary<ProblemEntryParts, string>
+            PartFileName = new Dictionary<ProblemParts, string>
             {
-                { ProblemEntryParts.Description, ProblemDescriptionFileName },
-                { ProblemEntryParts.InputDescription, ProblemInputDescriptionFileName },
-                { ProblemEntryParts.OutputDescription, ProblemOutputDescriptionFileName },
-                { ProblemEntryParts.InputSample, ProblemInputSampleFileName },
-                { ProblemEntryParts.OutputSample, ProblemOutputSampleFileName },
-                { ProblemEntryParts.Hint, ProblemHintFileName },
-                { ProblemEntryParts.Source, ProblemSourceFileName }
+                { ProblemParts.Description, ProblemDescriptionFileName },
+                { ProblemParts.InputDescription, ProblemInputDescriptionFileName },
+                { ProblemParts.OutputDescription, ProblemOutputDescriptionFileName },
+                { ProblemParts.InputSample, ProblemInputSampleFileName },
+                { ProblemParts.OutputSample, ProblemOutputSampleFileName },
+                { ProblemParts.Hint, ProblemHintFileName },
+                { ProblemParts.Source, ProblemSourceFileName }
             };
         }
 
@@ -43,7 +43,7 @@
         private string m_resourceDirectory;
         private string m_configFileName;
         private ProblemConfigurationModel m_config;
-        private Dictionary<ProblemEntryParts, string> m_parts;
+        private Dictionary<ProblemParts, string> m_parts;
         private bool m_dirty;
 
         /// <summary>
@@ -51,7 +51,7 @@
         /// </summary>
         /// <param name="directory">目标题目的题目目录。</param>
         /// <exception cref="ArgumentNullException"/>
-        public ProblemEntryHandle(string directory)
+        public ProblemAccessHandle(string directory)
         {
             m_problemDirectory = directory;
             m_resourceDirectory = string.Concat(directory, "\\", ProblemResourcesDirectoryName);
@@ -68,7 +68,7 @@
                 File.WriteAllText(m_configFileName, JsonConvert.SerializeObject(m_config));
             }
 
-            m_parts = new Dictionary<ProblemEntryParts, string>();
+            m_parts = new Dictionary<ProblemParts, string>();
             m_dirty = false;
         }
 
@@ -136,7 +136,7 @@
         /// </summary>
         /// <param name="part">要查询的题目描述逻辑部分。</param>
         /// <returns>给定部分的文件名。</returns>
-        private string GetProblemPartFilename(ProblemEntryParts part)
+        private string GetProblemPartFilename(ProblemParts part)
         {
             return string.Concat(m_problemDirectory, "\\", PartFileName[part]);
         }
@@ -146,7 +146,7 @@
         /// </summary>
         /// <param name="part">要查询的题目描述逻辑部分。</param>
         /// <returns>给定部分的 HTML 表示。</returns>
-        public string GetProblemPart(ProblemEntryParts part)
+        public string GetProblemPart(ProblemParts part)
         {
             if (m_parts.ContainsKey(part))
             {
@@ -175,7 +175,7 @@
         /// <param name="part">要设置的题目描述逻辑部分。</param>
         /// <param name="html">给定部分的 HTML 表示。</param>
         /// <exception cref="ArgumentNullException"/>
-        public void SetProblemPart(ProblemEntryParts part, string html)
+        public void SetProblemPart(ProblemParts part, string html)
         {
             if (html == null)
                 throw new ArgumentNullException(nameof(html));
@@ -200,7 +200,7 @@
         {
             if (m_dirty)
             {
-                foreach (KeyValuePair<ProblemEntryParts, string> item in m_parts)
+                foreach (KeyValuePair<ProblemParts, string> item in m_parts)
                 {
                     string filename = PartFileName[item.Key];
                     File.WriteAllText(filename, item.Value);

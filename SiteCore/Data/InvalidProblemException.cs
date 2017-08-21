@@ -1,4 +1,4 @@
-﻿namespace BITOJ.Core
+﻿namespace BITOJ.Core.Data
 {
     /// <summary>
     /// 当某个题目无效时触发此异常。

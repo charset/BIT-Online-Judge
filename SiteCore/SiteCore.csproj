@@ -59,10 +59,10 @@
     <Compile Include="Data\IUserDataProvider.cs" />
     <Compile Include="Data\UserDataProvider.cs" />
     <Compile Include="Data\UserSubmissionStatistics.cs" />
-    <Compile Include="InvalidProblemException.cs" />
+    <Compile Include="Data\InvalidProblemException.cs" />
     <Compile Include="ProblemHandle.cs" />
     <Compile Include="ProblemException.cs" />
-    <Compile Include="ProblemNotExistException.cs" />
+    <Compile Include="Data\ProblemNotExistException.cs" />
     <Compile Include="Data\Queries\ProblemArchieveQueryParameter.cs" />
     <Compile Include="Data\Queries\UserQueryParameter.cs" />
     <Compile Include="SubmissionHandle.cs" />
@@ -83,9 +83,11 @@
     <Compile Include="Resolvers\Masks\OffsetPositions.cs" />
     <Compile Include="Resolvers\ProblemUrlResolver.cs" />
     <Compile Include="Resolvers\ProblemUrlResolverRule.cs" />
+    <Compile Include="UserException.cs" />
     <Compile Include="UserGroup.cs" />
     <Compile Include="UserHandle.cs" />
     <Compile Include="UserManager.cs" />
+    <Compile Include="UsernameAlreadyExistsException.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SiteCommon\SiteCommon.csproj">
@@ -99,6 +101,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <Compile Include="Data\UserNotFoundException.cs" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

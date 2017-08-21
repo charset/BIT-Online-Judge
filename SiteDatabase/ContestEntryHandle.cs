@@ -62,7 +62,7 @@
         /// 在当前的比赛中创建一个新的题目并返回题目句柄。
         /// </summary>
         /// <returns></returns>
-        public ProblemEntryHandle CreateProblem()
+        public ProblemAccessHandle CreateProblem()
         {
             int existCount = 0;         // 已经存在的题目数量。
             string problemDirectory = string.Concat(m_contestDirectory, "\\", ProblemsDirectoryName);
@@ -78,27 +78,27 @@
 
             string problemHandleDirectory = string.Concat(problemDirectory, "\\", (existCount + 1).ToString("D2"));
             Directory.CreateDirectory(problemHandleDirectory);
-            return new ProblemEntryHandle(problemHandleDirectory);
+            return new ProblemAccessHandle(problemHandleDirectory);
         }
 
         /// <summary>
         /// 获取或设置比赛目录中包含的题目信息。
         /// </summary>
         /// <returns></returns>
-        public ProblemEntryHandle[] GetProblems()
+        public ProblemAccessHandle[] GetProblems()
         {
             string problemDirectory = string.Concat(m_contestDirectory, "\\", ProblemsDirectoryName);
             if (!Directory.Exists(problemDirectory))
             {
                 // 题目目录不存在。
-                return new ProblemEntryHandle[0];
+                return new ProblemAccessHandle[0];
             }
             else
             {
-                List<ProblemEntryHandle> entries = new List<ProblemEntryHandle>();
+                List<ProblemAccessHandle> entries = new List<ProblemAccessHandle>();
                 foreach (string problemHandleDirectory in Directory.GetDirectories(problemDirectory))
                 {
-                    entries.Add(new ProblemEntryHandle(problemHandleDirectory));
+                    entries.Add(new ProblemAccessHandle(problemHandleDirectory));
                 }
                 return entries.ToArray();
             }

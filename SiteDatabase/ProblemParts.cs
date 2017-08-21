@@ -3,7 +3,7 @@
     /// <summary>
     /// 表示题目描述中的各逻辑部分。
     /// </summary>
-    public enum ProblemEntryParts : int
+    public enum ProblemParts : int
     {
         /// <summary>
         /// 题目主题干描述。

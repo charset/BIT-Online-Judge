@@ -1,9 +1,11 @@
 ﻿namespace BITOJ.Core.Data
 {
+    using System;
+
     /// <summary>
     /// 为用户数据提供器提供接口。
     /// </summary>
-    public interface IUserDataProvider
+    public interface IUserDataProvider : IDisposable
     {
         /// <summary>
         /// 获取用户名。

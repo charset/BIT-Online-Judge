@@ -20,6 +20,7 @@
         /// <returns>从给定题目句柄创建的 NativeProblemDataProvider 对象。</returns>
         /// <exception cref="ArgumentNullException"/>
         /// <exception cref="InvalidProblemException"/>
+        /// <exception cref="ProblemNotExistException"/>
         public static NativeProblemDataProvider Create(ProblemHandle handle, bool isReadonly)
         {
             if (handle == null)
@@ -37,7 +38,7 @@
                 throw new ProblemNotExistException(handle);
 
             // 创建底层题目数据访问器对象。
-            ProblemEntryHandle entryHandle = new ProblemEntryHandle(entity.ProblemDirectory);
+            ProblemAccessHandle entryHandle = new ProblemAccessHandle(entity.ProblemDirectory);
             return new NativeProblemDataProvider()
             {
                 m_entity = entity,
@@ -47,7 +48,7 @@
         }
 
         private ProblemEntity m_entity;     // 底层数据库实体对象。
-        private ProblemEntryHandle m_accessHandle;
+        private ProblemAccessHandle m_accessHandle;
         private bool m_readonly;
         private bool m_disposed;
 
@@ -116,11 +117,11 @@
         {
             get => m_disposed
                 ? throw new ObjectDisposedException(GetType().Name)
-                : m_accessHandle.GetProblemPart(ProblemEntryParts.Description);
+                : m_accessHandle.GetProblemPart(ProblemParts.Description);
             set
             {
                 CheckAccess();
-                m_accessHandle.SetProblemPart(ProblemEntryParts.Description, value);
+                m_accessHandle.SetProblemPart(ProblemParts.Description, value);
             }
         }
 
@@ -133,11 +134,11 @@
         {
             get => m_disposed 
                 ? throw new ObjectDisposedException(GetType().Name) 
-                : m_accessHandle.GetProblemPart(ProblemEntryParts.InputDescription);
+                : m_accessHandle.GetProblemPart(ProblemParts.InputDescription);
             set
             {
                 CheckAccess();
-                m_accessHandle.SetProblemPart(ProblemEntryParts.InputDescription, value);
+                m_accessHandle.SetProblemPart(ProblemParts.InputDescription, value);
             }
         }
 
@@ -150,11 +151,11 @@
         {
             get => m_disposed 
                 ? throw new ObjectDisposedException(GetType().Name)
-                : m_accessHandle.GetProblemPart(ProblemEntryParts.OutputDescription);
+                : m_accessHandle.GetProblemPart(ProblemParts.OutputDescription);
             set
             {
                 CheckAccess();
-                m_accessHandle.SetProblemPart(ProblemEntryParts.OutputDescription, value);
+                m_accessHandle.SetProblemPart(ProblemParts.OutputDescription, value);
             }
         }
 
@@ -167,11 +168,11 @@
         {
             get => m_disposed
                 ? throw new ObjectDisposedException(GetType().Name)
-                : m_accessHandle.GetProblemPart(ProblemEntryParts.InputSample);
+                : m_accessHandle.GetProblemPart(ProblemParts.InputSample);
             set
             {
                 CheckAccess();
-                m_accessHandle.SetProblemPart(ProblemEntryParts.InputSample, value);
+                m_accessHandle.SetProblemPart(ProblemParts.InputSample, value);
             }
         }
 
@@ -184,11 +185,11 @@
         {
             get => m_disposed
                 ? throw new ObjectDisposedException(GetType().Name)
-                : m_accessHandle.GetProblemPart(ProblemEntryParts.OutputSample);
+                : m_accessHandle.GetProblemPart(ProblemParts.OutputSample);
             set
             {
                 CheckAccess();
-                m_accessHandle.SetProblemPart(ProblemEntryParts.OutputSample, value);
+                m_accessHandle.SetProblemPart(ProblemParts.OutputSample, value);
             }
         }
 
@@ -201,12 +202,12 @@
         {
             get => m_disposed
                 ? throw new ObjectDisposedException(GetType().Name)
-                : m_accessHandle.GetProblemPart(ProblemEntryParts.Source);
+                : m_accessHandle.GetProblemPart(ProblemParts.Source);
             set
             {
                 CheckAccess();
                 m_entity.Source = value;
-                m_accessHandle.SetProblemPart(ProblemEntryParts.Source, value);
+                m_accessHandle.SetProblemPart(ProblemParts.Source, value);
             }
         }
 
@@ -219,11 +220,11 @@
         {
             get => m_disposed
                 ? throw new ObjectDisposedException(GetType().Name)
-                : m_accessHandle.GetProblemPart(ProblemEntryParts.Hint);
+                : m_accessHandle.GetProblemPart(ProblemParts.Hint);
             set
             {
                 CheckAccess();
-                m_accessHandle.SetProblemPart(ProblemEntryParts.Hint, value);
+                m_accessHandle.SetProblemPart(ProblemParts.Hint, value);
             }
         }
 

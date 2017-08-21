@@ -1,4 +1,4 @@
-﻿namespace BITOJ.Core
+﻿namespace BITOJ.Core.Data
 {
     using System;
 
