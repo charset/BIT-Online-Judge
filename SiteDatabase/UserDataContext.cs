@@ -75,7 +75,7 @@ namespace BITOJ.Data
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
-            if (QueryTeamProfileEntity(entity.Name) != null)
+            if (QueryTeamProfileEntityByName(entity.Name) != null)
                 throw new InvalidOperationException("给定的队伍信息实体对象已经存在于数据库中。");
 
             TeamProfiles.Add(entity);
@@ -113,7 +113,7 @@ namespace BITOJ.Data
         /// <summary>
         /// 使用给定的用户组查询用户权限实体数据。
         /// </summary>
-        /// <param name="group">要查询的用户组。</param>
+        /// <param name="userGroup">要查询的用户组。</param>
         /// <returns>给定用户组中所有的用户实体数据。</returns>
         public IQueryable<UserAuthorizationEntity> QueryUserAuthorizationEntities(UserGroup userGroup)
         {
@@ -142,7 +142,7 @@ namespace BITOJ.Data
         /// </summary>
         /// <param name="teamId">要查询的队伍 ID 。</param>
         /// <returns>与队伍 ID 相对应的队伍信息实体对象。若给定的队伍 ID 未在数据库中找到，返回 null 。</returns>
-        public TeamProfileEntity QueryTeamProfileEntity(int teamId)
+        public TeamProfileEntity QueryTeamProfileEntityById(int teamId)
         {
             return TeamProfiles.Find(teamId);
         }
@@ -155,7 +155,7 @@ namespace BITOJ.Data
         /// 一个可查询对象，该对象可查询到给定队伍名称所对应的队伍信息实体对象。
         /// </returns>
         /// <exception cref="ArgumentNullException"/>
-        public IQueryable<TeamProfileEntity> QueryTeamProfileEntity(string teamName)
+        public IQueryable<TeamProfileEntity> QueryTeamProfileEntityByName(string teamName)
         {
             if (teamName == null)
                 throw new ArgumentNullException(nameof(teamName));
@@ -266,7 +266,7 @@ namespace BITOJ.Data
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
-            TeamProfileEntity target = QueryTeamProfileEntity(entity.Name);
+            TeamProfileEntity target = QueryTeamProfileEntityById(entity.Id);
             if (target == null)
                 throw new InvalidOperationException("给定的队伍信息实体数据未在数据库中找到。");
 
