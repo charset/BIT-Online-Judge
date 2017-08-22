@@ -27,22 +27,22 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="~/Views/Home/Index.cshtml">
+                <a class="navbar-brand" href="Index">
                     <img src="~/Resources/BIT_Logo_trans.png" width="25"/>
                     <span>BITOJ</span>
                 </a>
             </div>
             <div class="navbar-collapse collapse" id="navdivResponsive">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Instruction", "Instruction", "Home", new { @class = "active" })</li>
+                    <li>@Html.ActionLink("Instruction", "Instruction", "Home", new { }, new { @class = "active" })</li>
                     <li>@Html.ActionLink("Archieve", "Index", "Archieve")</li>
                     <li>@Html.ActionLink("Contests", "Index", "Contest")</li>
                     <li>@Html.ActionLink("Status", "Index", "Status")</li>
                     <li>@Html.ActionLink("About", "About", "Home")</li>
                 </ul>
-                <form class="navbar-form navbar-left" role="form">
+                <form class="navbar-form navbar-left" role="form" action="~/Home/RedirectById">
                     <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Enter problem ID ..."/>
+                        <input type="text" class="form-control" placeholder="Enter problem ID ..." name="id"/>
                     </div>
                     <button type="submit" class="btn btn-default">Go</button>
                 </form>
@@ -69,7 +69,7 @@
         </footer>
     </div>
 
-    <img class="bgimg" src="~/Resources/BIT_Logo.jpg" />
+    <!--<img class="bgimg" src="~/Resources/BIT_Logo.jpg" />-->
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")

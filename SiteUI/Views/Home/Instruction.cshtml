@@ -1,0 +1,139 @@
+﻿@{ 
+    ViewBag.Title = "BIT Online Judge - Instructions";
+}
+
+<div class="jumbotron">
+    <h1>Instructions</h1>
+    <small>
+        The lists below lists some common questions one might get while using online judge system.
+        If you have any questions, check it out and see if they help.
+    </small>
+</div>
+
+<div class="panel panel-group" id="instructions" role="tablist" aria-multiselectable="true">
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="hd-abbr">
+            <h3 class="panel-title">
+                <a role="button" data-toggle="collapse" data-parent="#instructions" href="#ct-abbr" aria-expanded="false"
+                   aria-controls="ct-abbr">
+                    What's the full name of BITOJ?
+                </a>
+            </h3>
+        </div>
+        <div class="panel-collapse collapse" id="ct-abbr" role="tabpanel" aria-labelledby="hd-addr">
+            <div class="panel-body">
+                The full name of BITOJ is: Online Judge system of Beijing Institute of Technology.
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="hd-compiler">
+            <h3 class="panel-title">
+                <a role="button" data-toggle="collapse" data-parent="#instructions" href="#ct-compiler" 
+                  aria-expanded="false" aria-controls="ct-compiler">
+                   What programming languages does BITOJ support? And what are the compiler options?
+                </a>
+            </h3>
+        </div>
+        <div class="panel-collapse collapse" id="ct-compiler" role="tabpanel" aria-labelledby="hd-compiler">
+            <div class="panel-body">
+                The programming languages currently supported by BITOJ are: <br />
+                <strong>C, C++, Python, C#</strong>. <br />
+                <br />
+                Compiler options are listed below:
+                <ul>
+                    <li><strong>C:</strong> gcc -Wall -O2 -std=c11 -o &lang; output &rang; &lang; source &rang;</li>
+                    <li>
+                        <strong>C++:</strong>
+                        <ul>
+                            <li>C++: g++ -Wall -O2 -std=c++98 -o &lang; output &rang; &lang; source &rang;</li>
+                            <li>C++11: g++ -Wall -O2 -std=c++11 -o &lang; output &rang; &lang; source &rang;</li>
+                            <li>C++14: g++ -Wall -O2 -std=c++14 -o &lang; output &rang; &lang; source &rang;</li>
+                            <li>C++17: g++ -Wall -O2 -std=c++17 -o &lang; output &rang; &lang; source &rang;</li>
+                        </ul>
+                    </li>
+                    <li><strong>Python:</strong> python &lang; source &rang;</li>
+                    <li><strong>C#:</strong> csc /O+ /out: &lang; output &rang; &lang; source &rang;</li>
+                </ul>
+                <br />
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="hd-env">
+            <h3 class="panel-title">
+                <a role="button" data-toggle="collapse" data-parent="#instructions" href="#ct-env"
+                   aria-expanded="false" aria-controls="ct-env">
+                    What operating system will my program execute on on BITOJ?
+                </a>
+            </h3>
+        </div>
+        <div class="panel-collapse collapse" id="ct-env" role="tabpanel" aria-labelledby="hd-env">
+            <div class="panel-body">
+                Your program will execute on Linux.
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="hd-verdict">
+            <h3 class="panel-title">
+                <a role="button" data-toggle="collapse" data-parent="#instructions" href="#ct-verdict"
+                   aria-expanded="false" aria-controls="ct-verdict">
+                    What does the results returned by the verdict mean?
+                </a>
+            </h3>
+        </div>
+        <div class="panel-collapse collapse" id="ct-verdict" role="tabpanel" aria-labelledby="hd-verdict">
+            <div class="panel-body">
+                The most common judge results returned by the verdicts are: <br />
+                <span class="ver-ac">Accepted</span>,
+                <span class="ver-err">Wrong Answer</span>,
+                <span class="ver-err">Runtime Error</span>,
+                <span class="ver-err">Compilation Error</span>,
+                <span class="ver-pe">Presentation Error</span>,
+                <span class="ver-err">Time Limit Exceeded</span>,
+                <span class="ver-err">Memory Limit Exceeded</span>,
+                <span class="ver-err">Output Limit Exceeded</span>, and 
+                <span class="ver-se">System Error</span>.
+                <br />
+                Their corresponding meanings are list below.
+                <ul>
+                    <li><span class="ver-ac">Accepted</span>: 
+                        Congratulations! Your program is correct and passed all the tests.
+                    </li>
+                    <li><span class="ver-err">Wrong Answer</span>:
+                        The answer given by your program is not correct.
+                    </li>
+                    <li><span class="ver-err">Runtime Error</span>:
+                        The operating system catches an error in your program during its execution.
+                        The most common issue is that your program tried to access an invalid memory address,
+                        or your program ran out of stack due to a deep recursion. 
+                        Actually there're lots of reasons leading to this result. For more detailed information,
+                        ask the administrators.
+                    </li>
+                    <li><span class="ver-err">Compilation Error</span>:
+                        Compiler rejected to compile your program. Please check if there're any syntax errors
+                        in your program.
+                    </li>
+                    <li><span class="ver-pe">Presentation Error</span>:
+                        Only a step away! The answer given by your program seems correct, but its format is incorrect.
+                        Please check if your program outputs unnecessary blank characters.
+                    </li>
+                    <li><span class="ver-err">Time Limit Exceeded</span>:
+                        Your program consumed too much time to execute until its termination.
+                    </li>
+                    <li><span class="ver-err">Memory Limit Exceeded</span>:
+                        Your program consumed too much memory to execute until its termination.
+                    </li>
+                    <li><span class="ver-err">Output Limit Exceeded</span>:
+                        Your program generated too much output.
+                    </li>
+                    <li><span class="ver-se">System Error</span>:
+                        Relax. It's not your fault. The system seems to be suffering some problems and rejected
+                        to judge your program. Please contact the administrators.
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

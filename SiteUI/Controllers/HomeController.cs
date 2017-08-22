@@ -12,5 +12,28 @@ namespace SiteUI.Controllers
         {
             return View();
         }
+
+        public ActionResult RedirectById(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                return View("Index");
+            }
+            else
+            {
+                // Test code below.
+                return new RedirectResult("http://acm.hdu.edu.cn/");
+            }
+        }
+
+        public ActionResult About()
+        {
+            return View();
+        }
+
+        public ActionResult Instruction()
+        {
+            return View();
+        }
     }
 }

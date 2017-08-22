@@ -4,8 +4,7 @@
 
 <div class="jumbotron">
     <h1>BIT Online Judge</h1>
-    <small>Welcome to BIT Online Judge!</small>
-
+    <small>Welcome to BIT Onlind Judge system!</small>
     <br />
     <br />
     <div class="row">
@@ -14,14 +13,14 @@
             <p style="color: gray; line-height: 28px">
                 Any questions? Just give a look at our questions list to check if they help.
             </p>
-            @Html.ActionLink("Go to Q & A >", "Instruction", "Home", new { @class = "btn btn-primary" })
+            @Html.ActionLink("Go to Q & A >", "Instruction", "Home", new { }, new { @class = "btn btn-primary" })
         </div>
         <div class="col-lg-4">
             <h3>Problem Archieve</h3>
             <p style="color: gray; line-height: 28px">
                 Wanna some practice? Go and enjoy all the problems in the problem archieve.
             </p>
-            @Html.ActionLink("Go to archieve >", "Index", "Archieve", new { @class = "btn btn-primary" })
+            @Html.ActionLink("Go to archieve >", "Index", "Archieve", new { }, new { @class = "btn btn-primary" })
         </div>
         <div class="col-lg-4">
             <h3>Contests</h3>
@@ -29,7 +28,7 @@
                 Take part in a contest here and give yourself a challenge,
                 or create your own contest.
             </p>
-            @Html.ActionLink("Go to contests >", "Index", "Contest", new { @class = "btn btn-primary" })
+            @Html.ActionLink("Go to contests >", "Index", "Contest", new { }, new { @class = "btn btn-primary" })
         </div>
     </div>
 </div>

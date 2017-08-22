@@ -16,7 +16,6 @@
 
         private string m_contestDirectory;
         private ContestConfigurationModel m_config;
-        private bool m_dirty;
 
         /// <summary>
         /// 使用指定的比赛目录创建 ContestEntryHandle 类的新实例。
@@ -27,7 +26,6 @@
         {
             m_contestDirectory = contestDirectory ?? throw new ArgumentNullException(nameof(contestDirectory));
             LoadConfigurationModel();
-            m_dirty = false;
         }
 
         /// <summary>

@@ -1,7 +1,6 @@
 ﻿namespace BITOJ.Common.Cache.Settings
 {
     using Newtonsoft.Json;
-    using NLog;
     using System;
     using System.Collections.Generic;
     using System.IO;
@@ -31,7 +30,6 @@
         }
 
         private static readonly string SettingsDirectory = @".\Settings";
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
         private static string MakeFilename(string name)
         {
@@ -54,8 +52,6 @@
             // 检查底层文件系统是否包含设置集目录。
             if (!Directory.Exists(SettingsDirectory))
             {
-                // 写入日志信息。
-                Log.Warn("Settings directory not found. Creating settings directory.");
                 Directory.CreateDirectory(SettingsDirectory);
             }
         }
@@ -95,9 +91,6 @@
             }
             catch
             {
-                // 写入日志信息。
-                Log.Error("Unable to read setting file: \"{0}\".", filename);
-
                 return false;
             }
 
@@ -109,9 +102,6 @@
             }
             catch
             {
-                // 写入日志信息。
-                Log.Error("Unable to convert JSON to object data. Setting file: \"{0}\"", filename);
-
                 return false;
             }
 
@@ -314,9 +304,6 @@
                 }
                 catch
                 {
-                    // 写入日志信息。
-                    Log.Error("Unable to flush setting item: \"{0}\" from cache to local file system.",
-                        item.Key);
                 }
             }
 

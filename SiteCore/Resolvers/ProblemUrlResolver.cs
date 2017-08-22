@@ -62,6 +62,7 @@
             ms_syncLock = new object();
 
             // TODO: 初始化全局默认 ProblemUrlResolver 对象。
+            ms_default = null;
         }
 
         /// <summary>
