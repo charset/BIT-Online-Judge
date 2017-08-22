@@ -38,22 +38,21 @@
         <div class="panel-collapse collapse" id="ct-compiler" role="tabpanel" aria-labelledby="hd-compiler">
             <div class="panel-body">
                 The programming languages currently supported by BITOJ are: <br />
-                <strong>C, C++, Python, C#</strong>. <br />
+                <strong>C, C++, Python</strong>. <br />
                 <br />
                 Compiler options are listed below:
                 <ul>
-                    <li><strong>C:</strong> gcc -Wall -O2 -std=c11 -o &lang; output &rang; &lang; source &rang;</li>
+                    <li><strong>C:</strong> gcc -O2 -std=c11 -DONLINE_JUDGE -lm -o &lang; output &rang; &lang; source &rang;</li>
                     <li>
                         <strong>C++:</strong>
                         <ul>
-                            <li>C++: g++ -Wall -O2 -std=c++98 -o &lang; output &rang; &lang; source &rang;</li>
-                            <li>C++11: g++ -Wall -O2 -std=c++11 -o &lang; output &rang; &lang; source &rang;</li>
-                            <li>C++14: g++ -Wall -O2 -std=c++14 -o &lang; output &rang; &lang; source &rang;</li>
-                            <li>C++17: g++ -Wall -O2 -std=c++17 -o &lang; output &rang; &lang; source &rang;</li>
+                            <li>C++: g++ -O2 -std=c++98 -DONLINE_JUDGE -lm -o &lang; output &rang; &lang; source &rang;</li>
+                            <li>C++11: g++ -O2 -std=c++11 -DONLINE_JUDGE -lm -o &lang; output &rang; &lang; source &rang;</li>
+                            <li>C++14: g++ -O2 -std=c++14 -DONLINE_JUDGE -lm -o &lang; output &rang; &lang; source &rang;</li>
+                            <li>C++17: g++ -O2 -std=c++17 -DONLINE_JUDGE -lm -o &lang; output &rang; &lang; source &rang;</li>
                         </ul>
                     </li>
                     <li><strong>Python:</strong> python &lang; source &rang;</li>
-                    <li><strong>C#:</strong> csc /O+ /out: &lang; output &rang; &lang; source &rang;</li>
                 </ul>
                 <br />
             </div>
@@ -96,7 +95,7 @@
                 <span class="ver-err">Output Limit Exceeded</span>, and 
                 <span class="ver-se">System Error</span>.
                 <br />
-                Their corresponding meanings are list below.
+                Their corresponding meanings are listed below.
                 <ul>
                     <li><span class="ver-ac">Accepted</span>: 
                         Congratulations! Your program is correct and passed all the tests.

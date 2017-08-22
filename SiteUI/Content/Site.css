@@ -39,3 +39,9 @@ textarea {
 .ver-se {
     color: gray;
 }
+
+/* Supplementary explanaton */
+.sup {
+    color: gray;
+    line-height: 28px;
+}
