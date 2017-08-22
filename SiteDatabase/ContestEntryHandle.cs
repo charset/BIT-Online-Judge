@@ -25,10 +25,9 @@
         /// <exception cref="ArgumentNullException"/>
         public ContestEntryHandle(string contestDirectory)
         {
-            if (contestDirectory == null)
-                throw new ArgumentNullException(nameof(contestDirectory));
-
+            m_contestDirectory = contestDirectory ?? throw new ArgumentNullException(nameof(contestDirectory));
             LoadConfigurationModel();
+            m_dirty = false;
         }
 
         /// <summary>

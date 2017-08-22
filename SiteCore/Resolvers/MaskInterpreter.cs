@@ -18,20 +18,15 @@
             Log = LogManager.GetCurrentClassLogger();
         }
 
-        private string m_id;
         private MaskTokenReader m_reader;
         private ICollection<IMaskTokenHandler> m_handlers;
 
         /// <summary>
         /// 使用指定的 MaskTokenReader 以及 MaskToken 处理器集初始化 MaskInterpreter 类的新实例。
         /// </summary>
-        /// <param name="id">题目 ID 编号。</param>
-        /// <param name="reader">掩码标记读取器实现。</param>
-        /// <param name="handlers">掩码标记处理器集。</param>
         /// <exception cref="ArgumentNullException"/>
-        public MaskInterpreter(string id, MaskTokenReader reader, ICollection<IMaskTokenHandler> handlers)
+        public MaskInterpreter(MaskTokenReader reader, ICollection<IMaskTokenHandler> handlers)
         {
-            m_id = id ?? throw new ArgumentNullException(nameof(id));
             m_reader = reader ?? throw new ArgumentNullException(nameof(reader));
             m_handlers = handlers ?? throw new ArgumentNullException(nameof(handlers));
         }
@@ -69,7 +64,7 @@
             }
             else
             {
-                return targetHandler.Process(m_id, token);
+                return targetHandler.Process(token);
             }
         }
 

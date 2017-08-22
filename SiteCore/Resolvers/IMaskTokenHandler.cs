@@ -16,9 +16,8 @@
         /// <summary>
         /// 处理给定的 MaskToken 并返回处理结果。
         /// </summary>
-        /// <param name="id">题目 ID 。</param>
         /// <param name="token">待处理的 MaskToken。</param>
         /// <returns>处理结果。</returns>
-        string Process(string id, MaskToken token);
+        string Process(MaskToken token);
     }
 }

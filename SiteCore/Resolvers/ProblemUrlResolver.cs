@@ -2,13 +2,12 @@
 {
     using BITOJ.Common.Cache.Settings;
     using BITOJ.Core.Data;
-    using BITOJ.Core.Resolvers.Masks;
     using System;
 
     /// <summary>
     /// 为 ProblemEntry 提供全局统一定位符（URL）解析服务。
     /// </summary>
-    public sealed class ProblemUrlResolver
+    public abstract class ProblemUrlResolver
     {
         private static readonly string RulesSettingName = "prob_url_resolver_rules";
 
@@ -50,17 +49,34 @@
             return null;
         }
 
+        private static ProblemUrlResolver ms_default;
+
+        /// <summary>
+        /// 获取全局默认 ProblemUrlResolver 对象。
+        /// </summary>
+        public static ProblemUrlResolver Default { get => ms_default; }
+
         static ProblemUrlResolver()
         {
             ms_rules = null;
             ms_syncLock = new object();
+
+            // TODO: 初始化全局默认 ProblemUrlResolver 对象。
         }
 
         /// <summary>
         /// 初始化 ProblemUrlResolver 类的新实例。
         /// </summary>
-        public ProblemUrlResolver()
+        protected ProblemUrlResolver()
         { }
+
+        /// <summary>
+        /// 在派生类中重写时，使用给定的解析器规则解析题目 ID。
+        /// </summary>
+        /// <param name="id">要解析的题目 ID，已经去除 OJ 前缀。/</param>
+        /// <param name="rule">要使用的解析器规则。</param>
+        /// <returns>题目 ID 对应的 URL。</returns>
+        protected abstract string ResolveRule(string id, ProblemUrlResolverRule rule);
 
         /// <summary>
         /// 解析指定 ProblemHandle 对象的全局统一定位符（URL）。
@@ -78,18 +94,8 @@
             if (rule == null)
                 throw new InvalidProblemException(entry);
 
-            // 解析对应的掩码项得到给定 ProblemEntry 的全局统一定位符。
-            /*
-            
-            MaskTokenReader reader = new MaskTokenReader(rule.Mask);
-            MaskTokenHandler[] handlers = new MaskTokenHandlers[] {
-                ...
-            };
-
-            MaskInterpreter interpreter = new MaskInterpreter(reader, handlers);
-            return interpreter.Interpret();
-
-             */
+            string id = entry.ProblemId.Substring(rule.Prefix.Length);
+            return ResolveRule(id, rule);
         }
     }
 }
