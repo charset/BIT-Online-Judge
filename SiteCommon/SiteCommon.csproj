@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cache\ApplicationDirectory.cs" />
     <Compile Include="Cache\Settings\FileSystemSettingProvider.cs" />
     <Compile Include="Cache\Settings\ISettingProvider.cs" />
     <Compile Include="Collections\IPriorityQueue.cs" />

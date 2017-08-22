@@ -178,6 +178,26 @@
         }
 
         /// <summary>
+        /// 获取或设置用户的密码哈希值。
+        /// </summary>
+        internal byte[] PasswordHash
+        {
+            get
+            {
+                if (m_disposed)
+                    throw new ObjectDisposedException(GetType().Name);
+
+                return m_entity.PasswordHash;
+            }
+            set
+            {
+                CheckAccess();
+
+                m_entity.PasswordHash = value;
+            }
+        }
+
+        /// <summary>
         /// 释放由当前对象占有的所有资源。
         /// </summary>
         public void Dispose()

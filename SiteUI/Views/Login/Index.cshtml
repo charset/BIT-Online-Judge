@@ -18,18 +18,26 @@
         </div>
         <div class="col-lg-1"></div>
         <div class="col-lg-4">
+            @{ 
+                if (ViewData.ContainsKey("HasError") && (bool)ViewData["HasError"])
+                {
+                    <div class="alert alert-danger" role="alert">
+                        <p style="font-size:medium;">Oooops! The username or the password seem to be wrong.</p>
+                    </div>
+                }
+            }
             <div class="hidden-md hidden-lg">
                 <h3>Sign in</h3>
             </div>
-            <form>
+            <form action="~/Login/Login">
                 <div class="form-group">
                     <div class="form-group">
                         <label class="sr-only" for="user">Username:</label>
-                        <input type="text" class="form-control" id="user" placeholder="Username" />
+                        <input type="text" class="form-control" id="user" name="username" placeholder="Username" />
                     </div>
                     <div class="form-group">
                         <label class="sr-only" for="pwd">Password:</label>
-                        <input type="password" class="form-control" id="pwd" placeholder="Password" />
+                        <input type="password" class="form-control" id="pwd" name="password" placeholder="Password" />
                     </div>
                     <button type="submit" class="btn btn-primary">Sign in</button>
                 </div>

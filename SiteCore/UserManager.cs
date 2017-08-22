@@ -1,5 +1,6 @@
 ﻿namespace BITOJ.Core
 {
+    using BITOJ.Common.Cache;
     using BITOJ.Common.Cache.Settings;
     using BITOJ.Data;
     using BITOJ.Data.Entities;
@@ -64,7 +65,7 @@
             else
             {
                 // 加载默认目录名称。
-                ms_userDirectory = "Users";
+                ms_userDirectory = ApplicationDirectory.GetAppSubDirectory("Users");
             }
         }
 
@@ -76,6 +77,11 @@
         private UserManager()
         {
             m_context = new UserDataContext();
+        }
+
+        ~UserManager()
+        {
+            m_context.Dispose();
         }
 
         /// <summary>
@@ -106,6 +112,26 @@
             m_context.AddUserProfileEntity(entity);
 
             return new UserHandle(username);
+        }
+
+        /// <summary>
+        /// 使用指定的用户名查询用户。
+        /// </summary>
+        /// <param name="username">要查询的用户名。</param>
+        /// <returns>查找到的用户的用户句柄。若未找到这样的用户，返回 null。</returns>
+        /// <exception cref="ArgumentNullException"/>
+        public UserHandle QueryUserByName(string username)
+        {
+            if (username == null)
+                throw new ArgumentNullException(nameof(username));
+
+            UserProfileEntity entity = m_context.QueryUserProfileEntity(username);
+            if (entity == null)
+            {
+                return null;
+            }
+
+            return UserHandle.FromUserProfileEntity(entity);
         }
 
         /// <summary>

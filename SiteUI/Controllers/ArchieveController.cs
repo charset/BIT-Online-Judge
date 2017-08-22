@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace SiteUI.Controllers
+namespace BITOJ.SiteUI.Controllers
 {
     public class ArchieveController : Controller
     {

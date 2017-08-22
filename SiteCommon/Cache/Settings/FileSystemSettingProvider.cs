@@ -1,5 +1,6 @@
 ﻿namespace BITOJ.Common.Cache.Settings
 {
+    using BITOJ.Common.Cache;
     using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
@@ -29,11 +30,17 @@
             }
         }
 
-        private static readonly string SettingsDirectory = @".\Settings";
+        private static readonly string SettingsDirectoryName = @".\Settings";
+        private static readonly string SettingsDirectory;
 
         private static string MakeFilename(string name)
         {
             return string.Concat(SettingsDirectory, "\\", name, ".json");
+        }
+
+        static FileSystemSettingProvider()
+        {
+            SettingsDirectory = ApplicationDirectory.GetAppSubDirectory(SettingsDirectoryName);
         }
 
         private Dictionary<string, SettingItemInfo> m_settingsCache;

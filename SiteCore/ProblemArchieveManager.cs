@@ -1,7 +1,7 @@
 ﻿namespace BITOJ.Core
 {
+    using BITOJ.Common.Cache;
     using BITOJ.Common.Cache.Settings;
-    using BITOJ.Core.Data;
     using BITOJ.Core.Data.Queries;
     using BITOJ.Data;
     using BITOJ.Data.Components;
@@ -52,7 +52,7 @@
             if (!settings.Contains(ArchieveDiretcorySettingName))
             {
                 // 设置集中无根目录设置。设置为默认目录。
-                ms_archieveDirectory = "ProblemArchieve";
+                ms_archieveDirectory = ApplicationDirectory.GetAppSubDirectory("ProblemArchieve");
             }
             else
             {
@@ -68,6 +68,11 @@
         private ProblemArchieveManager()
         {
             m_context = new ProblemArchieveDataContext();
+        }
+
+        ~ProblemArchieveManager()
+        {
+            m_context.Dispose();
         }
 
         /// <summary>

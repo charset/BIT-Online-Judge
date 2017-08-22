@@ -1,9 +1,8 @@
 ﻿namespace BITOJ.Core.Data
 {
-    using BITOJ.Core.Data;
     using BITOJ.Data;
     using BITOJ.Data.Entities;
-    using CoreUserGroup = Authorization.UserGroup;
+    using CoreUserGroup = UserGroup;
     using NativeUserGroup = BITOJ.Data.Entities.UserGroup;
     using System;
 
