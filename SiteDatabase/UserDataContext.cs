@@ -313,16 +313,16 @@ namespace BITOJ.Data
         /// <summary>
         /// 获取或设置用户信息数据集。
         /// </summary>
-        protected virtual DbSet<UserProfileEntity> UserProfiles { get; set; }
+        public virtual DbSet<UserProfileEntity> UserProfiles { get; set; }
 
         /// <summary>
         /// 获取或设置队伍信息数据集。
         /// </summary>
-        protected virtual DbSet<TeamProfileEntity> TeamProfiles { get; set; }
+        public virtual DbSet<TeamProfileEntity> TeamProfiles { get; set; }
 
         /// <summary>
         /// 获取或设置用户 - 队伍关系数据集。
         /// </summary>
-        protected virtual DbSet<UserTeamRelationEntity> UserTeams { get; set; }
+        public virtual DbSet<UserTeamRelationEntity> UserTeams { get; set; }
     }
 }

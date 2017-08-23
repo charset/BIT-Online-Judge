@@ -43,9 +43,19 @@
             {
                 // 尝试读取所有内容并按照 JSON 格式解析。
                 string json = File.ReadAllText(m_userProfileFile);
-                m_model = JsonConvert.DeserializeObject<UserProfileModel>(json);
+                try
+                {
+                    m_model = JsonConvert.DeserializeObject<UserProfileModel>(json);
+                    m_dirty = false;
+                }
+                catch
+                {
+                    // 信息文件内容不符合格式。加载默认信息模型。
+                    m_model = new UserProfileModel();
+                    m_dirty = true;
 
-                m_dirty = false;
+                    Save();
+                }
             }
         }
 

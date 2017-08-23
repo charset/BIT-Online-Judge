@@ -84,6 +84,11 @@
     <Compile Include="Entities\UserProfileEntity.cs" />
     <Compile Include="Entities\UserTeamRelationEntity.cs" />
     <Compile Include="Entities\SubmissionVerdictStatus.cs" />
+    <Compile Include="Migrations\201708230245594_InitialCreate.cs" />
+    <Compile Include="Migrations\201708230245594_InitialCreate.Designer.cs">
+      <DependentUpon>201708230245594_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ContestAuthorizationModel.cs" />
     <Compile Include="Models\ContestAuthorizationMode.cs" />
     <Compile Include="Models\ContestConfigurationModel.cs" />
@@ -104,43 +109,6 @@
     <Compile Include="UserDataContext.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Databases\CategoryDb.mdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Databases\CategoryDb_log.ldf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <DependentUpon>CategoryDb.mdf</DependentUpon>
-    </Content>
-    <Content Include="Databases\ContestDb.mdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Databases\ContestDb_log.ldf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <DependentUpon>ContestDb.mdf</DependentUpon>
-    </Content>
-    <Content Include="Databases\ProblemDb.mdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Databases\ProblemDb_log.ldf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <DependentUpon>ProblemDb.mdf</DependentUpon>
-    </Content>
-    <Content Include="Databases\SubmissionsDb.mdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Databases\SubmissionsDb_log.ldf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <DependentUpon>SubmissionsDb.mdf</DependentUpon>
-    </Content>
-    <Content Include="Databases\UserDb.mdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Databases\UserDb_log.ldf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <DependentUpon>UserDb.mdf</DependentUpon>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5 SP1</ProductName>
@@ -157,6 +125,13 @@
       <Name>SiteCommon</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Configurations\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201708230245594_InitialCreate.resx">
+      <DependentUpon>201708230245594_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

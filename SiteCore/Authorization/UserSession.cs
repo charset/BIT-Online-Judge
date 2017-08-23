@@ -96,7 +96,7 @@
             if (UserAuthorization.CheckAuthorization(username, password))
             {
                 // 登录验证成功。
-                session.Add(username, null);
+                session.Add(SessionUsername, username);
                 RenewSession(session);
                 return true;
             }
