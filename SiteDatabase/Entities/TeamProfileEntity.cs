@@ -1,5 +1,6 @@
 ﻿namespace BITOJ.Data.Entities
 {
+    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
@@ -7,7 +8,7 @@
     /// 表示队伍信息的实体对象。
     /// </summary>
     [Table("TeamProfiles")]
-    public sealed class TeamProfileEntity
+    public class TeamProfileEntity
     {
         /// <summary>
         /// 获取或设置该实体对象在数据库中的主键。
@@ -24,10 +25,10 @@
         public string Name { get; set; }
 
         /// <summary>
-        /// 获取或设置队伍的信息文件名称。
+        /// 获取或设置
         /// </summary>
-        public string ProfileFile { get; set; }
-
+        public virtual ICollection<UserProfileEntity> Members { get; set; }
+        
         /// <summary>
         /// 初始化 TeamProfileEntity 类的新实例。
         /// </summary>
@@ -35,7 +36,8 @@
         {
             Id = 0;
             Name = string.Empty;
-            ProfileFile = string.Empty;
+
+            Members = new List<UserProfileEntity>();
         }
     }
 }

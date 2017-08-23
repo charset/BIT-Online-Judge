@@ -65,6 +65,11 @@
 
             // 从数据库中查询权限集。
             string username = GetUsername(session);
+            if (username == null)
+            {
+                return UserGroup.Guests;
+            }
+
             UserHandle handle = UserManager.Default.QueryUserByName(username);
             if (handle == null)
             {

@@ -1,11 +1,12 @@
 ﻿namespace BITOJ.Core.Data
 {
     using BITOJ.Core;
-    using BITOJ.Data;
     using BITOJ.Data.Entities;
+    using System;
     using CoreUserGroup = UserGroup;
     using NativeUserGroup = BITOJ.Data.Entities.UserGroup;
-    using System;
+    using CoreUserSex = UserSex;
+    using NativeUserSex = BITOJ.Data.Entities.UserSex;
 
     public sealed class UserDataProvider : IUserDataProvider
     {
@@ -31,7 +32,6 @@
         }
 
         private UserProfileEntity m_entity;             // 用户数据实体对象。
-        private UserAccessHandle m_nativeHandle;        // 底层数据访问句柄。
         private bool m_readonly;
         private bool m_disposed;
 
@@ -44,7 +44,6 @@
         private UserDataProvider(UserProfileEntity entity, bool isReadOnly)
         {
             m_entity = entity ?? throw new ArgumentNullException(nameof(entity));
-            m_nativeHandle = new UserAccessHandle(m_entity.ProfileFileName);
             m_readonly = isReadOnly;
             m_disposed = false;
         }
@@ -93,47 +92,26 @@
                 CheckAccess();
 
                 m_entity.Organization = value;
-                m_nativeHandle.Organization = value;
             }
         }
 
         /// <summary>
-        /// 获取或设置用户的头像文件文件名。
+        /// 获取或设置用户的性别。
         /// </summary>
-        public string ImagePath
+        public CoreUserSex Sex
         {
             get
             {
                 if (m_disposed)
                     throw new ObjectDisposedException(GetType().Name);
 
-                return m_nativeHandle.ImagePath;
+                return (CoreUserSex)m_entity.Sex;
             }
             set
             {
                 CheckAccess();
 
-                m_nativeHandle.ImagePath = value;
-            }
-        }
-
-        /// <summary>
-        /// 获取或设置用户的 Rating 值。
-        /// </summary>
-        public int Rating
-        {
-            get
-            {
-                if (m_disposed)
-                    throw new ObjectDisposedException(GetType().Name);
-
-                return m_nativeHandle.Rating;
-            }
-            set
-            {
-                CheckAccess();
-
-                m_nativeHandle.Rating = value;
+                m_entity.Sex = (NativeUserSex)value;
             }
         }
 
@@ -158,7 +136,7 @@
         }
 
         /// <summary>
-        /// 获取或设置用户的提交统计数据。
+        /// 获取用户的提交统计数据。
         /// </summary>
         public UserSubmissionStatistics SubmissionStatistics
         {
@@ -167,13 +145,7 @@
                 if (m_disposed)
                     throw new ObjectDisposedException(GetType().Name);
 
-                return UserSubmissionStatistics.FromStatisticsModel(m_nativeHandle.SubmissionsStatistics);
-            }
-            set
-            {
-                CheckAccess();
-
-                m_nativeHandle.SubmissionsStatistics = value.ToStatisticsModel();
+                throw new NotImplementedException();
             }
         }
 
@@ -202,14 +174,7 @@
         /// </summary>
         public void Dispose()
         {
-            if (!m_disposed)
-            {
-                if (!m_readonly)
-                {
-                    m_nativeHandle.Save();
-                }
-                m_disposed = true;
-            }
+            m_disposed = true;
         }
     }
 }

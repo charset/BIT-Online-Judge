@@ -28,6 +28,16 @@
         public string Organization { get; set; }
 
         /// <summary>
+        /// 获取或设置一个值，该值指示是否按照用户性别进行查找。
+        /// </summary>
+        public bool QueryBySex { get; set; }
+
+        /// <summary>
+        /// 当 QueryBySex 为 true 时，获取或设置用户性别。
+        /// </summary>
+        public UserSex Sex { get; set; }
+
+        /// <summary>
         /// 获取或设置一个值，该值指示是否按照用户权限集进行查询。
         /// </summary>
         public bool QueryByUsergroup { get; set; }
@@ -47,6 +57,9 @@
 
             QueryByOrganization = false;
             Organization = string.Empty;
+
+            QueryBySex = false;
+            Sex = UserSex.Male;
 
             QueryByUsergroup = false;
             UserGroup = UserGroup.Administrators;

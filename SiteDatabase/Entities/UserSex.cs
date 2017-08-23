@@ -1,15 +1,10 @@
-﻿namespace BITOJ.Data.Models
+﻿namespace BITOJ.Data.Entities
 {
     /// <summary>
     /// 表示用户的性别信息。
     /// </summary>
     public enum UserSex : int
     {
-        /// <summary>
-        /// 性别信息未知。
-        /// </summary>
-        Unknown = 0,
-
         /// <summary>
         /// 男性。
         /// </summary>

@@ -1,4 +1,19 @@
-﻿@using BITOJ.Core.Authorization;
+﻿@using BITOJ.Core;
+@using BITOJ.Core.Authorization;
+
+@{ 
+    // Check user access.
+    if (ViewData.ContainsKey("AccessGroup"))
+    {
+        UserGroup group = (UserGroup)ViewData["AccessGroup"];
+        if (!UserAuthorization.CheckAccessRights(group, UserSession.GetUserGroup(Session)))
+        {
+            // 用户无权访问此页面。
+            Response.Redirect("~/Error/AccessDenied");
+            return;
+        }
+    }
+}
 
 <!DOCTYPE html>
 <html>
@@ -70,6 +85,16 @@
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li><a href="">Profile</a></li>
+
+                                    @{ 
+                                        if (UserAuthorization.CheckAccessRights(BITOJ.Core.UserGroup.Administrators,
+                                            UserSession.GetUserGroup(Session)))
+                                        {
+                                            // Show administration menu item.
+                                            <li><a href="~/Admin">Administration</a></li>
+                                        }
+                                    }
+                                    
                                     <li role="separator" class="divider"></li>
                                     <li><a href="~/Login/Logout">Sign out</a></li>
                                 </ul>

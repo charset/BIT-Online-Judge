@@ -55,6 +55,8 @@
   <ItemGroup>
     <Compile Include="Authorization\UserAuthorization.cs" />
     <Compile Include="Authorization\UserSession.cs" />
+    <Compile Include="Convert\SexConvert.cs" />
+    <Compile Include="Convert\UsergroupConvert.cs" />
     <Compile Include="Data\IUserDataProvider.cs" />
     <Compile Include="Data\UserDataProvider.cs" />
     <Compile Include="Data\UserSubmissionStatistics.cs" />
@@ -82,6 +84,7 @@
     <Compile Include="UserHandle.cs" />
     <Compile Include="UserManager.cs" />
     <Compile Include="UsernameAlreadyExistsException.cs" />
+    <Compile Include="UserSex.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SiteCommon\SiteCommon.csproj">

@@ -18,14 +18,9 @@
         string Organization { get; set; }
 
         /// <summary>
-        /// 获取或设置用户头像图片文件文件名。
+        /// 获取或设置用户性别。
         /// </summary>
-        string ImagePath { get; set; }
-
-        /// <summary>
-        /// 获取或设置用户 Rating 值。
-        /// </summary>
-        int Rating { get; set; }
+        UserSex Sex { get; set; }
 
         /// <summary>
         /// 获取或设置用户权限集。
@@ -35,6 +30,6 @@
         /// <summary>
         /// 获取或设置用户提交统计数据。
         /// </summary>
-        UserSubmissionStatistics SubmissionStatistics { get; set; }
+        UserSubmissionStatistics SubmissionStatistics { get; }
     }
 }
