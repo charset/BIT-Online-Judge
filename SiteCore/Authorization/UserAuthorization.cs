@@ -2,6 +2,7 @@
 {
     using BITOJ.Core;
     using BITOJ.Core.Data;
+    using System;
     using System.Security.Cryptography;
     using System.Text;
 
@@ -69,12 +70,40 @@
             }
 
             // 计算传入的密码的哈希值。
-            byte[] pwdHash = ms_hash.ComputeHash(ms_encoding.GetBytes(password));
+            byte[] pwdHash = GetPasswordHash(password);
 
             using (UserDataProvider userData = UserDataProvider.Create(handle, true))
             {
                 // 比较密码哈希值是否相同。
                 return IsByteArraysEqual(pwdHash, userData.PasswordHash);
+            }
+        }
+
+        /// <summary>
+        /// 更新用户密码信息。
+        /// </summary>
+        /// <param name="username">用户名。</param>
+        /// <param name="password">用户密码。</param>
+        /// <exception cref="ArgumentNullException"/>
+        public static void UpdatePassword(string username, string password)
+        {
+            if (username == null)
+                throw new ArgumentNullException(nameof(username));
+            if (password == null)
+                throw new ArgumentNullException(nameof(password));
+
+            UserHandle handle = UserManager.Default.QueryUserByName(username);
+            if (handle == null)
+            {
+                // 数据库中没有对应用户的实体。
+                return;
+            }
+
+            byte[] hash = GetPasswordHash(password);
+            using (UserDataProvider data = UserDataProvider.Create(handle, false))
+            {
+                // 更新密码哈希值。
+                data.PasswordHash = hash;
             }
         }
 
@@ -87,6 +116,20 @@
         public static bool CheckAccessRights(UserGroup expected, UserGroup user)
         {
             return (int)user >= (int)expected;
+        }
+
+        /// <summary>
+        /// 获取指定密码的哈希值。
+        /// </summary>
+        /// <param name="password">密码。</param>
+        /// <returns>给定密码的哈希值。</returns>
+        /// <exception cref="ArgumentNullException"/>
+        private static byte[] GetPasswordHash(string password)
+        {
+            if (password == null)
+                throw new ArgumentNullException(nameof(password));
+
+            return ms_hash.ComputeHash(ms_encoding.GetBytes(password));
         }
     }
 }

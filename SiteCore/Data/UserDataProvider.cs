@@ -174,6 +174,7 @@
         /// </summary>
         public void Dispose()
         {
+            UserManager.Default.DataContext.SaveChanges();
             m_disposed = true;
         }
     }

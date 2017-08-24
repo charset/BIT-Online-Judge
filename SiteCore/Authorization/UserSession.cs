@@ -10,7 +10,7 @@
     /// </summary>
     public static class UserSession
     {
-        private static readonly string SessionUsername = "boj_username";
+        private static readonly string SessionUsername = "bitoj_username";
         private static readonly int SessionTimeout = 30;        // Session 超时时间 30 分钟。
 
         /// <summary>

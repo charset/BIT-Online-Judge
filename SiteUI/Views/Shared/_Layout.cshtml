@@ -40,12 +40,19 @@
         }
 
         .text-footer {
-            line-height: 8px;
+            line-height: 16px;
         }
     </style>
+
+    <script type="text/javascript">
+        // Enable bootstrap Popover-box support.
+        $(function () {
+            $('[data-toggle="popover"]').popover()
+        })
+    </script>
 </head>
 <body>
-    <nav class="navbar navbar-default navbar-fixed-top" role="navigation" style="opacity: 0.9;">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation" style="opacity: 0.95;">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navdivResponsive">
@@ -121,7 +128,7 @@
         <footer class="text-right text-footer">
             <p>BIT Online Judge Platform, Version 1.0</p>
             <p>Website server time: @DateTime.Now UTC+8</p>
-            <p>Leader developers: Lancern, Reskip</p>
+            <p>Leader developers: Lancern, Reskip from School of Software, BIT.</p>
             <p>
                 Copyright &copy; 
                 <a href="http://www.bit.edu.cn" target="_blank">Beijing Institute of Technology</a> 

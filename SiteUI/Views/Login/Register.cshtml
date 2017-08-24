@@ -1,41 +1,104 @@
-﻿@{ 
+﻿@model BITOJ.SiteUI.Models.UserRegisterModel
+@using BITOJ.Core
+@using BITOJ.Core.Authorization
+@{ 
     ViewBag.Title = "BITOJ - Register";
 }
 
 <div class="jumbotron">
     <div class="row">
-        <div class="col-lg-6">
+        <div class="col-lg-12">
             <h1>Register</h1>
             <p class="sup">
                 Nice to meet you! <br />
-                Please fill the charts on the right side to complete your registration.
+                Please fill the charts below to complete your registration.
             </p>
         </div>
-        <div class="col-lg-6">
-            <form class="panel-body">
-                <div class="form-group">
-                    <label for="username">Username:</label>
-                    <input class="form-control" type="text" placeholder="Username" />
-                </div>
-                <div class="form-group">
-                    <label for="pwd">Password:</label>
-                    <input class="form-control" type="password" placeholder="Password" />
-                </div>
-                <div class="form-group">
-                    <label for="pwd-conf">Confirm password:</label>
-                    <input class="form-control" type="password" placeholder="Password" />
-                </div>
-                <div class="form-group">
-                    <label for="sex">Sex:</label>
-                    <select class="form-control">
-                        <option>Secret</option>
-                        <option>Female</option>
-                        <option>Male</option>
-                    </select>
-                </div>
+    </div>
+</div>
 
-                <button type="submit" class="btn btn-primary">Register</button>
-            </form>
-        </div>
+<div class="row">
+    <div class="col-lg-4">
+        <img src="~/Resources/BIT_Logo_trans.png" class="img-responsive" style="display:block;"/>
+    </div>
+    <div class="col-lg-7 col-lg-offset-1">
+        <form method="post">
+            @{ 
+                string usernameDivClass = "form-group";
+                string passwordDivClass = "form-group";
+                string passwordConfDivClass = "form-group";
+
+                if (!string.IsNullOrEmpty(Model?.UsernameErrorMessage))
+                {
+                    usernameDivClass = "form-group has-error";
+                }
+                if (!string.IsNullOrEmpty(Model?.PasswordErrorMessage))
+                {
+                    passwordDivClass = "form-group has-error";
+                }
+                if (!string.IsNullOrEmpty(Model?.PasswordConfirmationErrorMessage))
+                {
+                    passwordConfDivClass = "form-group has-error";
+                }
+            }
+
+            <div class="@usernameDivClass">
+                <label class="control-label" for="Username">Username</label>
+                @Html.TextBoxFor(model => model.Username, new { @class = "form-control", placeholder = "Username" })
+                @if (!string.IsNullOrEmpty(Model?.UsernameErrorMessage))
+                {
+                    <div class="alert alert-danger">
+                        <p>@Model.UsernameErrorMessage</p>
+                    </div>
+                }
+            </div>
+
+            <div class="@passwordDivClass">
+                <label class="control-label" for="Password">Password</label>
+                @Html.PasswordFor(model => model.Password, new { @class = "form-control", placeholder = "Password" })
+                @if (!string.IsNullOrEmpty(Model?.PasswordErrorMessage))
+                {
+                    <div class="alert alert-danger">
+                        <p>@Model.PasswordErrorMessage</p>
+                    </div>
+                }
+            </div>
+
+            <div class="@passwordConfDivClass">
+                <label class="control-label" for="PasswordConfirmation">Confirm password</label>
+                @Html.PasswordFor(model => model.PasswordConfirmation, new { @class = "form-control", placeholder = "Confirm password" })
+                @if (!string.IsNullOrEmpty(Model?.PasswordConfirmationErrorMessage))
+                {
+                    <div class="alert alert-danger">
+                        <p>@Model.PasswordConfirmationErrorMessage</p>
+                    </div>
+                }
+            </div>
+
+            <div class="form-group">
+                <label class="control-label" for="Sex">Gender</label>
+                @Html.DropDownListFor(model => model.Sex, new SelectListItem[]
+                    {
+                        new SelectListItem() { Text = "Female", Value = "Female" },
+                        new SelectListItem() { Text = "Male", Value = "Male" }
+                    }, new { @class = "form-control" })
+            </div>
+
+            @if (UserAuthorization.CheckAccessRights(UserGroup.Administrators, UserSession.GetUserGroup(Session)))
+            {
+                <div class="form-group">
+                    <label class="control-label" for="UserGroupName">User group</label>
+                    @Html.DropDownListFor(model => model.UserGroupName, new SelectListItem[]
+                   {
+                       new SelectListItem() { Text = "Administrator", Value = "Administrator" },
+                       new SelectListItem() { Text = "Insider", Value = "Insider" },
+                       new SelectListItem() { Text = "Standard", Value = "Standard" },
+                       new SelectListItem() { Text = "Guest", Value = "Guest" }
+                   }, new { @class = "form-control" })
+                </div>
+            }
+
+            <button type="submit" class="btn btn-primary">Register</button>
+        </form>
     </div>
 </div>
