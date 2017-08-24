@@ -1,0 +1,100 @@
+﻿@using BITOJ.Core
+@using BITOJ.Core.Authorization
+@using BITOJ.SiteUI.Models
+@{ 
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="jumbotron">
+    <h1>Problem archieve</h1>
+    <p class="sup">
+        View all problems on BIT Online Judge system and practice with the one you most concerned about.
+    </p>
+</div>
+
+<div class="row">
+    <div class="col-lg-3">
+        @if (UserSession.IsAuthorized(Session) &&
+                UserAuthorization.CheckAccessRights(UserGroup.Administrators, UserSession.GetUserGroup(Session)))
+        {
+            <div class="hidden-xs hidden-sm btn-group-vertical">
+                <a href="~/Archieve/Add" role="button" class="btn btn-warning">
+                    <span class="glyphicon glyphicon-plus"></span>
+                    Add a new problem
+                </a>
+                <a href="~/Archieve/AddFromContest" role="button" class="btn btn-warning">
+                    <span class="glyphicon glyphicon-plus"></span>
+                    Add problems from a contest
+                </a>
+            </div>
+
+            <hr class="hidden-xs hidden-sm" />
+        }
+
+        <div class="list-group">
+            @{ 
+                string[] navAnchorClasses = new string[4];
+                for (int i = 0; i < 4; ++i)
+                {
+                    navAnchorClasses[i] = "list-group-item";
+                }
+                navAnchorClasses[(int)(ArchieveCatalog)ViewBag.ArchieveCatalog] += " active";
+            }
+
+            <a class="@navAnchorClasses[0]" href="~/Archieve">
+                <h4 class="list-group-item-heading">Local archieve</h4>
+                <p class="list-group-item-text hidden-sm">This archieve contains all native problems on BIT Online Judge.</p>
+            </a>
+            <a class="@navAnchorClasses[1]" href="~/Archieve/Virtual">
+                <h4 class="list-group-item-heading">Virtual archieve</h4>
+                <p class="list-group-item-text hidden-sm">
+                    This archieve contains all problems on all the supported online judge systems.
+                </p>
+            </a>
+
+            @if (UserSession.IsAuthorized(Session))
+            {
+                <a class="@navAnchorClasses[2]" href="~/Archieve/Solved">
+                    <h4 class="list-group-item-heading">Solved problems</h4>
+                </a>
+                <a class="@navAnchorClasses[3]" href="~/Archieve/Attempt">
+                    <h4 class="list-group-item-heading">Attempting problems</h4>
+                </a>
+            }
+        </div>
+
+        <hr />
+
+        <div class="alert alert-info">
+            <div class="text-center">
+                <h4><strong>Query problems</strong></h4>
+            </div>
+            <form role="search" action="~/Archieve/Query">
+                <div class="form-group">
+                    <label class="control-label" for="Title">Title</label>
+                    <input type="text" class="form-control" id="Title" name="Title"/>
+                </div>
+                <div class="form-group">
+                    <label class="control-label" for="Source">Source</label>
+                    <input type="text" class="form-control" id="Source" name="Source"/>
+                </div>
+                <div class="form-group">
+                    <label class="control-label" for="Author">Author</label>
+                    <input type="text" class="form-control" id="Author" name="Author"/>
+                </div>
+                <div class="form-group">
+                    <label class="control-label" for="Tag">Tag</label>
+                    <input type="text" class="form-control" id="Tag" name="Tag"/>
+                </div>
+
+                <hr />
+
+                <button type="submit" class="btn btn-default btn-block">Query</button>
+            </form>
+        </div>
+    </div>
+    <div class="col-lg-9">
+        @RenderBody()
+    </div>
+</div>
+

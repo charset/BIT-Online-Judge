@@ -89,9 +89,9 @@
     <Compile Include="Models\ContestParticipationMode.cs" />
     <Compile Include="Entities\UserSex.cs" />
     <Compile Include="ProblemArchieveDataContext.cs" />
+    <Compile Include="ProblemCategoryDataContext.cs" />
     <Compile Include="ProblemParts.cs" />
     <Compile Include="ProblemAccessHandle.cs" />
-    <Compile Include="ProblemCategoryDataContext.cs" />
     <Compile Include="Models\ProblemConfigurationModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SubmissionDataContext.cs" />

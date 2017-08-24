@@ -1,5 +1,4 @@
-﻿
-namespace BITOJ.SiteUI.Controllers
+﻿namespace BITOJ.SiteUI.Controllers
 {
     using BITOJ.Core;
     using BITOJ.Core.Authorization;
@@ -22,12 +21,12 @@ namespace BITOJ.SiteUI.Controllers
             // 尝试进行登录验证。
             if (UserSession.Authorize(Session, username, password))
             {
-                return new RedirectResult("~/Home/Index");
+                return Redirect("~/Home/Index");
             }
             else
             {
                 ViewData.Add("HasError", true);
-                return View("Index");
+                return View();
             }
         }
 

@@ -43,13 +43,6 @@
             line-height: 16px;
         }
     </style>
-
-    <script type="text/javascript">
-        // Enable bootstrap Popover-box support.
-        $(function () {
-            $('[data-toggle="popover"]').popover()
-        })
-    </script>
 </head>
 <body>
     <nav class="navbar navbar-default navbar-fixed-top" role="navigation" style="opacity: 0.95;">
@@ -143,5 +136,13 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
+
+    <script type="text/javascript">
+        // Enable bootstrap Popover-box support.
+        $(function () {
+            $('[data-toggle="popover"]').popover();
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
 </body>
 </html>

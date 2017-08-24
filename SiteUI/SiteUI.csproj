@@ -159,6 +159,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\ArchieveCatalog.cs" />
+    <Compile Include="Models\ProblemQueryModel.cs" />
     <Compile Include="Models\UserProfileModel.cs" />
     <Compile Include="Models\UserQueryModel.cs" />
     <Compile Include="Models\UserRegisterModel.cs" />
@@ -210,10 +212,12 @@
     <Content Include="Views\Error\AccessDenied.cshtml" />
     <Content Include="Views\Admin\ManageUser.cshtml" />
     <Content Include="Views\Login\Succeed.cshtml" />
+    <Content Include="Views\Archieve\Index.cshtml" />
+    <Content Include="Views\Archieve\Virtual.cshtml" />
+    <Content Include="Views\Archieve\Shared\Layout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Archieve\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
