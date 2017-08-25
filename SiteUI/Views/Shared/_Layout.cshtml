@@ -61,12 +61,12 @@
             <div class="navbar-collapse collapse" id="navdivResponsive">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Instruction", "Instruction", "Home", new { }, new { @class = "active" })</li>
-                    <li>@Html.ActionLink("Archieve", "Local", "Archieve")</li>
+                    <li>@Html.ActionLink("Archieve", "Index", "Archieve")</li>
                     <li>@Html.ActionLink("Contests", "Index", "Contest")</li>
                     <li>@Html.ActionLink("Status", "Index", "Status")</li>
                     <li>@Html.ActionLink("About", "About", "Home")</li>
                 </ul>
-                <form class="navbar-form navbar-left" role="search" action="~/Home/RedirectById">
+                <form class="navbar-form navbar-left" role="search" action="~/Archieve/ShowProblem">
                     <div class="form-group">
                         <input type="text" class="form-control" placeholder="Enter problem ID ..." name="id"/>
                     </div>

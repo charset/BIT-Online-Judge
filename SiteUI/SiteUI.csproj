@@ -211,9 +211,9 @@
     <Content Include="Views\Login\Register.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\Error\AccessDenied.cshtml" />
-    <Content Include="Views\Admin\ManageUser.cshtml" />
+    <Content Include="Views\Admin\Users.cshtml" />
     <Content Include="Views\Login\Succeed.cshtml" />
-    <Content Include="Views\Archieve\Archieve.cshtml" />
+    <Content Include="Views\Archieve\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

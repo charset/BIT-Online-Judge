@@ -8,6 +8,7 @@ namespace BITOJ.SiteUI.Controllers
 {
     public class ErrorController : Controller
     {
+        // Get: Error/AccessDenied
         public ActionResult AccessDenied()
         {
             return View();

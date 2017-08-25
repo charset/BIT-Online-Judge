@@ -16,6 +16,7 @@
             return View();
         }
 
+        // GET: Login/Login
         public ActionResult Login(string username, string password)
         {
             // 尝试进行登录验证。
@@ -30,15 +31,62 @@
             }
         }
 
+        // GET: Login/Logout
         public ActionResult Logout()
         {
             UserSession.Deauthorize(Session);
             return Redirect(Request.UrlReferrer.ToString());
         }
 
+        // GET: Login/Register
         public ActionResult Register()
         {
             return View(new UserRegisterModel());
+        }
+
+        // POST: Login/Register
+        [HttpPost]
+        public ActionResult Register(UserRegisterModel model)
+        {
+            // Validate user input.
+            model.ResetErrorMessages();
+
+            bool hasError = false;
+            if (ModelState.ContainsKey("Username") && ModelState["Username"].Errors.Count > 0)
+            {
+                hasError = true;
+                model.UsernameErrorMessage = ModelState["Username"].Errors[0].ErrorMessage;
+            }
+            if (ModelState.ContainsKey("Password") && ModelState["Password"].Errors.Count > 0)
+            {
+                hasError = true;
+                model.PasswordErrorMessage = ModelState["Password"].Errors[0].ErrorMessage;
+            }
+            if (ModelState.ContainsKey("PasswordConfirmation") && ModelState["PasswordConfirmation"].Errors.Count > 0)
+            {
+                hasError = true;
+                model.PasswordConfirmationErrorMessage = ModelState["PasswordConfirmation"].Errors[0].ErrorMessage;
+            }
+
+            if (hasError)
+            {
+                return View(model);
+            }
+
+            if (string.Compare(model.Password, model.PasswordConfirmation, false) != 0)
+            {
+                model.PasswordConfirmationErrorMessage = "Password and its confirmation is not the same.";
+                return View(model);
+            }
+
+            if (DoRegister(model))
+            {
+                return View("Succeed", model);
+            }
+            else
+            {
+                return View(model);
+            }
         }
 
         /// <summary>
@@ -67,50 +115,6 @@
             }
 
             return true;
-        }
-        
-        [HttpPost]
-        public ActionResult Register(UserRegisterModel model)
-        {
-            // Validate user input.
-            model.ResetErrorMessages();
-
-            bool hasError = false;
-            if (ModelState.ContainsKey("Username") && ModelState["Username"].Errors.Count > 0)
-            {
-                hasError = true;
-                model.UsernameErrorMessage = ModelState["Username"].Errors[0].ErrorMessage;
-            }
-            if (ModelState.ContainsKey("Password") && ModelState["Password"].Errors.Count > 0)
-            {
-                hasError = true;
-                model.PasswordErrorMessage = ModelState["Password"].Errors[0].ErrorMessage;
-            }
-            if (ModelState.ContainsKey("PasswordConfirmation") && ModelState["PasswordConfirmation"].Errors.Count > 0)
-            {
-                hasError = true;
-                model.PasswordConfirmationErrorMessage = ModelState["PasswordConfirmation"].Errors[0].ErrorMessage;
-            }
-            
-            if (hasError)
-            {
-                return View(model);
-            }
-
-            if (string.Compare(model.Password, model.PasswordConfirmation, false) != 0)
-            {
-                model.PasswordConfirmationErrorMessage = "Password and its confirmation is not the same.";
-                return View(model);
-            }
-
-            if (DoRegister(model))
-            {
-                return View("Succeed", model);
-            }
-            else
-            {
-                return View(model);
-            }
         }
     }
 }

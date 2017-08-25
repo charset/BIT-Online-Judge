@@ -15,14 +15,9 @@ namespace BITOJ.SiteUI.Controllers
         {
             return View();
         }
-
-        public ActionResult ManageUser()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public ActionResult ManageUser(string username, string organization, string usergroup)
+        
+        // Get: Admin/User
+        public ActionResult Users(string username, string organization, string usergroup)
         {
             // 从数据库查询信息。
             // 创建查询参数对象。

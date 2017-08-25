@@ -12,12 +12,7 @@
         private const int ItemsPerPage = 50;
 
         // GET: Archieve
-        public ActionResult Index()
-        {
-            return Redirect("~/Archieve/Local");
-        }
-
-        public ActionResult Local(int page = 1)
+        public ActionResult Index(int page = 1)
         {
             // 在数据库中查询所有题目来源为 BITOJ 的题目。
             ArchieveModel model = new ArchieveModel()
@@ -40,12 +35,13 @@
             }
 
             model.Pages = result.Count / ItemsPerPage + Math.Sign(result.Count % ItemsPerPage);
-            return View("Archieve", model);
+            return View(model);
         }
 
-        public ActionResult Virtual(int page = 1)
+        // GET: Archieve/ShowProblem?id=...
+        public ActionResult ShowProblem(string id = null)
         {
-            return View("Archieve");
+            return View();
         }
     }
 }
