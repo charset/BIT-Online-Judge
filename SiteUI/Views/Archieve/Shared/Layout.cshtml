@@ -65,32 +65,55 @@
 
         <hr />
 
-        <div class="alert alert-info">
-            <div class="text-center">
-                <h4><strong>Query problems</strong></h4>
+        <div class="panel panel-info" id="queryPanel">
+            <div class="text-center panel-heading" id="queryHeading">
+                <h4 class="panel-title">
+                    <a role="button" data-toggle="collapse" data-parent="#queryPanel" href="#queryForm"
+                       aria-expanded="true" aria-controls="queryForm">
+                        <strong>Query problems</strong>
+                    </a>
+                </h4>
             </div>
-            <form role="search" action="~/Archieve/Query">
-                <div class="form-group">
-                    <label class="control-label" for="Title">Title</label>
-                    <input type="text" class="form-control" id="Title" name="Title"/>
-                </div>
-                <div class="form-group">
-                    <label class="control-label" for="Source">Source</label>
-                    <input type="text" class="form-control" id="Source" name="Source"/>
-                </div>
-                <div class="form-group">
-                    <label class="control-label" for="Author">Author</label>
-                    <input type="text" class="form-control" id="Author" name="Author"/>
-                </div>
-                <div class="form-group">
-                    <label class="control-label" for="Tag">Tag</label>
-                    <input type="text" class="form-control" id="Tag" name="Tag"/>
-                </div>
+            <div class="panel-collapse collase in" id="queryForm" aria-labelledby="queryHeading">
+                <div class="panel-body">
+                    <form role="search" action="~/Archieve/Query">
+                        <div class="form-group">
+                            <label class="control-label" for="Title">Title</label>
+                            <input type="text" class="form-control" id="Title" name="Title" />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="Source">Source</label>
+                            <input type="text" class="form-control" id="Source" name="Source" />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="Author">Author</label>
+                            <input type="text" class="form-control" id="Author" name="Author" />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="Tag">Tag</label>
+                            <input type="text" class="form-control" id="Tag" name="Tag" />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="Origin">Origin</label>
+                            <select class="form-control" id="Origin" name="Origin">
+                                <option>BIT</option>
+                                <option>BZOJ</option>
+                                <option>CodeForces</option>
+                                <option>CodeForces Gym</option>
+                                <option>HDU</option>
+                                <option>POJ</option>
+                                <option>UVa</option>
+                                <option>UVa Live Archive</option>
+                                <option>ZOJ</option>
+                            </select>
+                        </div>
 
-                <hr />
+                        <hr />
 
-                <button type="submit" class="btn btn-default btn-block">Query</button>
-            </form>
+                        <button type="submit" class="btn btn-info btn-block">Query</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
     <div class="col-lg-9">

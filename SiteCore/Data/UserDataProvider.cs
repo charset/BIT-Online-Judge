@@ -8,7 +8,7 @@
     using CoreUserSex = UserSex;
     using NativeUserSex = BITOJ.Data.Entities.UserSex;
 
-    public sealed class UserDataProvider : IUserDataProvider
+    public sealed class UserDataProvider : IDisposable
     {
         /// <summary>
         /// 创建给定用户的 UserDataProvider 对象。

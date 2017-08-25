@@ -42,7 +42,7 @@
         /// <returns>问题句柄对象。</returns>
         internal static ProblemHandle FromProblemEntity(ProblemEntity entity)
         {
-            return new ProblemHandle(string.Format("BIT{0:D4}", entity.Id));
+            return new ProblemHandle(entity.Id);
         }
     }
 }

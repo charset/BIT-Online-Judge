@@ -57,10 +57,11 @@
     <Compile Include="Authorization\UserSession.cs" />
     <Compile Include="Convert\SexConvert.cs" />
     <Compile Include="Convert\UsergroupConvert.cs" />
-    <Compile Include="Data\IUserDataProvider.cs" />
     <Compile Include="Data\UserDataProvider.cs" />
     <Compile Include="Data\UserSubmissionStatistics.cs" />
     <Compile Include="Data\InvalidProblemException.cs" />
+    <Compile Include="OJSystem.cs" />
+    <Compile Include="ProblemAlreadyExistException.cs" />
     <Compile Include="ProblemHandle.cs" />
     <Compile Include="ProblemException.cs" />
     <Compile Include="Data\ProblemNotExistException.cs" />
@@ -70,12 +71,9 @@
     <Compile Include="SubmissionLanguage.cs" />
     <Compile Include="SubmissionVerdict.cs" />
     <Compile Include="SubmissionVerdictStatus.cs" />
-    <Compile Include="Data\NativeProblemDataProvider.cs" />
+    <Compile Include="Data\ProblemDataProvider.cs" />
     <Compile Include="Data\Queries\PagedQueryParameters.cs" />
     <Compile Include="ProblemArchieveManager.cs" />
-    <Compile Include="Data\IProblemDataProvider.cs" />
-    <Compile Include="Data\ProblemDataAccess.cs" />
-    <Compile Include="Data\ProblemDataProviderFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resolvers\ProblemUrlResolver.cs" />
     <Compile Include="Resolvers\ProblemUrlResolverRule.cs" />
@@ -100,9 +98,6 @@
     <None Include="App.config" />
     <Compile Include="Data\UserNotFoundException.cs" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="ProblemSession.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

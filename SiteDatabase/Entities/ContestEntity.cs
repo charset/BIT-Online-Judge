@@ -47,7 +47,7 @@
         /// <summary>
         /// 获取或设置存储该场比赛详细配置数据的本地文件系统目录。
         /// </summary>
-        public string ContestDirectory { get; set; }
+        public string ContestConfigurationFile { get; set; }
 
         /// <summary>
         /// 初始化 ContestEntity 类的新实例。
@@ -60,7 +60,7 @@
             StartTime = DateTime.Now;
             EndTime = DateTime.Now;
             Creator = string.Empty;
-            ContestDirectory = string.Empty;
+            ContestConfigurationFile = string.Empty;
         }
     }
 }

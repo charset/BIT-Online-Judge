@@ -8,7 +8,7 @@
     /// 表示题目分类类别对象实体数据。
     /// </summary>
     [Table("ProblemCategories")]
-    public sealed class ProblemCategoryEntity
+    public class ProblemCategoryEntity
     {
         /// <summary>
         /// 获取或设置该记录在数据库中的主键值。
@@ -28,7 +28,7 @@
         /// <summary>
         /// 获取或设置当前类别下的所有题目。
         /// </summary>
-        public ICollection<ProblemEntity> Problems { get; set; }
+        public virtual ICollection<ProblemEntity> Problems { get; set; }
 
         /// <summary>
         /// 初始化 ProblemCategoryEntity 类的新实例。

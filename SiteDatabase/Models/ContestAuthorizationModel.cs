@@ -10,6 +10,12 @@
     public sealed class ContestAuthorizationModel
     {
         /// <summary>
+        /// 获取或设置比赛的参与模式。
+        /// </summary>
+        [JsonProperty("participate_mode")]
+        public ContestParticipationMode ParticipationMode { get; set; }
+
+        /// <summary>
         /// 获取或设置比赛的授权模式。
         /// </summary>
         [JsonProperty("mode")]
@@ -45,17 +51,10 @@
         public bool UseTeamsAsBlacklist { get; set; }
 
         /// <summary>
-        /// 当授权模式在 Private 模式时，获取或设置处在白名单或黑名单中的用户权限集。
+        /// 获取或设置访问此比赛的最低用户权限。
         /// </summary>
-        [JsonProperty("groups")]
-        public ICollection<UserGroup> Groups { get; set; }
-
-        /// <summary>
-        /// 获取或设置一个值，该值指示是否应当将用户权限集列表作为黑名单列表。
-        /// 若该属性值为 false，用户权限集列表将被作为白名单列表。
-        /// </summary>
-        [JsonProperty("groups_as_blacklist")]
-        public bool UseGroupsAsBlacklist { get; set; }
+        [JsonProperty("usergroup")]
+        public UserGroup AuthorizationGroup { get; set; }
 
         /// <summary>
         /// 初始化 ContestAuthorizationModel 类的新实例。
@@ -63,14 +62,14 @@
         [JsonConstructor]
         public ContestAuthorizationModel()
         {
+            ParticipationMode = ContestParticipationMode.IndividualAndTeamwork;
             AuthorizationMode = ContestAuthorizationMode.Private;
             PasswordHash = new byte[0];
             Users = new List<string>();
             UseUsersAsBlacklist = false;
             Teams = new List<int>();
             UseTeamsAsBlacklist = false;
-            Groups = new List<UserGroup>();
-            UseGroupsAsBlacklist = false;
+            AuthorizationGroup = UserGroup.Standard;
         }
     }
 }

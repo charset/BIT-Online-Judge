@@ -6,13 +6,14 @@
     using BITOJ.Data;
     using BITOJ.Data.Components;
     using BITOJ.Data.Entities;
+    using NativeOJSystem = BITOJ.Data.Entities.OJSystem;
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
 
     /// <summary>
-    /// 对 BITOJ 主题目库提供管理、访问服务。
+    /// 对 BITOJ 题目库提供管理、访问服务。
     /// </summary>
     public sealed class ProblemArchieveManager
     {
@@ -76,15 +77,40 @@
         }
 
         /// <summary>
+        /// 判断给定的题目是否已经存在于数据库中。
+        /// </summary>
+        /// <param name="problemId">题目编号。</param>
+        /// <returns>一个值，该值指示题目是否已经存在于数据库中。</returns>
+        /// <exception cref="ArgumentNullException"/>
+        public bool IsProblemExist(string problemId)
+        {
+            if (problemId == null)
+                throw new ArgumentNullException(nameof(problemId));
+
+            ProblemEntity entity = DataContext.GetProblemEntityById(problemId);
+            return entity != null;
+        }
+
+        /// <summary>
         /// 在主题目库中创建一道新题目并返回该题目的句柄。
         /// </summary>
-        /// <returns></returns>
-        public ProblemHandle CreateProblem()
+        /// <returns>创建的题目句柄。</returns>
+        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="ProblemAlreadyExistException"/>
+        public ProblemHandle CreateProblem(string problemId)
         {
-            ProblemEntity entity = new ProblemEntity();
+            if (problemId == null)
+                throw new ArgumentNullException(nameof(problemId));
+            if (IsProblemExist(problemId))
+                throw new ProblemAlreadyExistException(new ProblemHandle(problemId));
+
+            ProblemEntity entity = new ProblemEntity()
+            {
+                Id = problemId,
+            };
 
             // 为题目创建文件系统目录。
-            string directory = string.Concat(ms_archieveDirectory, "\\", entity.Id.ToString("D4"));
+            string directory = string.Concat(ms_archieveDirectory, "\\", problemId);
             Directory.CreateDirectory(directory);
 
             // 将题目实体对象添加至底层数据库中。
@@ -100,7 +126,7 @@
         /// </summary>
         /// <param name="id">题目 ID。</param>
         /// <returns>具有给定题目 ID 的题目句柄对象。若主题库中不存在这样的题目，返回 null。</returns>
-        public ProblemHandle GetProblemById(int id)
+        public ProblemHandle GetProblemById(string id)
         {
             ProblemEntity entity = m_context.GetProblemEntityById(id);
             if (entity == null)
@@ -148,6 +174,10 @@
             {
                 set = ProblemDataContext.QueryProblemEntitiesByAuthor(set, query.Author);
             }
+            if (query.QueryByOrigin)
+            {
+                set = ProblemDataContext.QueryProblemEntitiesByOrigin(set, (NativeOJSystem)query.Origin);
+            }
 
             // 执行分页。
             set = set.Page(query.Page.Page, query.Page.EntriesPerPage);
@@ -159,6 +189,23 @@
             }
 
             return handleList;
+        }
+
+        /// <summary>
+        /// 从题目库中删除给定的题目。
+        /// </summary>
+        /// <param name="problemId">要删除的题目的题目 ID。</param>
+        /// <exception cref="ArgumentNullException"/>
+        public void RemoveProblem(string problemId)
+        {
+            if (problemId == null)
+                throw new ArgumentNullException(nameof(problemId));
+
+            ProblemEntity entity = DataContext.GetProblemEntityById(problemId);
+            if (entity != null)
+            {
+                DataContext.RemoveProblemEntity(entity);
+            }
         }
 
         /// <summary>

@@ -2,14 +2,15 @@
 {
     using BITOJ.Data;
     using BITOJ.Data.Entities;
+    using System;
+    using System.Collections.Generic;
     using CoreUserGroup = UserGroup;
     using NativeUserGroup = BITOJ.Data.Entities.UserGroup;
-    using System;
 
     /// <summary>
     /// 为 BITOJ 提供本地题目数据源。
     /// </summary>
-    public class NativeProblemDataProvider : IProblemDataProvider
+    public class ProblemDataProvider : IDisposable
     {
         /// <summary>
         /// 从给定的题目句柄对象创建 NativeProblemDataProvider 对象。
@@ -20,33 +21,27 @@
         /// <exception cref="ArgumentNullException"/>
         /// <exception cref="InvalidProblemException"/>
         /// <exception cref="ProblemNotExistException"/>
-        public static NativeProblemDataProvider Create(ProblemHandle handle, bool isReadonly)
+        public static ProblemDataProvider Create(ProblemHandle handle, bool isReadonly)
         {
             if (handle == null)
                 throw new ArgumentNullException(nameof(handle));
             if (!handle.IsNativeProblem)
                 throw new InvalidProblemException(handle, "给定的题目句柄不是 BITOJ 本地题目。");
 
-            // 尝试从题目句柄中解析出题目ID。
-            if (!int.TryParse(handle.ProblemId.Substring(3), out int id))
-                throw new InvalidProblemException(handle, "给定的题目句柄非法。");
-
             // 从底层数据库中查询题目实体对象。
-            ProblemEntity entity = ProblemArchieveManager.Default.DataContext.GetProblemEntityById(id);
+            ProblemEntity entity = ProblemArchieveManager.Default.DataContext.GetProblemEntityById(handle.ProblemId);
             if (entity == null)
                 throw new ProblemNotExistException(handle);
 
             // 创建底层题目数据访问器对象。
-            ProblemAccessHandle entryHandle = new ProblemAccessHandle(entity.ProblemDirectory);
-            return new NativeProblemDataProvider()
+            ProblemAccessHandle entryHandle = new ProblemAccessHandle(entity);
+            return new ProblemDataProvider()
             {
-                m_entity = entity,
                 m_accessHandle = entryHandle,
                 m_readonly = isReadonly
             };
         }
-
-        private ProblemEntity m_entity;     // 底层数据库实体对象。
+        
         private ProblemAccessHandle m_accessHandle;
         private bool m_readonly;
         private bool m_disposed;
@@ -54,12 +49,16 @@
         /// <summary>
         /// 初始化 NativeProblemDataProvider 类的新实例。
         /// </summary>
-        private NativeProblemDataProvider()
+        private ProblemDataProvider()
         {
-            m_entity = null;
             m_accessHandle = null;
             m_readonly = true;
             m_disposed = false;
+        }
+
+        ~ProblemDataProvider()
+        {
+            Dispose();
         }
 
         /// <summary>
@@ -82,11 +81,10 @@
         {
             get => m_disposed
                 ? throw new ObjectDisposedException(GetType().Name)
-                : m_entity.Title;
+                : m_accessHandle.Title;
             set
             {
                 CheckAccess();
-                m_entity.Title = value;
                 m_accessHandle.Title = value;
             }
         }
@@ -102,7 +100,6 @@
             set
             {
                 CheckAccess();
-                m_entity.Author = value;
                 m_accessHandle.Author = value;
             }
         }
@@ -201,12 +198,11 @@
         {
             get => m_disposed
                 ? throw new ObjectDisposedException(GetType().Name)
-                : m_accessHandle.GetProblemPart(ProblemParts.Source);
+                : m_accessHandle.Source;
             set
             {
                 CheckAccess();
-                m_entity.Source = value;
-                m_accessHandle.SetProblemPart(ProblemParts.Source, value);
+                m_accessHandle.Source = value;
             }
         }
 
@@ -246,6 +242,21 @@
         /// 获取一个值，该值指示当前对象是否处于只读模式。
         /// </summary>
         public bool IsReadOnly { get => m_readonly; }
+
+        /// <summary>
+        /// 获取当前题目所处的题目类别。
+        /// </summary>
+        /// <returns>当前题目所处的题目类别集合。</returns>
+        public ICollection<string> GetCategories()
+        {
+            List<string> collection = new List<string>();
+            foreach (ProblemCategoryEntity cat in m_accessHandle.Categories)
+            {
+                collection.Add(cat.Name);
+            }
+
+            return collection;
+        }
 
         /// <summary>
         /// 释放由当前对象占有的所有资源。

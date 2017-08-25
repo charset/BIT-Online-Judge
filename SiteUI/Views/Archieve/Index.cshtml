@@ -31,10 +31,13 @@
                 </td>
                 <td>
                     <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-primary btn-sm" data-toggle="tooltip"
-                                data-placement="top" data-container="body" title="Submit">
-                            <span class="glyphicon glyphicon-open"></span>
-                        </button>
+                        @if (UserSession.IsAuthorized(Session))
+                        {
+                            <button type="button" class="btn btn-primary btn-sm" data-toggle="tooltip"
+                                    data-placement="top" data-container="body" title="Submit">
+                                <span class="glyphicon glyphicon-open"></span>
+                            </button>
+                        }
 
                         @if (UserAuthorization.CheckAccessRights(UserGroup.Administrators,
                             UserSession.GetUserGroup(Session)))

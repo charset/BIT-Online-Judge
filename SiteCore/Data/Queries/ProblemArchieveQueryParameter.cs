@@ -36,6 +36,16 @@
         public bool QueryByAuthor { get; set; }
 
         /// <summary>
+        /// 获取或设置要查询的题目的源 OJ 平台。
+        /// </summary>
+        public OJSystem Origin { get; set; }
+
+        /// <summary>
+        /// 获取或设置一个值，该值指示是否通过题目源 OJ 进行查询。
+        /// </summary>
+        public bool QueryByOrigin { get; set; }
+
+        /// <summary>
         /// 获取或设置分页查询参数。
         /// </summary>
         public PagedQueryParameters Page { get; set; }
@@ -48,9 +58,11 @@
             Title = string.Empty;
             Source = string.Empty;
             Author = string.Empty;
+            Origin = OJSystem.BIT;
             QueryByTitle = false;
             QueryBySource = false;
             QueryByAuthor = false;
+            QueryByOrigin = false;
             Page = new PagedQueryParameters(1, int.MaxValue);
         }
     }

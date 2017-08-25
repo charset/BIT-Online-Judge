@@ -6,7 +6,7 @@
     /// <summary>
     /// 表示主题目库题目实体。
     /// </summary>
-    public sealed class ProblemEntity
+    public class ProblemEntity
     {
         /// <summary>
         /// 获取或设置题目实体的 ID。
@@ -57,7 +57,7 @@
         /// <summary>
         /// 获取或设置题目的类别。
         /// </summary>
-        public ICollection<ProblemCategoryEntity> Categories { get; set; }
+        public virtual ICollection<ProblemCategoryEntity> Categories { get; set; }
 
         /// <summary>
         /// 初始化 ProblemEntity 类的新实例。

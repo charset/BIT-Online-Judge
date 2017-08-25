@@ -114,6 +114,14 @@
         }
 
         /// <summary>
+        /// 获取当前题目所处的题目类别。
+        /// </summary>
+        public ICollection<ProblemCategoryEntity> Categories
+        {
+            get => m_disposed ? throw new ObjectDisposedException(GetType().Name) : m_entity.Categories;
+        }
+
+        /// <summary>
         /// 获取题目描述中给定部分的文件名。
         /// </summary>
         /// <param name="part">要查询的题目描述逻辑部分。</param>
