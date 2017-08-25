@@ -67,6 +67,9 @@
     <Compile Include="Data\ProblemNotExistException.cs" />
     <Compile Include="Data\Queries\ProblemArchieveQueryParameter.cs" />
     <Compile Include="Data\Queries\UserQueryParameter.cs" />
+    <Compile Include="Resolvers\IProblemUrlResolver.cs" />
+    <Compile Include="Resolvers\ProblemOriginResolver.cs" />
+    <Compile Include="Resolvers\ProblemUrlResolverFactory.cs" />
     <Compile Include="SubmissionHandle.cs" />
     <Compile Include="SubmissionLanguage.cs" />
     <Compile Include="SubmissionVerdict.cs" />
@@ -75,8 +78,6 @@
     <Compile Include="Data\Queries\PagedQueryParameters.cs" />
     <Compile Include="ProblemArchieveManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Resolvers\ProblemUrlResolver.cs" />
-    <Compile Include="Resolvers\ProblemUrlResolverRule.cs" />
     <Compile Include="UserException.cs" />
     <Compile Include="UserGroup.cs" />
     <Compile Include="UserHandle.cs" />
