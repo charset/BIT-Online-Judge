@@ -34,10 +34,5 @@
         /// 题目提示。
         /// </summary>
         Hint = 6,
-
-        /// <summary>
-        /// 题目来源。
-        /// </summary>
-        Source = 7,
     }
 }

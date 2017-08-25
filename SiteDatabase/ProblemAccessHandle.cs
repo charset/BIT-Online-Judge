@@ -1,8 +1,6 @@
 ﻿namespace BITOJ.Data
 {
     using BITOJ.Data.Entities;
-    using BITOJ.Data.Models;
-    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     using System.IO;
@@ -10,17 +8,14 @@
     /// <summary>
     /// 封装对本地题目库中一道题目的访问接口。
     /// </summary>
-    public sealed class ProblemAccessHandle
+    public sealed class ProblemAccessHandle : IDisposable
     {
-        private static readonly string ProblemConfigurationFileName = "config.json";
         private static readonly string ProblemDescriptionFileName = "description";
         private static readonly string ProblemInputDescriptionFileName = "input_description";
         private static readonly string ProblemOutputDescriptionFileName = "output_description";
         private static readonly string ProblemInputSampleFileName = "input_sample";
         private static readonly string ProblemOutputSampleFileName = "output_sample";
         private static readonly string ProblemHintFileName = "hint";
-        private static readonly string ProblemSourceFileName = "source";
-        private static readonly string ProblemResourcesDirectoryName = "Resources";
 
         private static readonly Dictionary<ProblemParts, string> PartFileName;
 
@@ -35,40 +30,26 @@
                 { ProblemParts.InputSample, ProblemInputSampleFileName },
                 { ProblemParts.OutputSample, ProblemOutputSampleFileName },
                 { ProblemParts.Hint, ProblemHintFileName },
-                { ProblemParts.Source, ProblemSourceFileName }
             };
         }
 
+        private ProblemEntity m_entity;
         private string m_problemDirectory;
-        private string m_resourceDirectory;
-        private string m_configFileName;
-        private ProblemConfigurationModel m_config;
         private Dictionary<ProblemParts, string> m_parts;
+        private bool m_disposed;
         private bool m_dirty;
 
         /// <summary>
-        /// 使用给定的题目目录初始化 ProblemEntryHandle 类的新实例。
+        /// 使用给定的题目实体对象初始化 ProblemEntryHandle 类的新实例。
         /// </summary>
-        /// <param name="directory">目标题目的题目目录。</param>
+        /// <param name="entity">题目实体对象。</param>
         /// <exception cref="ArgumentNullException"/>
-        public ProblemAccessHandle(string directory)
+        public ProblemAccessHandle(ProblemEntity entity)
         {
-            m_problemDirectory = directory;
-            m_resourceDirectory = string.Concat(directory, "\\", ProblemResourcesDirectoryName);
-
-            m_configFileName = string.Concat(directory, "\\", ProblemConfigurationFileName);
-            if (File.Exists(m_configFileName))
-            {
-                m_config = JsonConvert.DeserializeObject<ProblemConfigurationModel>(File.ReadAllText(m_configFileName));
-            }
-            else
-            {
-                // 该题目配置文件不存在。创建默认配置文件。
-                m_config = new ProblemConfigurationModel();
-                File.WriteAllText(m_configFileName, JsonConvert.SerializeObject(m_config));
-            }
-
+            m_entity = entity ?? throw new ArgumentNullException(nameof(entity));
+            m_problemDirectory = entity.ProblemDirectory;
             m_parts = new Dictionary<ProblemParts, string>();
+            m_disposed = false;
             m_dirty = false;
         }
 
@@ -77,12 +58,13 @@
         /// </summary>
         public string Title
         {
-            get { return m_config.Title; }
+            get => m_disposed ? throw new ObjectDisposedException(GetType().Name) : m_entity.Title;
             set
             {
-                m_config.Title = value;
-                UpdateModifiedTime();
-                m_dirty = true;
+                if (m_disposed)
+                    throw new ObjectDisposedException(GetType().Name);
+
+                m_entity.Title = value;
             }
         }
 
@@ -91,12 +73,28 @@
         /// </summary>
         public string Author
         {
-            get { return m_config.Author; }
+            get => m_disposed ? throw new ObjectDisposedException(GetType().Name) : m_entity.Author;
             set
             {
-                m_config.Author = value;
-                UpdateModifiedTime();
-                m_dirty = true;
+                if (m_disposed)
+                    throw new ObjectDisposedException(GetType().Name);
+
+                m_entity.Author = value;
+            }
+        }
+
+        /// <summary>
+        /// 获取或设置题目的来源。
+        /// </summary>
+        public string Source
+        {
+            get => m_disposed ? throw new ObjectDisposedException(GetType().Name) : m_entity.Source;
+            set
+            {
+                if (m_disposed)
+                    throw new ObjectDisposedException(GetType().Name);
+
+                m_entity.Source = value;
             }
         }
 
@@ -105,30 +103,14 @@
         /// </summary>
         public UserGroup AuthorizationGroup
         {
-            get { return m_config.AuthorizationGroup; }
+            get => m_disposed ? throw new ObjectDisposedException(GetType().Name) : m_entity.AuthorizationGroup;
             set
             {
-                m_config.AuthorizationGroup = value;
-                UpdateModifiedTime();
-                m_dirty = true;
+                if (m_disposed)
+                    throw new ObjectDisposedException(GetType().Name);
+
+                m_entity.AuthorizationGroup = value;
             }
-        }
-
-        /// <summary>
-        /// 将该题目的配置数据模型写入文件系统中。
-        /// </summary>
-        private void SaveConfigurationModel()
-        {
-            File.WriteAllText(m_configFileName, JsonConvert.SerializeObject(m_config));
-        }
-
-        /// <summary>
-        /// 将当前题目的最后修改时间更新为调用该方法的时间。
-        /// </summary>
-        private void UpdateModifiedTime()
-        {
-            m_config.LastModifiedTime = DateTime.Now;
-            m_dirty = true;
         }
 
         /// <summary>
@@ -190,7 +172,6 @@
             }
 
             m_dirty = true;
-            UpdateModifiedTime();
         }
 
         /// <summary>
@@ -198,16 +179,27 @@
         /// </summary>
         public void Save()
         {
-            if (m_dirty)
+            if (!m_disposed && m_dirty)
             {
                 foreach (KeyValuePair<ProblemParts, string> item in m_parts)
                 {
                     string filename = PartFileName[item.Key];
                     File.WriteAllText(filename, item.Value);
                 }
-                SaveConfigurationModel();
 
                 m_dirty = false;
+            }
+        }
+
+        /// <summary>
+        /// 释放当前对象占有的所有资源。
+        /// </summary>
+        public void Dispose()
+        {
+            if (!m_disposed)
+            {
+                Save();
+                m_disposed = true;
             }
         }
     }

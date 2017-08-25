@@ -73,8 +73,8 @@
     <Compile Include="ContestDataContext.cs" />
     <Compile Include="ContestEntryHandle.cs" />
     <Compile Include="Entities\ContestEntity.cs" />
+    <Compile Include="Entities\OJSystem.cs" />
     <Compile Include="Entities\ProblemCategoryEntity.cs" />
-    <Compile Include="Entities\ProblemCategoryRelationEntity.cs" />
     <Compile Include="Entities\ProblemEntity.cs" />
     <Compile Include="Entities\SubmissionEntity.cs" />
     <Compile Include="Entities\SubmissionLanguage.cs" />
@@ -88,11 +88,9 @@
     <Compile Include="Models\ContestConfigurationModel.cs" />
     <Compile Include="Models\ContestParticipationMode.cs" />
     <Compile Include="Entities\UserSex.cs" />
-    <Compile Include="ProblemArchieveDataContext.cs" />
-    <Compile Include="ProblemCategoryDataContext.cs" />
+    <Compile Include="ProblemDataContext.cs" />
     <Compile Include="ProblemParts.cs" />
     <Compile Include="ProblemAccessHandle.cs" />
-    <Compile Include="Models\ProblemConfigurationModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SubmissionDataContext.cs" />
     <Compile Include="SubmissionQueryHandle.cs" />

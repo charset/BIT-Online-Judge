@@ -60,14 +60,14 @@
             }
         }
 
-        private ProblemArchieveDataContext m_context;       // 数据上下文
+        private ProblemDataContext m_context;       // 数据上下文
 
         /// <summary>
         /// 初始化 ProblemArchieveManager 类的新实例。
         /// </summary>
         private ProblemArchieveManager()
         {
-            m_context = new ProblemArchieveDataContext();
+            m_context = new ProblemDataContext();
         }
 
         ~ProblemArchieveManager()
@@ -138,15 +138,15 @@
             // 根据查询参数执行相应的查询，动态维护查询基础数据集。
             if (query.QueryByTitle)
             {
-                set = ProblemArchieveDataContext.QueryProblemEntitiesByTitle(set, query.Title);
+                set = ProblemDataContext.QueryProblemEntitiesByTitle(set, query.Title);
             }
             if (query.QueryBySource)
             {
-                set = ProblemArchieveDataContext.QueryProblemEntitiesBySource(set, query.Source);
+                set = ProblemDataContext.QueryProblemEntitiesBySource(set, query.Source);
             }
             if (query.QueryByAuthor)
             {
-                set = ProblemArchieveDataContext.QueryProblemEntitiesByAuthor(set, query.Author);
+                set = ProblemDataContext.QueryProblemEntitiesByAuthor(set, query.Author);
             }
 
             // 执行分页。
@@ -164,7 +164,7 @@
         /// <summary>
         /// 获取底层数据上下文对象。
         /// </summary>
-        internal ProblemArchieveDataContext DataContext
+        internal ProblemDataContext DataContext
         {
             get { return m_context; }
         }
