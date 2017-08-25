@@ -239,6 +239,36 @@
         }
 
         /// <summary>
+        /// 获取或设置当前题目的总提交数。
+        /// </summary>
+        public int TotalSubmissions
+        {
+            get => m_disposed
+                ? throw new ObjectDisposedException(GetType().Name)
+                : m_accessHandle.TotalSubmissions;
+            set
+            {
+                CheckAccess();
+                m_accessHandle.TotalSubmissions = value;
+            }
+        }
+
+        /// <summary>
+        /// 获取或设置当前题目的 AC 提交数。
+        /// </summary>
+        public int AcceptedSubmissions
+        {
+            get => m_disposed
+                ? throw new ObjectDisposedException(GetType().Name)
+                : m_accessHandle.AcceptedSubmissions;
+            set
+            {
+                CheckAccess();
+                m_accessHandle.AcceptedSubmissions = value;
+            }
+        }
+
+        /// <summary>
         /// 获取一个值，该值指示当前对象是否处于只读模式。
         /// </summary>
         public bool IsReadOnly { get => m_readonly; }

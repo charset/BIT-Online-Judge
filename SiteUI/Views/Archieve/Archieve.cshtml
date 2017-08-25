@@ -1,0 +1,240 @@
+﻿@using BITOJ.Core
+@using BITOJ.Core.Authorization
+@using BITOJ.SiteUI.Models
+@using System.Text
+@model ArchieveModel
+
+<div class="jumbotron">
+    <h1>Problem archieve</h1>
+    <p class="sup">
+        View all problems on BIT Online Judge system and practice with the one you most concerned about.
+    </p>
+</div>
+
+<div class="row">
+    <div class="col-lg-3">
+        @if (UserSession.IsAuthorized(Session) &&
+            UserAuthorization.CheckAccessRights(UserGroup.Administrators, UserSession.GetUserGroup(Session)))
+        {
+            <div class="hidden-xs hidden-sm btn-group-vertical">
+                <a href="~/Archieve/Add" role="button" class="btn btn-warning">
+                    <span class="glyphicon glyphicon-plus"></span>
+                    Add a new problem
+                </a>
+                <a href="~/Archieve/AddFromContest" role="button" class="btn btn-warning">
+                    <span class="glyphicon glyphicon-plus"></span>
+                    Add problems from a contest
+                </a>
+            </div>
+
+            <hr class="hidden-xs hidden-sm" />
+        }
+
+        <div class="list-group">
+            @{
+                string[] navAnchorClasses = new string[3];
+                for (int i = 0; i < 3; ++i)
+                {
+                    navAnchorClasses[i] = "list-group-item";
+                }
+                navAnchorClasses[(int)Model.Catalog] += " active";
+            }
+
+            <a class="@navAnchorClasses[0]" href="~/Archieve">
+                <h4 class="list-group-item-heading">All problems</h4>
+            </a>
+
+            @if (UserSession.IsAuthorized(Session))
+            {
+                <a class="@navAnchorClasses[1]" href="~/Archieve/Solved">
+                    <h4 class="list-group-item-heading">Solved problems</h4>
+                </a>
+                <a class="@navAnchorClasses[2]" href="~/Archieve/Attempt">
+                    <h4 class="list-group-item-heading">Attempting problems</h4>
+                </a>
+            }
+        </div>
+
+        <hr />
+
+        <div class="panel panel-info" id="queryPanel">
+            <div class="text-center panel-heading" id="queryHeading">
+                <h4 class="panel-title">
+                    <a role="button" data-toggle="collapse" data-parent="#queryPanel" href="#queryForm"
+                       aria-expanded="true" aria-controls="queryForm">
+                        <strong>Query problems</strong>
+                    </a>
+                </h4>
+            </div>
+            <div class="panel-collapse collase in" id="queryForm" aria-labelledby="queryHeading">
+                <div class="panel-body">
+                    <form role="search" action="~/Archieve/Query">
+                        <div class="form-group">
+                            <label class="control-label" for="Title">Title</label>
+                            <input type="text" class="form-control" id="Title" name="Title" />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="Source">Source</label>
+                            <input type="text" class="form-control" id="Source" name="Source" />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="Author">Author</label>
+                            <input type="text" class="form-control" id="Author" name="Author" />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="Tag">Tag</label>
+                            <input type="text" class="form-control" id="Tag" name="Tag" />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="Origin">Origin</label>
+                            <select class="form-control" id="Origin" name="Origin">
+                                <option>BIT</option>
+                                <option>BZOJ</option>
+                                <option>CodeForces</option>
+                                <option>CodeForces Gym</option>
+                                <option>HDU</option>
+                                <option>POJ</option>
+                                <option>UVa</option>
+                                <option>UVa Live Archive</option>
+                                <option>ZOJ</option>
+                            </select>
+                        </div>
+
+                        <hr />
+
+                        <button type="submit" class="btn btn-info btn-block">Query</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-9">
+        @{
+            if (Model.Pages > 0)
+            {
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        @for (int page = 1; page <= Model.Pages; ++page)
+                        {
+                            if (page == Model.CurrentPage)
+                            {
+                                <li class="active">
+                                    <a href="javascript:void(0);">
+                                        @page
+                                        <span class="sr-only">(current)</span>
+                                    </a>
+                                </li>
+                            }
+                            else
+                            {
+                                string pageUrl = string.Format("~/Archieve/Local/{0}", page);
+
+                                <li>
+                                    <a href="@pageUrl">@page</a>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </nav>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    <p>There are no problems in the archieve yet.</p>
+                </div>
+            }
+        }
+
+        <div>
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Tags</th>
+                        <th>Operations</th>
+                        <th>Accepted Ratio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        if (Model != null)
+                        {
+                            foreach (ProblemInfoModel info in Model.Problems)
+                            {
+                                if (UserAuthorization.CheckAccessRights(info.AuthorizationGroup,
+                                    UserSession.GetUserGroup(Session)))
+                                {
+                                    <tr>
+                                        <td>@info.ProblemId</td>
+                                        <td><strong>@info.Title</strong></td>
+                                        <td>
+                                            @{
+                                                StringBuilder categoryBuilder = new StringBuilder();
+                                                foreach (string cat in info.Categories)
+                                                {
+                                                    categoryBuilder.AppendFormat("{0}; ", cat);
+                                                }
+                                            }
+                                            <a role="button" tabindex="0" class="btn btn-default btn-info btn-sm"
+                                               data-toggle="popover" data-placement="top" data-container="body"
+                                               data-trigger="focus" title="Categories"
+                                               data-content="@categoryBuilder.ToString()">
+                                                <span class="glyphicon glyphicon-tags"></span>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                @if (UserSession.IsAuthorized(Session))
+                                                {
+                                                    <a type="button" href="javascript:void(0);" class="btn btn-primary btn-sm"
+                                                       data-toggle="tooltip" data-placement="top" data-container="body"
+                                                       title="Submit">
+                                                        <span class="glyphicon glyphicon-open"></span>
+                                                    </a>
+                                                }
+
+                                                @if (UserAuthorization.CheckAccessRights(UserGroup.Administrators,
+                                                    UserSession.GetUserGroup(Session)))
+                                                {
+                                                    <a type="button" href="javascript:void(0);" class="btn btn-warning btn-sm"
+                                                       data-toggle="tooltip" data-placement="top" data-container="body"
+                                                       title="Edit">
+                                                        <span class="glyphicon glyphicon-pencil"></span>
+                                                    </a>
+                                                }
+
+                                                <a type="button" href="javascript:void(0);" class="btn btn-default btn-sm"
+                                                   data-toggle="tooltip" data-placement="top" data-container="body"
+                                                   title="Open in new tab">
+                                                    <span class="glyphicon glyphicon-new-window"></span>
+                                                </a>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            @{
+                                                string submitText = string.Format("{0} submissions, {1} accpeted.",
+                                                    info.TotalSubmissions, info.TotalAccepted);
+                                                string ratioText = "N/A";
+                                                if (info.TotalSubmissions > 0)
+                                                {
+                                                    ratioText = string.Format("{0:N2} %",
+                                                        (double)info.TotalAccepted / (double)info.TotalSubmissions * 100D);
+                                                }
+                                            }
+                                            <span>
+                                                @submitText
+                                                <br />
+                                                Ratio: @ratioText
+                                            </span>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

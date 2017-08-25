@@ -180,6 +180,7 @@
             }
 
             // 执行分页。
+            set = set.OrderBy(entity => entity.Id);
             set = set.Page(query.Page.Page, query.Page.EntriesPerPage);
 
             List<ProblemHandle> handleList = new List<ProblemHandle>();

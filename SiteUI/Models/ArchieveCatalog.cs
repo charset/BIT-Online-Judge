@@ -7,10 +7,8 @@
     {
         Local = 0,
 
-        Virtual = 1,
+        Solved = 1,
 
-        Solved = 2,
-
-        Attempted = 3,
+        Attempted = 2,
     }
 }

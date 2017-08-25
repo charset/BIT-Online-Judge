@@ -114,6 +114,36 @@
         }
 
         /// <summary>
+        /// 获取或设置当前题目的总提交数目。
+        /// </summary>
+        public int TotalSubmissions
+        {
+            get => m_disposed ? throw new ObjectDisposedException(GetType().Name) : m_entity.TotalSubmissions;
+            set
+            {
+                if (m_disposed)
+                    throw new ObjectDisposedException(GetType().Name);
+
+                m_entity.TotalSubmissions = value;
+            }
+        }
+
+        /// <summary>
+        /// 获取或设置当前题目的 AC 提交数目。
+        /// </summary>
+        public int AcceptedSubmissions
+        {
+            get => m_disposed ? throw new ObjectDisposedException(GetType().Name) : m_entity.AcceptedSubmissions;
+            set
+            {
+                if (m_disposed)
+                    throw new ObjectDisposedException(GetType().Name);
+
+                m_entity.AcceptedSubmissions = value;
+            }
+        }
+
+        /// <summary>
         /// 获取当前题目所处的题目类别。
         /// </summary>
         public ICollection<ProblemCategoryEntity> Categories
