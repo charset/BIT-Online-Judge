@@ -72,12 +72,25 @@ def compare(file1, file2):
 
     cmp1 = ""
     cmp2 = ""
+    
+    space = 0
     for i in file1:
         if i != ' ' and i != '\n' and i != '\t':
             cmp1 += i
+            space = 0
+        elif space == 0:
+            cmp1 += " "
+            space = 1
+
+    space = 0
     for i in file2:
         if i != ' ' and i != '\n' and i != '\t':
             cmp2 += i
+            space = 0
+        elif space == 0:
+            cmp2 += " "
+            space = 1
+
     if cmp1 == cmp2:
         return Config.OJ_PE
 
