@@ -3,11 +3,12 @@ methods of file opration in judge
 '''
 import os
 import shutil
-import config
+import Config
 
-def getdatalist(proid, judgeid):
+def getdatalist(proid, judgepath):
     '''
     find test data in input/output group via problem id
+    move data to judgepath as a copy
     return a list of filename, which describe the test data
 
     eg.
@@ -23,8 +24,7 @@ def getdatalist(proid, judgeid):
     }
 
     '''
-    datapath = config.OJ_DATA_PATH + "/" + str(proid)
-    judgepath = config.OJ_JUDGE_PATH + "/" + str(judgeid) + "/data"
+    datapath = Config.OJ_DATA_PATH + str(proid) + "/"
     shutil.copytree(datapath, judgepath)
 
     datalist = []
@@ -40,9 +40,11 @@ def getdatalist(proid, judgeid):
                 tofind += '.'
             tofind = tofind[:-1]
 
-            if config.DEBUG:
+            if Config.DEBUG:
                 print tofind
 
             if tofind in filelist:
                 datalist.append(tofind[:-4])
     return datalist
+
+def 

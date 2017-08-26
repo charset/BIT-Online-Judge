@@ -13,7 +13,7 @@ int main(int argc, char * argv[])
 {
     freopen(argv[2],"r",stdin);
     freopen(argv[3],"w",stdout);
-    freopen(argv[4],"w",stderr);
+    freopen(argv[4],"a+",stderr);
     char * arg[] = { argv[1] };
     execvp( arg[0] , arg );
     return 0;

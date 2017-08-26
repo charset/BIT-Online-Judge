@@ -40,9 +40,10 @@ LANGSET = {
 }
 
 REQUEST_URL = ""
-OJ_JUDGE_PATH = "home"
-OJ_DATA_PATH = "data"
-OJ_COMPILE_ERR = "ce.txt"
+OJ_JUDGE_PATH = "home/"
+OJ_DATA_PATH = "data/"
+OJ_ERR_FILE = "error.txt"
+OJ_OUTPUT_FILE = "userout.txt"
 
 USER_JUDGE = 1001
 
@@ -51,3 +52,4 @@ STD_KB = 1024   #2^10 byte/KB
 OJ_COMPILE_MEM = 1024 * STD_MB # memory limit in compile /byte
 OJ_COMPILE_TIME = 10 # time limit in compile /s
 OJ_COMPILE_FSIZE = 32 * STD_MB # file size /byte
+OJ_FSIZE_LIMIT = 32 * 1024 #output file size /KB
