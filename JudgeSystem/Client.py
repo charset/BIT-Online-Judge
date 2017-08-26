@@ -10,6 +10,9 @@ import psutil
 import signal
 import sys
 import math
+import json
+import urllib2
+import shutil
 
 import Config
 import Fileop
@@ -33,9 +36,7 @@ class Judge(object):
     exemem = 0 #MB
     errinfo = ""
 
-    def __init__(self, JsonPkg):
-        judgeinfo = json.JSONDecoder().decode(JsonPkg)
-
+    def __init__(self, judgeinfo):
         self.runid = judgeinfo['runid']
         self.proid = judgeinfo['proid']
         self.lang = int(judgeinfo['lang'])
@@ -49,27 +50,27 @@ class Judge(object):
         '''compile and try to exec'''
         judgepath = Config.OJ_JUDGE_PATH + "/" + self.runid
 
-        if Config.DEBUG:
-            print judgepath
-
         source = open(judgepath + "/main." + Config.LANGSET[self.lang], "w")
         source.write(self.code)
         source.close()
 
         pid = os.fork()
         if pid == 0:
-            os.chroot(judgepath)
-            os.seteuid(Config.USER_JUDGE)
-            os.nice(100)
-
+            #os.chroot(judgepath)
+            #os.seteuid(Config.USER_JUDGE)
+            #os.nice(100)
+            os.chdir(judgepath)
+            if Config.DEBUG:
+                print "compile path : ",
+                print os.getcwd()
             resource.setrlimit(resource.RLIMIT_AS, (Config.OJ_COMPILE_MEM, Config.OJ_COMPILE_MEM))
             resource.setrlimit(resource.RLIMIT_CPU, (Config.OJ_COMPILE_TIME, Config.OJ_COMPILE_TIME))
             resource.setrlimit(resource.RLIMIT_FSIZE, (Config.OJ_COMPILE_FSIZE, Config.OJ_COMPILE_FSIZE))
 
-            Compile.compile(self)
+            Compile.compile(self.lang)
             exit(0)
         else:
-            res = os.waitpid(pid)[1]
+            res = os.waitpid(pid,0)[1]
             if Config.DEBUG:
                 print "compile status : ",
                 print res
@@ -80,8 +81,12 @@ class Judge(object):
         '''
         execute data named dataname and monitor runtime error
         '''
-        judgepath = Config.OJ_JUDGE_PATH + "/" + self.runid + "/"
+        judgepath = Config.OJ_JUDGE_PATH + self.runid + "/"
         os.chdir(judgepath)
+        if Config.DEBUG:
+            print "execute : ",
+            print " dataname = " + dataname,
+            print " exepath = " + os.getcwd()
 
         inputfile = dataname
         outputfile = Config.OJ_OUTPUT_FILE
@@ -90,14 +95,15 @@ class Judge(object):
 
         pid = os.fork()
         if pid == 0:
-            os.chroot(judgepath)
-            os.seteuid(Config.USER_JUDGE)
-            os.nice(100)
+            #print os.getcwd()
+
+            #os.chroot(".")
+            #os.seteuid(Config.USER_JUDGE)
+            #os.nice(100)
 
             resource.setrlimit(resource.RLIMIT_AS, (Config.STD_KB * self.mlimit, Config.STD_KB * self.mlimit))
-            resource.setrlimit(resource.RLIMIT_CPU, (math.ceil(self.tlimit/1000) , math.ceil(self.tlimit/1000)))
+            resource.setrlimit(resource.RLIMIT_CPU, (math.ceil(self.tlimit/1000.0) , math.ceil(self.tlimit/1000.0)))
             resource.setrlimit(resource.RLIMIT_FSIZE, (self.flimit * Config.STD_KB, self.flimit * Config.STD_KB))
-
             os.execvp("./run", ("./run", proname, inputfile, outputfile, errorfile))
         else:
             status = 0
@@ -117,7 +123,7 @@ class Judge(object):
                     self.status = Config.OJ_ML
                     os.kill(pid, signal.SIGKILL)
                     return
-            status = os.waitpid(pid)[1] & 31    #produce signal code from exit code
+            status = os.waitpid(pid, 0)[1] & 31    #produce signal code from exit code
 
             if status == signal.SIGCHLD or status == signal.SIGALRM or status == signal.SIGXCPU or status == signal.SIGKILL:
                 self.status = Config.OJ_TL
@@ -131,7 +137,33 @@ class Judge(object):
             return
 
     def compare(self, dataname):
-        pass
+        '''
+        compare user's output and update judge status
+        '''
+        judgepath = Config.OJ_JUDGE_PATH + "/" + self.runid
+        os.chdir(judgepath)
+        if Config.DEBUG:
+            print "compare : datapath = ",
+            print os.getcwd()
+
+        inputfile = dataname + ".in"
+        useroutfile = Config.OJ_OUTPUT_FILE
+        stdoutfile = dataname + ".out"
+        
+        if self.spj:
+            pass
+        else:
+            self.status = max(self.status, Fileop.compare(useroutfile, stdoutfile))
+        return
+
+    def printstatus(self):
+        '''
+        print status
+        '''
+        print " runid: " + self.runid,
+        print " status: " + str(self.status),
+        print " memory: " + str(self.exemem),
+        print " time: " + str(self.exetime)
 
     def judge(self):
         '''
@@ -139,25 +171,65 @@ class Judge(object):
         use judge info and problem data to get solution and update response
         '''
         judgepath = Config.OJ_JUDGE_PATH + str(self.runid) + "/"
+        if os.path.exists(judgepath):
+            shutil.rmtree(judgepath)
+        os.makedirs(judgepath)
+        shutil.copy(Config.OJ_DATA_PATH + "run",judgepath)
 
-        ret = compile()
+        ret = self.compile()
+        os.chdir(Config.OJ_PATH_ROOT)
         if ret != 0:
             self.status = Config.OJ_CE
             self.errinfo = open(judgepath + Config.OJ_ERR_FILE, "r").read()
+            shutil.rmtree(judgepath)
             return
 
         datalist = Fileop.getdatalist(self.proid, judgepath)
-
+        if Config.DEBUG:
+            print " datalist : ",
+            print datalist
         for dataname in datalist:
-            self.execute(dataname)
+            os.chdir(Config.OJ_PATH_ROOT)
+            self.execute(dataname + ".in")
             if self.status != Config.OJ_AC and self.status != Config.OJ_PE:
                 break
+            os.chdir(Config.OJ_PATH_ROOT)
             self.compare(dataname)
             if self.status != Config.OJ_AC and self.status != Config.OJ_PE:
                 break
+        os.chdir(Config.OJ_PATH_ROOT)
+        #shutil.rmtree(judgepath)
         return
 
 
 class Client:
+    workqueue = []
     
-    pass
+    def __init__(self):
+	os.setuid(0)
+        pass
+
+    def getsubmit(self):
+        '''
+        Get the submission information from the client server
+        ''' 
+        data = urllib2.urlopen(Config.REQUEST_URL).read()
+	if Config.DEBUG:
+		print "jsondata = ",
+		print data
+        jsondata = json.loads(data)
+        if jsondata["runid"] != -1:
+            return Judge(jsondata)
+        return 0
+
+    def work(self):
+        '''
+        work
+        '''
+        self.workqueue.append(self.getsubmit())
+        self.workqueue[0].judge()
+        self.workqueue[0].printstatus()
+
+if __name__ == "__main__":
+    client = Client()
+    client.work()

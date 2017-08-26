@@ -3,7 +3,21 @@ methods of file opration in judge
 '''
 import os
 import shutil
+import filecmp
 import Config
+
+def walkdir(dir,topdown=True):
+    fileList = []
+    for root, dirs, files in os.walk(dir, topdown):
+        for name in files:
+            fileList.append(os.path.join(root,name))
+    return fileList
+
+def copyfiles(dirSrc, dirDst):
+    files = walkdir(dirSrc)
+    for f in files:
+        os.path.join(dirDst, f.split('/')[-1] )
+        shutil.copy2(f, os.path.join(dirDst, f.split('/')[-1] ))
 
 def getdatalist(proid, judgepath):
     '''
@@ -25,8 +39,8 @@ def getdatalist(proid, judgepath):
 
     '''
     datapath = Config.OJ_DATA_PATH + str(proid) + "/"
-    shutil.copytree(datapath, judgepath)
-
+    copyfiles(datapath, judgepath)
+    shutil.copy(Config.OJ_DATA_PATH+"run", judgepath)
     datalist = []
 
     filelist = os.listdir(judgepath)
@@ -40,11 +54,31 @@ def getdatalist(proid, judgepath):
                 tofind += '.'
             tofind = tofind[:-1]
 
-            if Config.DEBUG:
-                print tofind
+            #if Config.DEBUG:
+                #print tofind
 
             if tofind in filelist:
                 datalist.append(tofind[:-4])
     return datalist
 
-def 
+def compare(file1, file2):
+    '''
+    generate answer according to user's outfile and standard outfile
+    '''
+    file1 = open(file1, "r").read()
+    file2 = open(file2, "r").read()
+    if file1 == file2:
+        return Config.OJ_AC
+
+    cmp1 = ""
+    cmp2 = ""
+    for i in file1:
+        if i != ' ' and i != '\n' and i != '\t':
+            cmp1 += i
+    for i in file2:
+        if i != ' ' and i != '\n' and i != '\t':
+            cmp2 += i
+    if cmp1 == cmp2:
+        return Config.OJ_PE
+
+    return Config.OJ_WA

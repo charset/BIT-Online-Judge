@@ -7,7 +7,7 @@ configuration of online judge system
 copy from HUST
 I don't understand some of them, but i think it will all have some use...
 '''
-DEBUG = 1
+DEBUG = 0
 
 OJ_WT0 = 0
 OJ_WT1 = 1
@@ -39,11 +39,12 @@ LANGSET = {
     12 : "scm"
 }
 
-REQUEST_URL = ""
+REQUEST_URL = "http://127.0.0.1:5000"
 OJ_JUDGE_PATH = "home/"
 OJ_DATA_PATH = "data/"
 OJ_ERR_FILE = "error.txt"
 OJ_OUTPUT_FILE = "userout.txt"
+OJ_PATH_ROOT = "/home/reskip/Desktop/try"
 
 USER_JUDGE = 1001
 
@@ -53,3 +54,5 @@ OJ_COMPILE_MEM = 1024 * STD_MB # memory limit in compile /byte
 OJ_COMPILE_TIME = 10 # time limit in compile /s
 OJ_COMPILE_FSIZE = 32 * STD_MB # file size /byte
 OJ_FSIZE_LIMIT = 32 * 1024 #output file size /KB
+
+OJ_THREAD = 4
