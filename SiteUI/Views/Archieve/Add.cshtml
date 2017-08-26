@@ -1,0 +1,89 @@
+﻿@using BITOJ.SiteUI.Models
+@model AddProblemModel
+@{ 
+    ViewBag.Title = "BITOJ - Add problem";
+}
+
+<div class="jumbotron">
+    <h1>Add a problem to archieve</h1>
+    <p>
+        Fill the chart below to complete the information of the problem.
+    </p>
+</div>
+
+<div class="row">
+    <form role="form" method="post">
+        <div class="form-group col-lg-8 col-lg-offset-2">
+            <label class="control-label" for="Id">ProblemId</label>
+            <div class="input-group">
+                <span class="input-group-addon">BIT</span>
+                @Html.TextBoxFor(model => model.Id, new { @class = "form-control lm-width", placeholder = "Problem ID" })
+            </div>
+            @if (!string.IsNullOrEmpty(Model?.IdErrorMessage))
+            {
+                <div class="alert alert-danger">
+                    <p>@Model.IdErrorMessage</p>
+                </div>
+            }
+        </div>
+        <div class="form-group col-lg-8 col-lg-offset-2">
+            <label class="control-label" for="Title">Title</label>
+            @Html.TextBoxFor(model => model.Title, new { @class = "form-control", placeholder = "Title", style = "height: 42px; font-weight: 700; font-size: large;" })
+            @if (!string.IsNullOrEmpty(Model?.TitleErrorMessage))
+            {
+                <div class="alert alert-danger">
+                    <p>@Model.TitleErrorMessage</p>
+                </div>
+            }
+        </div>
+        <div class="form-group col-lg-8 col-lg-offset-2">
+            <label class="control-label" for="Description">Description</label>
+            @Html.TextAreaFor(model => model.Description, new { @class = "form-control", placeholder = "Description", rows = "6" })
+        </div>
+        <div class="form-group col-lg-8 col-lg-offset-2">
+            <label class="control-label" for="InputDescription">Input description</label>
+            @Html.TextAreaFor(model => model.InputDescription, new { @class = "form-control", placeholder = "Input description", rows = "6" })
+        </div>
+        <div class="form-group col-lg-8 col-lg-offset-2">
+            <label class="control-label" for="OutputDescription">Output description</label>
+            @Html.TextAreaFor(model => model.OutputDescription, new { @class = "form-control", placeholder = "Output description", rows = "6" })
+        </div>
+        <div class="form-group col-lg-4 col-lg-offset-2">
+            <label class="control-label" for="InputExample">Input example</label>
+            @Html.TextAreaFor(model => model.InputExample, new { @class = "form-control text-code", placeholder = "Input example", rows = "6" })
+        </div>
+        <div class="form-group col-lg-4">
+            <label class="control-label" for="OutputExample">Output example</label>
+            @Html.TextAreaFor(model => model.OutputExample, new { @class = "form-control text-code", placeholder = "Output example", rows = "6" })
+        </div>
+        <div class="form-group col-lg-8 col-lg-offset-2">
+            <label class="control-label" for="Hint">Hint</label>
+            @Html.TextAreaFor(model => model.Hint, new { @class = "form-control", placeholder = "Hint", rows = "6" })
+        </div>
+        <div class="form-group col-lg-8 col-lg-offset-2">
+            <label class="control-label" for="Source">Source</label>
+            @Html.TextBoxFor(model => model.Source, new { @class = "form-control", placeholder = "Source" })
+        </div>
+        <div class="form-group col-lg-8 col-lg-offset-2">
+            <label class="control-label" for="Author">Author</label>
+            @Html.TextBoxFor(model => model.Author, new { @class = "form-control", placeholder = "Author" })
+        </div>
+        <div class="form-group col-lg-8 col-lg-offset-2">
+            <label class="control-label" for="UserGroupName">User group</label>
+            @Html.DropDownListFor(model => model.UserGroupName, new SelectListItem[]
+            {
+                new SelectListItem() { Text = "Administrator", Value = "Administrator" },
+                new SelectListItem() { Text = "Insider", Value = "Insider" },
+                new SelectListItem() { Text = "Standard", Value = "Standard" },
+                new SelectListItem() { Text = "Guest", Value = "Guest" },
+            }, new { @class = "form-control lm-width" })
+        </div>
+
+        <div class="col-lg-8 col-lg-offset-2">
+            <button type="submit" class="btn btn-primary">
+                <span class="glyphicon glyphicon-plus"></span>
+                Add to archieve
+            </button>
+        </div>
+    </form>
+</div>

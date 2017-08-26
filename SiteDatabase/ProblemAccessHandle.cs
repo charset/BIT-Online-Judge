@@ -13,8 +13,8 @@
         private static readonly string ProblemDescriptionFileName = "description";
         private static readonly string ProblemInputDescriptionFileName = "input_description";
         private static readonly string ProblemOutputDescriptionFileName = "output_description";
-        private static readonly string ProblemInputSampleFileName = "input_sample";
-        private static readonly string ProblemOutputSampleFileName = "output_sample";
+        private static readonly string ProblemInputSampleFileName = "input_example";
+        private static readonly string ProblemOutputSampleFileName = "output_example";
         private static readonly string ProblemHintFileName = "hint";
 
         private static readonly Dictionary<ProblemParts, string> PartFileName;
@@ -27,14 +27,13 @@
                 { ProblemParts.Description, ProblemDescriptionFileName },
                 { ProblemParts.InputDescription, ProblemInputDescriptionFileName },
                 { ProblemParts.OutputDescription, ProblemOutputDescriptionFileName },
-                { ProblemParts.InputSample, ProblemInputSampleFileName },
-                { ProblemParts.OutputSample, ProblemOutputSampleFileName },
+                { ProblemParts.InputExample, ProblemInputSampleFileName },
+                { ProblemParts.OutputExample, ProblemOutputSampleFileName },
                 { ProblemParts.Hint, ProblemHintFileName },
             };
         }
 
         private ProblemEntity m_entity;
-        private string m_problemDirectory;
         private Dictionary<ProblemParts, string> m_parts;
         private bool m_disposed;
         private bool m_dirty;
@@ -47,7 +46,6 @@
         public ProblemAccessHandle(ProblemEntity entity)
         {
             m_entity = entity ?? throw new ArgumentNullException(nameof(entity));
-            m_problemDirectory = entity.ProblemDirectory;
             m_parts = new Dictionary<ProblemParts, string>();
             m_disposed = false;
             m_dirty = false;
@@ -95,6 +93,51 @@
                     throw new ObjectDisposedException(GetType().Name);
 
                 m_entity.Source = value;
+            }
+        }
+
+        /// <summary>
+        /// 获取或设置题目的 CPU 时间限制，以毫秒为单位。
+        /// </summary>
+        public int TimeLimit
+        {
+            get => m_disposed ? throw new ObjectDisposedException(GetType().Name) : m_entity.TimeLimit;
+            set
+            {
+                if (m_disposed)
+                    throw new ObjectDisposedException(GetType().Name);
+
+                m_entity.TimeLimit = value;
+            }
+        }
+
+        /// <summary>
+        /// 获取或设置题目的峰值内存大小限制，以 KB 为单位。
+        /// </summary>
+        public int MemoryLimit
+        {
+            get => m_disposed ? throw new ObjectDisposedException(GetType().Name) : m_entity.MemoryLimit;
+            set
+            {
+                if (m_disposed)
+                    throw new ObjectDisposedException(GetType().Name);
+
+                m_entity.TimeLimit = value;
+            }
+        }
+
+        /// <summary>
+        /// 获取或设置一个值，该值指示当前题目的判题过程是否需要用户提供的 Judge 程序。
+        /// </summary>
+        public bool IsSpecialJudge
+        {
+            get => m_disposed ? throw new ObjectDisposedException(GetType().Name) : m_entity.IsSpecialJudge;
+            set
+            {
+                if (m_disposed)
+                    throw new ObjectDisposedException(GetType().Name);
+
+                m_entity.IsSpecialJudge = value;
             }
         }
 
@@ -158,7 +201,7 @@
         /// <returns>给定部分的文件名。</returns>
         private string GetProblemPartFilename(ProblemParts part)
         {
-            return string.Concat(m_problemDirectory, "\\", PartFileName[part]);
+            return string.Concat(m_entity.ProblemDirectory, "\\", PartFileName[part]);
         }
 
         /// <summary>
@@ -221,7 +264,7 @@
             {
                 foreach (KeyValuePair<ProblemParts, string> item in m_parts)
                 {
-                    string filename = PartFileName[item.Key];
+                    string filename = GetProblemPartFilename(item.Key);
                     File.WriteAllText(filename, item.Value);
                 }
 

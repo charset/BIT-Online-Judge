@@ -13,16 +13,25 @@
         // GET: Login
         public ActionResult Index()
         {
+            string requestUrl = Request.QueryString["request"] ?? "/Home";
+            return Redirect($"~/Login/Login?request={requestUrl}");
+        }
+
+        // GET: Login/Login
+        public ActionResult Login()
+        {
             return View();
         }
 
         // GET: Login/Login
-        public ActionResult Login(string username, string password)
+        [HttpPost]
+        public ActionResult Login(FormCollection form)
         {
             // 尝试进行登录验证。
-            if (UserSession.Authorize(Session, username, password))
+            if (UserSession.Authorize(Session, form["username"], form["password"]))
             {
-                return Redirect("~/Home/Index");
+                string requestUrl = Request.QueryString["request"] ?? "~/Home";
+                return Redirect(requestUrl);
             }
             else
             {

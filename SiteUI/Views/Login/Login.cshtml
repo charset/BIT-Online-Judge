@@ -29,7 +29,12 @@
             <div class="hidden-md hidden-lg">
                 <h3>Sign in</h3>
             </div>
-            <form action="~/Login/Login">
+
+            @{ 
+                string requestUrl = Request.QueryString["request"] ?? "/Home";
+            }
+
+            <form action="@string.Format("/Login/Login?request={0}", requestUrl)" method="post">
                 <div class="form-group">
                     <div class="form-group">
                         <label class="sr-only" for="user">Username:</label>

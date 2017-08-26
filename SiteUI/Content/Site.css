@@ -16,11 +16,12 @@
     white-space: normal;
 }
 
-/* Set width on the form input elements since they're 100% wide by default */
-input,
-select,
-textarea {
+.lm-width {
     max-width: 280px;
+}
+
+.text-code {
+    font-family: Consolas, 'Courier New', monospace;
 }
 
 .ver-ac {

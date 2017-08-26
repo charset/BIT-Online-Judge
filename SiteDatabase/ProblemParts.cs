@@ -23,12 +23,12 @@
         /// <summary>
         /// 题目输入样例。
         /// </summary>
-        InputSample = 4,
+        InputExample = 4,
 
         /// <summary>
         /// 题目输出样例，
         /// </summary>
-        OutputSample = 5,
+        OutputExample = 5,
 
         /// <summary>
         /// 题目提示。

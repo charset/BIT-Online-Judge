@@ -11,6 +11,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiteCommon", "SiteCommon\Si
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiteUI", "SiteUI\SiteUI.csproj", "{46AAE232-46E1-40ED-A66E-CBC0A8377804}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B6F521B5-5438-4CD3-BD14-7C0615EE902E}"
+	ProjectSection(SolutionItems) = preProject
+		Verdict API.txt = Verdict API.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

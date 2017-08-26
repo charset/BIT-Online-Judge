@@ -104,14 +104,15 @@
             if (IsProblemExist(problemId))
                 throw new ProblemAlreadyExistException(new ProblemHandle(problemId));
 
-            ProblemEntity entity = new ProblemEntity()
-            {
-                Id = problemId,
-            };
-
             // 为题目创建文件系统目录。
             string directory = string.Concat(ms_archieveDirectory, "\\", problemId);
             Directory.CreateDirectory(directory);
+
+            ProblemEntity entity = new ProblemEntity()
+            {
+                Id = problemId,
+                ProblemDirectory = directory,
+            };
 
             // 将题目实体对象添加至底层数据库中。
             m_context.AddProblemEntity(entity);

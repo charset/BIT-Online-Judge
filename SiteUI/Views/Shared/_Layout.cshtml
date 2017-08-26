@@ -86,13 +86,11 @@
                                 <ul class="dropdown-menu">
                                     <li><a href="">Profile</a></li>
 
-                                    @{ 
-                                        if (UserAuthorization.CheckAccessRights(BITOJ.Core.UserGroup.Administrators,
-                                            UserSession.GetUserGroup(Session)))
-                                        {
-                                            // Show administration menu item.
-                                            <li><a href="~/Admin">Administration</a></li>
-                                        }
+                                    @if (UserAuthorization.CheckAccessRights(BITOJ.Core.UserGroup.Administrators,
+                                        UserSession.GetUserGroup(Session)))
+                                    {
+                                        // Show administration menu item.
+                                        <li><a href="~/Admin">Administration</a></li>
                                     }
                                     
                                     <li role="separator" class="divider"></li>
@@ -106,11 +104,14 @@
                         // Show register and sign-in button.
                         <ul class="nav navbar-nav navbar-right">
                             <li><a href="~/Login/Register"><span class="glyphicon glyphicon-user"></span> Register</a></li>
-                            <li><a href="~/Login"><span class="glyphicon glyphicon-log-in"></span> Sign in</a></li>
+                            <li>
+                                <a href="@string.Format("/Login/Login?request={0}", Request.Url.ToString())">
+                                    <span class="glyphicon glyphicon-log-in"></span> Sign in
+                                </a>
+                            </li>
                         </ul>
                     }
                 }
-
             </div>
         </div>
     </nav>

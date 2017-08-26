@@ -160,15 +160,15 @@
         /// </summary>
         /// <exception cref="ObjectDisposedException"/>
         /// <exception cref="InvalidOperationException"/>
-        public string InputSamples
+        public string InputExample
         {
             get => m_disposed
                 ? throw new ObjectDisposedException(GetType().Name)
-                : m_accessHandle.GetProblemPart(ProblemParts.InputSample);
+                : m_accessHandle.GetProblemPart(ProblemParts.InputExample);
             set
             {
                 CheckAccess();
-                m_accessHandle.SetProblemPart(ProblemParts.InputSample, value);
+                m_accessHandle.SetProblemPart(ProblemParts.InputExample, value);
             }
         }
 
@@ -177,15 +177,15 @@
         /// </summary>
         /// <exception cref="ObjectDisposedException"/>
         /// <exception cref="InvalidOperationException"/>
-        public string OutputSamples
+        public string OutputExample
         {
             get => m_disposed
                 ? throw new ObjectDisposedException(GetType().Name)
-                : m_accessHandle.GetProblemPart(ProblemParts.OutputSample);
+                : m_accessHandle.GetProblemPart(ProblemParts.OutputExample);
             set
             {
                 CheckAccess();
-                m_accessHandle.SetProblemPart(ProblemParts.OutputSample, value);
+                m_accessHandle.SetProblemPart(ProblemParts.OutputExample, value);
             }
         }
 
@@ -220,6 +220,51 @@
             {
                 CheckAccess();
                 m_accessHandle.SetProblemPart(ProblemParts.Hint, value);
+            }
+        }
+
+        /// <summary>
+        /// 获取或设置题目的 CPU 时间限制，以毫秒为单位。
+        /// </summary>
+        public int TimeLimit
+        {
+            get => m_disposed
+                ? throw new ObjectDisposedException(GetType().Name)
+                : m_accessHandle.TimeLimit;
+            set
+            {
+                CheckAccess();
+                m_accessHandle.TimeLimit = value;
+            }
+        }
+
+        /// <summary>
+        /// 获取或设置题目的峰值内存大小限制，以 KB 为单位。
+        /// </summary>
+        public int MemoryLimit
+        {
+            get => m_disposed
+                ? throw new ObjectDisposedException(GetType().Name)
+                : m_accessHandle.MemoryLimit;
+            set
+            {
+                CheckAccess();
+                m_accessHandle.MemoryLimit = value;
+            }
+        }
+
+        /// <summary>
+        /// 获取或设置一个值，该值指示当前题目的判题过程是否需要用户提供的 Judge 程序。
+        /// </summary>
+        public bool IsSpecialJudge
+        {
+            get => m_disposed
+                ? throw new ObjectDisposedException(GetType().Name)
+                : m_accessHandle.IsSpecialJudge;
+            set
+            {
+                CheckAccess();
+                m_accessHandle.IsSpecialJudge = value;
             }
         }
 

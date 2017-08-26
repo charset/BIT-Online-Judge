@@ -1,7 +1,7 @@
 ﻿namespace BITOJ.Core
 {
+    using BITOJ.Core.Resolvers;
     using BITOJ.Data.Entities;
-    using System;
 
     /// <summary>
     /// 封装一道题目的基本信息。
@@ -25,14 +25,20 @@
         }
 
         /// <summary>
+        /// 获取或设置当前题目句柄所引用的题目的来源 OJ。
+        /// </summary>
+        /// <returns></returns>
+        public OJSystem GetOrigin()
+        {
+            return ProblemOriginResolver.Resolve(this);
+        }
+
+        /// <summary>
         /// 获取一个值，该值指示当前题目句柄所引用的题目是否为 BITOJ 本地题目。
         /// </summary>
         public bool IsNativeProblem
         {
-            get
-            {
-                return ProblemId.StartsWith("BIT", StringComparison.CurrentCultureIgnoreCase);
-            }
+            get => GetOrigin() == OJSystem.BIT;
         }
 
         /// <summary>

@@ -35,6 +35,21 @@
         public OJSystem Origin { get; set; }
 
         /// <summary>
+        /// 获取或设置题目的时间限制，以毫秒为单位。
+        /// </summary>
+        public int TimeLimit { get; set; }
+
+        /// <summary>
+        /// 获取或设置题目的内存限制，以 KB 为单位。
+        /// </summary>
+        public int MemoryLimit { get; set; }
+
+        /// <summary>
+        /// 获取或设置一个值，该值指示当前题目的判题过程是否需要借助用户提供的 Judge 程序。
+        /// </summary>
+        public bool IsSpecialJudge { get; set; }
+
+        /// <summary>
         /// 获取或设置访问当前题目所需的最低用户权限。
         /// </summary>
         public UserGroup AuthorizationGroup { get; set; }
@@ -68,6 +83,10 @@
             Title = string.Empty;
             Author = string.Empty;
             Source = string.Empty;
+            Origin = OJSystem.BIT;
+            TimeLimit = 1000;
+            MemoryLimit = 64;
+            IsSpecialJudge = false;
             AuthorizationGroup = UserGroup.Guests;
             TotalSubmissions = 0;
             AcceptedSubmissions = 0;

@@ -1,0 +1,35 @@
+$OJ_GET_SUBMIT  //submit URL
+$OJ_RESPONSE    //response result
+
+$OJ_GET_SUBMIT
+    request
+    {
+        password
+    }
+
+    response
+    {
+        runid   //distinguish submit
+        proid
+        lang
+        mlimit  //KB
+        tlimit  //ms
+        spj     // 0 No / 1 Yes
+        code    //string
+    }
+
+$OJ_RESPONSE
+    request
+    {
+        runid
+        status
+        exetime
+        exemem
+        errinfo //string
+        password
+    }
+
+    response
+    {
+        status  //undecided
+    }

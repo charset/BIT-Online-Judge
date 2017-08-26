@@ -136,6 +136,7 @@ namespace BITOJ.Data
                 throw new ArgumentNullException(nameof(entity));
 
             Problems.Add(entity);
+            SaveChanges();
         }
 
         /// <summary>
@@ -208,11 +209,11 @@ namespace BITOJ.Data
         /// <summary>
         /// 获取或设置主题目库题目实体数据集。
         /// </summary>
-        public DbSet<ProblemEntity> Problems { get; set; }
+        public virtual DbSet<ProblemEntity> Problems { get; set; }
 
         /// <summary>
         /// 获取或设置题目类别实体数据集。
         /// </summary>
-        public DbSet<ProblemCategoryEntity> Categories { get; set; }
+        public virtual DbSet<ProblemCategoryEntity> Categories { get; set; }
     }
 }
