@@ -67,9 +67,15 @@
     <Compile Include="Data\ProblemNotExistException.cs" />
     <Compile Include="Data\Queries\ProblemArchieveQueryParameter.cs" />
     <Compile Include="Data\Queries\UserQueryParameter.cs" />
+    <Compile Include="Resolvers\BzojUrlResolver.cs" />
+    <Compile Include="Resolvers\CfUrlResolver.cs" />
+    <Compile Include="Resolvers\GymUrlResolver.cs" />
+    <Compile Include="Resolvers\HduUrlResolver.cs" />
     <Compile Include="Resolvers\IProblemUrlResolver.cs" />
+    <Compile Include="Resolvers\PojUrlResolver.cs" />
     <Compile Include="Resolvers\ProblemOriginResolver.cs" />
     <Compile Include="Resolvers\ProblemUrlResolverFactory.cs" />
+    <Compile Include="Resolvers\ZojUrlResolver.cs" />
     <Compile Include="SubmissionHandle.cs" />
     <Compile Include="SubmissionLanguage.cs" />
     <Compile Include="SubmissionVerdict.cs" />

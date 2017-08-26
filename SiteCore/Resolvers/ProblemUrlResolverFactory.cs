@@ -17,6 +17,7 @@
             ms_prototypes = new Dictionary<OJSystem, IProblemUrlResolver>()
             {
                 // 在这里添加原型对象。
+                { OJSystem.HDU, new HduUrlResolver() },
             };
         }
 
