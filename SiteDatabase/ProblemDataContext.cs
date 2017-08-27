@@ -191,6 +191,7 @@ namespace BITOJ.Data
                 throw new ArgumentNullException(nameof(entity));
 
             Problems.Remove(entity);
+            SaveChanges();
         }
 
         /// <summary>
@@ -204,6 +205,7 @@ namespace BITOJ.Data
                 throw new ArgumentNullException(nameof(entity));
 
             Categories.Remove(entity);
+            SaveChanges();
         }
 
         /// <summary>

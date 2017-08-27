@@ -160,9 +160,11 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\ProblemDetailModel.cs" />
+    <Compile Include="Models\ProblemDisplayModel.cs" />
     <Compile Include="Models\ArchieveCatalog.cs" />
     <Compile Include="Models\ArchieveModel.cs" />
-    <Compile Include="Models\ProblemInfoModel.cs" />
+    <Compile Include="Models\ProblemBriefModel.cs" />
+    <Compile Include="Models\SiteCatalog.cs" />
     <Compile Include="Models\UserProfileModel.cs" />
     <Compile Include="Models\UserQueryModel.cs" />
     <Compile Include="Models\UserRegisterModel.cs" />
@@ -177,6 +179,7 @@
     <Content Include="Content\Site.css" />
     <Content Include="Resources\BIT_Logo.jpg" />
     <Content Include="Resources\BIT_Logo_cut_trans.png" />
+    <Content Include="Resources\BIT_Logo_trans_padding.png" />
     <Content Include="Resources\BIT_Logo_trans.png" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -217,6 +220,9 @@
     <Content Include="Views\Archieve\Index.cshtml" />
     <Content Include="Views\Archieve\Add.cshtml" />
     <Content Include="Views\Archieve\ShowProblem.cshtml" />
+    <Content Include="Views\Shared\ProblemDetailEdit.cshtml" />
+    <Content Include="Views\Archieve\Modify.cshtml" />
+    <Content Include="Views\Error\ProblemNotExist.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

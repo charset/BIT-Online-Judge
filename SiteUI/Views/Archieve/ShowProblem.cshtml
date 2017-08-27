@@ -1,14 +1,14 @@
 ﻿@using BITOJ.SiteUI.Models
 @using BITOJ.Core
 @using BITOJ.Core.Authorization
-@model ProblemDetailModel
+@model ProblemDisplayModel
 @{ 
-    ViewBag.Title = string.Format("BITOJ - {0} - {1}", Model.Id, Model.Title);
+    ViewBag.Title = string.Format("BITOJ - {0} - {1}", Model.ProblemId, Model.Title);
 }
 
 <div class="jumbotron">
     <h1>
-        @string.Format("{0} - {1}", Model.Id, Model.Title)
+        @string.Format("{0} - {1}", Model.ProblemId, Model.Title)
         @if (!string.IsNullOrEmpty(Model.Author))
         {
             <small>by @Model.Author</small>
@@ -24,7 +24,7 @@
             </div>
             <div class="panel-body">
                 <p>OS kernel: Linux</p>
-                <p>@string.Format("Time limit: {0} millsec.", Model.TimeLimit)</p>
+                <p>@string.Format("Time limit: {0} millisec.", Model.TimeLimit)</p>
                 <p>@string.Format("Memory limit: {0} kilobytes", Model.MemoryLimit)</p>
                 @if (Model.IsSpecialJudge)
                 {
@@ -50,10 +50,12 @@
                 <span class="glyphicon glyphicon-stats"></span>
                 Problem statistics
             </a>
+        </div>
 
-            @if (UserAuthorization.CheckAccessRights(UserGroup.Administrators, UserSession.GetUserGroup(Session)))
-            {
-                <a href="javascript:void(0);" role="button" class="btn btn-warning">
+        @if (UserAuthorization.CheckAccessRights(UserGroup.Administrators, UserSession.GetUserGroup(Session)))
+        {
+            <div class="btn-group-vertical" style="display: block; margin-top: 10px;">
+                <a href="@string.Format("/Archieve/Modify?id={0}", Model.ProblemId)" role="button" class="btn btn-warning">
                     <span class="glyphicon glyphicon-pencil"></span>
                     Edit problem
                 </a>
@@ -61,8 +63,36 @@
                     <span class="glyphicon glyphicon-flash"></span>
                     Edit exeuction environment
                 </a>
-            }
-        </div>
+                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteDialog">
+                    <span class="glyphicon glyphicon-remove"></span>
+                    Delete this problem
+                </button>
+            </div>
+            <div id="deleteDialog" class="modal fade" tabindex="1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 class="modal-title">Sensitive operation: Delete problems from archieve</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>Are you sure you want to delete the following problem?</p>
+                            <ul>
+                                <li><strong>@Model.ProblemId</strong>: @Model.Title</li>
+                            </ul>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                            <a role="button" class="btn btn-danger" href="@string.Format("/Archieve/Delete?id={0}", Model.ProblemId)">
+                                Yes, delete it
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
     </div>
 
     <div class="col-lg-9">

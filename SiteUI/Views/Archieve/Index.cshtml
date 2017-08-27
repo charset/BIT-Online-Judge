@@ -165,7 +165,7 @@
                     @{
                         if (Model != null)
                         {
-                            foreach (ProblemInfoModel info in Model.Problems)
+                            foreach (ProblemBriefModel info in Model.Problems)
                             {
                                 if (UserAuthorization.CheckAccessRights(info.AuthorizationGroup,
                                     UserSession.GetUserGroup(Session)))
@@ -208,9 +208,10 @@
                                                 @if (UserAuthorization.CheckAccessRights(UserGroup.Administrators,
                                                     UserSession.GetUserGroup(Session)))
                                                 {
-                                                    <a type="button" href="javascript:void(0);" class="btn btn-warning btn-sm"
-                                                       data-toggle="tooltip" data-placement="top" data-container="body"
-                                                       title="Edit">
+                                                    <a type="button" 
+                                                       href="@string.Format("/Archieve/Modify?id={0}", info.ProblemId)" 
+                                                       class="btn btn-warning btn-sm" data-toggle="tooltip" 
+                                                       data-placement="top" data-container="body" title="Edit">
                                                         <span class="glyphicon glyphicon-pencil"></span>
                                                     </a>
                                                 }

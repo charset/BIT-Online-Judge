@@ -1,50 +1,47 @@
 ﻿namespace BITOJ.SiteUI.Models
 {
+    using BITOJ.Core;
     using BITOJ.Core.Convert;
     using BITOJ.Core.Data;
     using System;
-    using System.ComponentModel.DataAnnotations;
 
     /// <summary>
-    /// 为题目的详细信息提供数据模型。
+    /// 为题目显示提供数据模型。
     /// </summary>
-    public class ProblemDetailModel
+    public class ProblemDisplayModel
     {
         /// <summary>
         /// 获取或设置题目 ID。
         /// </summary>
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Problem ID is required.")]
-        [MaxLength(32, ErrorMessage = "Problem ID should be no longer than 32 characters.")]
         public string ProblemId { get; set; }
 
         /// <summary>
         /// 获取或设置题目标题。
         /// </summary>
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Problem title is required.")]
         public string Title { get; set; }
 
         /// <summary>
-        /// 获取或设置题目叙述。
+        /// 获取或设置题目描述。
         /// </summary>
         public string Description { get; set; }
 
         /// <summary>
-        /// 获取或设置题目输入描述。
+        /// 获取或设置输入描述。
         /// </summary>
         public string InputDescription { get; set; }
 
         /// <summary>
-        /// 获取或设置题目输出描述。
+        /// 获取或设置输出描述。
         /// </summary>
         public string OutputDescription { get; set; }
 
         /// <summary>
-        /// 获取或设置题目输入样例。
+        /// 获取或设置输入样例。
         /// </summary>
         public string InputExample { get; set; }
 
         /// <summary>
-        /// 获取或设置题目输出样例。
+        /// 获取或设置输出样例。
         /// </summary>
         public string OutputExample { get; set; }
 
@@ -64,14 +61,29 @@
         public string Author { get; set; }
 
         /// <summary>
-        /// 获取或设置用户权限集名称。
+        /// 获取或设置题目的时间限制，以毫秒为单位。
+        /// </summary>
+        public int TimeLimit { get; set; }
+
+        /// <summary>
+        /// 获取或设置题目的内存限制，以 KB 为单位。
+        /// </summary>
+        public int MemoryLimit { get; set; }
+
+        /// <summary>
+        /// 获取或设置一个值，该值指示当前题目的判题过程是否需要用户提供的 Judge 程序。
+        /// </summary>
+        public bool IsSpecialJudge { get; set; }
+
+        /// <summary>
+        /// 获取或设置访问题目所需的最低权限。
         /// </summary>
         public string UserGroupName { get; set; }
 
         /// <summary>
-        /// 创建 ProblemDetailModel 类的新实例。
+        /// 创建 AddProblemModel 类的新实例。
         /// </summary>
-        public ProblemDetailModel()
+        public ProblemDisplayModel()
         {
             ProblemId = string.Empty;
             Title = string.Empty;
@@ -83,12 +95,16 @@
             Hint = string.Empty;
             Source = string.Empty;
             Author = string.Empty;
+            TimeLimit = 1000;
+            MemoryLimit = 64;
+            IsSpecialJudge = false;
+            UserGroupName = UsergroupConvert.ConvertToString(UserGroup.Guests);
         }
 
         /// <summary>
-        /// 将当前数据模型中的所有 null 字符串替换为空字符串。
+        /// 将当前数据模型中所有的 null 字符串替换为空字符串。
         /// </summary>
-        public void ResetNullStrings()
+        public void ReplaceNullStringsToEmptyStrings()
         {
             if (Description == null)
             {
@@ -110,10 +126,6 @@
             {
                 OutputExample = string.Empty;
             }
-            if (Hint == null)
-            {
-                Hint = string.Empty;
-            }
             if (Source == null)
             {
                 Source = string.Empty;
@@ -122,13 +134,16 @@
             {
                 Author = string.Empty;
             }
+            if (Hint == null)
+            {
+                Hint = string.Empty;
+            }
         }
 
         /// <summary>
-        /// 从给定的题目数据提供器加载题目数据到当前的数据模型中。
+        /// 从给定的题目数据提供器加载当前数据模型对象。
         /// </summary>
         /// <param name="data">题目数据提供器。</param>
-        /// <exception cref="ArgumentNullException"/>
         public void LoadFromProblemDataProvider(ProblemDataProvider data)
         {
             if (data == null)
@@ -144,14 +159,17 @@
             Hint = data.Hint;
             Source = data.Source;
             Author = data.Author;
-            UserGroupName = UsergroupConvert.ConvertToString(data.AuthorizationGroup);
+            TimeLimit = data.TimeLimit;
+            MemoryLimit = data.MemoryLimit;
+            IsSpecialJudge = data.IsSpecialJudge;
         }
 
         /// <summary>
-        /// 将当前数据模型对象中的额数据写入给定的题目数据提供器中。
+        /// 将当前数据模型对象中的数据存入给定的题目数据提供器。
         /// </summary>
-        /// <param name="data">要写入的题目数据提供器。</param>
+        /// <param name="data">要存入的题目数据提供器。</param>
         /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="InvalidOperationException"/>
         public void SaveToProblemDataProvider(ProblemDataProvider data)
         {
             if (data == null)
@@ -166,7 +184,9 @@
             data.Hint = Hint;
             data.Source = Source;
             data.Author = Author;
-            data.AuthorizationGroup = UsergroupConvert.ConvertFromString(UserGroupName);
+            data.TimeLimit = TimeLimit;
+            data.MemoryLimit = MemoryLimit;
+            data.IsSpecialJudge = IsSpecialJudge;
         }
     }
 }

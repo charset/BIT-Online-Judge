@@ -13,5 +13,11 @@ namespace BITOJ.SiteUI.Controllers
         {
             return View();
         }
+
+        // GET: Error/ProblemNotExist
+        public ActionResult ProblemNotExist()
+        {
+            return View();
+        }
     }
 }

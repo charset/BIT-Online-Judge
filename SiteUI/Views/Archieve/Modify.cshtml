@@ -1,16 +1,15 @@
-﻿@using BITOJ.SiteUI.Models
+﻿@using BITOJ.Core
+@using BITOJ.SiteUI.Models
 @model ProblemDetailModel
 @{ 
-    ViewBag.Title = "BITOJ - Add problem";
-    ViewData.Add("ProblemDetailEdit_AllowProblemId", true);
+    ViewBag.Title = "BITOJ - Modify problem";
+    ViewData.Add("ProblemDetailEdit_AllowProblemId", false);
+    ViewData.Add("ProblemDetailEdit_Action", "/Archieve/Modify");
     ViewData.Add("AccessGroup", UserGroup.Administrators);
 }
 
 <div class="jumbotron">
-    <h1>Add a problem to archieve</h1>
-    <p>
-        Fill the chart below to complete the information of the problem.
-    </p>
+    <h1>Modify problem @Model.ProblemId</h1>
 </div>
 
 <div class="row">

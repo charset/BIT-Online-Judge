@@ -206,6 +206,9 @@
             ProblemEntity entity = DataContext.GetProblemEntityById(problemId);
             if (entity != null)
             {
+                // 删除本地文件系统文件。
+                Directory.Delete(entity.ProblemDirectory, true);
+                // 从数据库中移除。
                 DataContext.RemoveProblemEntity(entity);
             }
         }

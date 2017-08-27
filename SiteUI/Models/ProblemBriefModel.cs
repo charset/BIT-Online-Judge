@@ -8,7 +8,7 @@
     /// <summary>
     /// 提供题目概要数据模型。
     /// </summary>
-    public class ProblemInfoModel
+    public class ProblemBriefModel
     {
         /// <summary>
         /// 获取或设置题目 ID。
@@ -43,7 +43,7 @@
         /// <summary>
         /// 创建 ProblemInfoModel 类的新实例。
         /// </summary>
-        public ProblemInfoModel()
+        public ProblemBriefModel()
         {
             ProblemId = string.Empty;
             Title = string.Empty;
@@ -59,14 +59,14 @@
         /// <param name="handle">题目句柄。</param>
         /// <returns>从给定的题目句柄创建的 ProblemInfoModel 对象。</returns>
         /// <exception cref="ArgumentNullException"/>
-        public static ProblemInfoModel FromProblemHandle(ProblemHandle handle)
+        public static ProblemBriefModel FromProblemHandle(ProblemHandle handle)
         {
             if (handle == null)
                 throw new ArgumentNullException(nameof(handle));
             
             using (ProblemDataProvider data = ProblemDataProvider.Create(handle, true))
             {
-                return new ProblemInfoModel()
+                return new ProblemBriefModel()
                 {
                     ProblemId = handle.ProblemId,
                     Title = data.Title,

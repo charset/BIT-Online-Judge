@@ -50,7 +50,7 @@
             ICollection<ProblemHandle> result = ProblemArchieveManager.Default.QueryProblems(query);
             foreach (ProblemHandle handle in result)
             {
-                model.Problems.Add(ProblemInfoModel.FromProblemHandle(handle));
+                model.Problems.Add(ProblemBriefModel.FromProblemHandle(handle));
             }
 
             model.Pages = result.Count / ItemsPerPage + Math.Sign(result.Count % ItemsPerPage);
@@ -76,7 +76,7 @@
                 return Redirect("~/Error/AccessDenied");
             }
 
-            return View(new ProblemDetailModel());
+            return View(new ProblemDisplayModel());
         }
 
         // POST: Archieve/Add
@@ -108,9 +108,7 @@
                 return View(model);
             }
 
-            model.ReplaceNullStringsToEmptyStrings();
-
-            string problemId = "BIT" + model.Id;
+            string problemId = "BIT" + model.ProblemId;
             if (ProblemArchieveManager.Default.IsProblemExist(problemId))
             {
                 ViewBag.IdErrorMessage = "Problem with the same ID already exist in the archieve.";
@@ -121,18 +119,96 @@
             ProblemHandle handle = ProblemArchieveManager.Default.CreateProblem(problemId);
             using (ProblemDataProvider data = ProblemDataProvider.Create(handle, false))
             {
-                data.Title = model.Title;
-                data.Description = model.Description;
-                data.InputDescription = model.InputDescription;
-                data.OutputDescription = model.OutputDescription;
-                data.InputExample = model.InputExample;
-                data.OutputExample = model.OutputExample;
-                data.Source = model.Source;
-                data.Author = model.Author;
-                data.Hints = model.Hint;
-                data.AuthorizationGroup = UsergroupConvert.ConvertFromString(model.UserGroupName);
+                model.SaveToProblemDataProvider(data);
             }
 
+            return Redirect("~/Archieve");
+        }
+
+        // GET: Archieve/Modify
+        public ActionResult Modify()
+        {
+            if (!UserAuthorization.CheckAccessRights(UserGroup.Administrators, UserSession.GetUserGroup(Session)))
+            {
+                return Redirect("~/Error/AcceesDenied");
+            }
+            if (string.IsNullOrEmpty(Request.QueryString["id"]))
+            {
+                // 缺少题目 ID。
+                return Redirect("~/Error/ProblemNotExist");
+            };
+
+            ProblemDetailModel model = new ProblemDetailModel();
+
+            // 查询题目信息。
+            ProblemHandle handle = ProblemArchieveManager.Default.GetProblemById(Request.QueryString["id"]);
+            if (handle == null)
+            {
+                // 题目不存在于数据库中。
+                return Redirect("~/Error/ProblemNotExist");
+            }
+
+            using (ProblemDataProvider data = ProblemDataProvider.Create(handle, true))
+            {
+                model.LoadFromProblemDataProvider(data);
+            }
+
+            return View(model);
+        }
+
+        // POST: Archieve/Modify
+        [HttpPost]
+        public ActionResult Modify(ProblemDetailModel model)
+        {
+            if (!UserAuthorization.CheckAccessRights(UserGroup.Administrators, UserSession.GetUserGroup(Session)))
+            {
+                return Redirect("~/Error/AccessDenied");
+            }
+
+            // 验证模型。
+            bool hasError = false;
+            TryValidateModel(model);
+            if (ModelState["Title"] != null && ModelState["Title"].Errors.Count > 0)
+            {
+                hasError = true;
+                ViewBag.TitleErrorMessage = ModelState["Title"].Errors[0].ErrorMessage;
+            }
+
+            if (hasError)
+            {
+                return View(model);
+            }
+
+            // 查询题目实体。
+            ProblemHandle handle = ProblemArchieveManager.Default.GetProblemById(model.ProblemId);
+            if (handle == null)
+            {
+                return Redirect("~/Error/ProblemNotExist");
+            }
+            
+            // 写入修改后的数据。
+            model.ResetNullStrings();
+            using (ProblemDataProvider data = ProblemDataProvider.Create(handle, false))
+            {
+                model.SaveToProblemDataProvider(data);
+            }
+
+            return Redirect("~/Archieve");
+        }
+
+        // GET: Archieve/Delete
+        public ActionResult Delete()
+        {
+            if (!UserAuthorization.CheckAccessRights(UserGroup.Administrators, UserSession.GetUserGroup(Session)))
+            {
+                return Redirect("~/Error/AccessDenied");
+            }
+            if (Request.QueryString["id"] == null)
+            {
+                return Redirect("~/Error/ProblemNotExist");
+            }
+
+            ProblemArchieveManager.Default.RemoveProblem(Request.QueryString["id"]);
             return Redirect("~/Archieve");
         }
 
@@ -155,22 +231,10 @@
                     return Redirect("~/Error/ProblemNotExist");
                 }
 
-                ProblemDetailModel model = new ProblemDetailModel();
+                ProblemDisplayModel model = new ProblemDisplayModel();
                 using (ProblemDataProvider data = ProblemDataProvider.Create(handle, true))
                 {
-                    model.Id = handle.ProblemId;
-                    model.Title = data.Title;
-                    model.Description = data.Description;
-                    model.InputDescription = data.InputDescription;
-                    model.OutputDescription = data.OutputDescription;
-                    model.InputExample = data.InputExample;
-                    model.OutputExample = data.OutputExample;
-                    model.Hint = data.Hints;
-                    model.Source = data.Source;
-                    model.Author = data.Author;
-                    model.TimeLimit = data.TimeLimit;
-                    model.MemoryLimit = data.MemoryLimit;
-                    model.IsSpecialJudge = data.IsSpecialJudge;
+                    model.LoadFromProblemDataProvider(data);
                 }
 
                 return View(model);

@@ -10,7 +10,7 @@
         /// <summary>
         /// 获取或设置当前 Archieve 视图中应当呈现的题目。
         /// </summary>
-        public ICollection<ProblemInfoModel> Problems { get; set; }
+        public ICollection<ProblemBriefModel> Problems { get; set; }
 
         /// <summary>
         /// 获取或设置题目库总页数。
@@ -32,7 +32,7 @@
         /// </summary>
         public ArchieveModel()
         {
-            Problems = new List<ProblemInfoModel>();
+            Problems = new List<ProblemBriefModel>();
             Pages = 0;
             CurrentPage = 0;
             Catalog = ArchieveCatalog.Local;

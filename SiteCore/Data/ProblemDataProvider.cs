@@ -78,6 +78,16 @@
         }
 
         /// <summary>
+        /// 获取题目 ID。
+        /// </summary>
+        public string ProblemId
+        {
+            get => m_disposed
+                ? throw new ObjectDisposedException(GetType().Name)
+                : m_entity.Id;
+        }
+
+        /// <summary>
         /// 获取或设置题目的标题。
         /// </summary>
         /// <exception cref="ObjectDisposedException"/>
@@ -219,7 +229,7 @@
         /// </summary>
         /// <exception cref="ObjectDisposedException"/>
         /// <exception cref="InvalidOperationException"/>
-        public string Hints
+        public string Hint
         {
             get => m_disposed
                 ? throw new ObjectDisposedException(GetType().Name)

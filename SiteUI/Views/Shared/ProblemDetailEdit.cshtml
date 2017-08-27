@@ -1,0 +1,128 @@
+﻿@using BITOJ.SiteUI.Models
+@model ProblemDetailModel
+
+<form role="form" method="post">
+    <div class="row">
+        <div class="form-group col-lg-12">
+            <label class="control-label" for="Id">Problem ID</label>
+            @if (ViewData["ProblemDetailEdit_AllowProblemId"] as bool? ?? false)
+            {
+                <div class="input-group">
+                    <span class="input-group-addon">BIT</span>
+                    @Html.TextBoxFor(model => model.ProblemId, new { @class = "form-control lm-width", placeholder = "Problem ID" })
+                </div>
+            }
+            else
+            {
+                @Html.TextBoxFor(model => model.ProblemId, new { @class = "form-control lm-width", placeholder = "Problem ID", @readonly = "readonly" })
+            }
+
+            @if (!string.IsNullOrEmpty(ViewBag.ProblemIdErrorMessage))
+            {
+                <div class="alert alert-danger">
+                    <p>@ViewBag.IdErrorMessage</p>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="form-group">
+                <label class="control-label" for="Title">Title</label>
+                @Html.TextBoxFor(model => model.Title, new { @class = "form-control", placeholder = "Title", style = "height: 42px; font-weight: 700; font-size: large;" })
+                @if (!string.IsNullOrEmpty(ViewBag.TitleErrorMessage))
+                {
+                    <div class="alert alert-danger">
+                        <p>@ViewBag.TitleErrorMessage</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="form-group">
+                <label class="control-label" for="Description">Description</label>
+                @Html.TextAreaFor(model => model.Description, new { @class = "form-control", placeholder = "Description", rows = "6" })
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="form-group">
+                <label class="control-label" for="InputDescription">Input description</label>
+                @Html.TextAreaFor(model => model.InputDescription, new { @class = "form-control", placeholder = "Input description", rows = "6" })
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="form-group">
+                <label class="control-label" for="OutputDescription">Output description</label>
+                @Html.TextAreaFor(model => model.OutputDescription, new { @class = "form-control", placeholder = "Output description", rows = "6" })
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="form-group">
+                <label class="control-label" for="InputExample">Input example</label>
+                @Html.TextAreaFor(model => model.InputExample, new { @class = "form-control text-code", placeholder = "Input example", rows = "6" })
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="form-group">
+                <label class="control-label" for="OutputExample">Output example</label>
+                @Html.TextAreaFor(model => model.OutputExample, new { @class = "form-control text-code", placeholder = "Output example", rows = "6" })
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="form-group">
+                <label class="control-label" for="Hint">Hint</label>
+                @Html.TextAreaFor(model => model.Hint, new { @class = "form-control", placeholder = "Hint", rows = "6" })
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="form-group">
+                <label class="control-label" for="Source">Source</label>
+                @Html.TextBoxFor(model => model.Source, new { @class = "form-control", placeholder = "Source" })
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="form-group">
+                <label class="control-label" for="Author">Author</label>
+                @Html.TextBoxFor(model => model.Author, new { @class = "form-control", placeholder = "Author" })
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="form-group">
+                <label class="control-label" for="UserGroupName">User group</label>
+                @Html.DropDownListFor(model => model.UserGroupName, new SelectListItem[]
+                {
+                    new SelectListItem() { Text = "Administrator", Value = "Administrator" },
+                    new SelectListItem() { Text = "Insider", Value = "Insider" },
+                    new SelectListItem() { Text = "Standard", Value = "Standard" },
+                    new SelectListItem() { Text = "Guest", Value = "Guest" },
+                }, new { @class = "form-control lm-width" })
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-4 col-lg-offset-8">
+            <button type="submit" class="btn btn-primary btn-block">
+                <span class="glyphicon glyphicon-ok"></span>
+                Confirm
+            </button>
+        </div>
+    </div>
+</form>

@@ -2,6 +2,8 @@
 @using BITOJ.Core.Authorization;
 
 @{ 
+    UserSession.RenewSession(Session);
+
     // Check user access.
     if (ViewData.ContainsKey("AccessGroup"))
     {
@@ -53,14 +55,14 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="~/Home/Index">
-                    <img src="~/Resources/BIT_Logo_trans.png" width="25"/>
+                <a class="navbar-brand" href="~/Home/Index" style="padding:8px;">
+                    <img src="~/Resources/BIT_Logo_trans_padding.png" style="width:34px; height:34px;"/>
                     <span>BITOJ</span>
                 </a>
             </div>
             <div class="navbar-collapse collapse" id="navdivResponsive">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Instruction", "Instruction", "Home", new { }, new { @class = "active" })</li>
+                    <li>@Html.ActionLink("Instruction", "Instruction", "Home")</li>
                     <li>@Html.ActionLink("Archieve", "Index", "Archieve")</li>
                     <li>@Html.ActionLink("Contests", "Index", "Contest")</li>
                     <li>@Html.ActionLink("Status", "Index", "Status")</li>
@@ -82,7 +84,7 @@
                             <li class="dropdown">
                                 <a role="button" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
                                    aria-expanded="false">
-                                    Lancern <span class="caret"></span>
+                                    @UserSession.GetUsername(Session) <span class="caret"></span>
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li><a href="">Profile</a></li>
