@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="Authorization\UserAuthorization.cs" />
     <Compile Include="Authorization\UserSession.cs" />
+    <Compile Include="Convert\OJSystemConvert.cs" />
     <Compile Include="Convert\SexConvert.cs" />
     <Compile Include="Convert\UsergroupConvert.cs" />
     <Compile Include="Data\UserDataProvider.cs" />

@@ -16,9 +16,18 @@
         private const int ItemsPerPage = 50;
 
         // GET: Archieve
-        public ActionResult Index(int page = 1)
+        public ActionResult Index()
         {
-            // 在数据库中查询所有题目来源为 BITOJ 的题目。
+            int page = 1;
+            if (!string.IsNullOrEmpty(Request.QueryString["page"]))
+            {
+                if (!int.TryParse(Request.QueryString["page"], out page))
+                {
+                    page = 1;
+                }
+            }
+
+            // 在数据库中查询符合查询条件的题目。
             ArchieveModel model = new ArchieveModel()
             {
                 Catalog = ArchieveCatalog.Local,
@@ -27,8 +36,14 @@
 
             ProblemArchieveQueryParameter query = new ProblemArchieveQueryParameter()
             {
+                QueryByTitle = !string.IsNullOrEmpty(Request.QueryString["title"]),
+                Title = Request.QueryString["title"],
+                QueryBySource = !string.IsNullOrEmpty(Request.QueryString["source"]),
+                Source = Request.QueryString["source"],
+                QueryByAuthor = !string.IsNullOrEmpty(Request.QueryString["author"]),
+                Author = Request.QueryString["author"],
                 QueryByOrigin = true,
-                Origin = OJSystem.BIT,
+                Origin = OJSystemConvert.ConvertFromString(Request.QueryString["origin"] ?? "BIT"),
                 Page = new PagedQueryParameters(page, ItemsPerPage),
             };
 
@@ -40,6 +55,16 @@
 
             model.Pages = result.Count / ItemsPerPage + Math.Sign(result.Count % ItemsPerPage);
             return View(model);
+        }
+
+        // POST: Archieve
+        [HttpPost]
+        public ActionResult Index(FormCollection form)
+        {
+            string url = string.Format("/Archieve?title={0}&source={1}&author={2}&category={3}&origin={4}",
+                form["title"] ?? string.Empty, form["source"] ?? string.Empty, form["author"] ?? string.Empty,
+                form["category"] ?? string.Empty, form["origin"] ?? "BIT");
+            return Redirect(url);
         }
 
         // GET: Archieve/Add

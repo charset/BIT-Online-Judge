@@ -52,6 +52,7 @@
     <Compile Include="Collections\MappedCollection.cs" />
     <Compile Include="Collections\PriorityQueue.cs" />
     <Compile Include="Collections\PriorityQueueComparer.cs" />
+    <Compile Include="Collections\StringDictionary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

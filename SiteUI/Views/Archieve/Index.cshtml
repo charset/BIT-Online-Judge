@@ -68,35 +68,40 @@
             </div>
             <div class="panel-collapse collase in" id="queryForm" aria-labelledby="queryHeading">
                 <div class="panel-body">
-                    <form role="search" action="~/Archieve/Query">
+                    <form role="search" action="~/Archieve" method="post">
                         <div class="form-group">
-                            <label class="control-label" for="Title">Title</label>
-                            <input type="text" class="form-control" id="Title" name="Title" />
+                            <label class="control-label" for="title">Title</label>
+                            <input type="text" class="form-control" id="title" name="title"
+                                   value="@Request.QueryString["title"]"/>
                         </div>
                         <div class="form-group">
-                            <label class="control-label" for="Source">Source</label>
-                            <input type="text" class="form-control" id="Source" name="Source" />
+                            <label class="control-label" for="source">Source</label>
+                            <input type="text" class="form-control" id="source" name="source" 
+                                   value="@Request.QueryString["source"]"/>
                         </div>
                         <div class="form-group">
-                            <label class="control-label" for="Author">Author</label>
-                            <input type="text" class="form-control" id="Author" name="Author" />
+                            <label class="control-label" for="author">Author</label>
+                            <input type="text" class="form-control" id="author" name="author" 
+                                   value="@Request.QueryString["author"]"/>
                         </div>
                         <div class="form-group">
-                            <label class="control-label" for="Tag">Tag</label>
-                            <input type="text" class="form-control" id="Tag" name="Tag" />
+                            <label class="control-label" for="category">Category</label>
+                            <input type="text" class="form-control" id="category" name="category" 
+                                   value="@Request.QueryString["category"]"/>
                         </div>
+
                         <div class="form-group">
-                            <label class="control-label" for="Origin">Origin</label>
-                            <select class="form-control" id="Origin" name="Origin">
-                                <option>BIT</option>
-                                <option>BZOJ</option>
-                                <option>CodeForces</option>
-                                <option>CodeForces Gym</option>
-                                <option>HDU</option>
-                                <option>POJ</option>
-                                <option>UVa</option>
-                                <option>UVa Live Archive</option>
-                                <option>ZOJ</option>
+                            <label class="control-label" for="origin">Origin</label>
+                            <select class="form-control" id="origin" name="origin">
+                                <option value="BIT">BIT</option>
+                                <option value="BZOJ">BZOJ</option>
+                                <option value="CF">CodeForces</option>
+                                <option value="GYM">CodeForces Gym</option>
+                                <option value="HDU">HDU</option>
+                                <option value="POJ">POJ</option>
+                                <option value="UVa">UVa</option>
+                                <option value="LA">UVa Live Archive</option>
+                                <option value="ZOJ">ZOJ</option>
                             </select>
                         </div>
 
