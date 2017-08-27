@@ -7,7 +7,7 @@
     /// <summary>
     /// 为添加题目页面提供数据模型。
     /// </summary>
-    public class AddProblemModel
+    public class ProblemDetailModel
     {
         /// <summary>
         /// 获取或设置题目 ID。
@@ -63,25 +63,30 @@
         public string Author { get; set; }
 
         /// <summary>
+        /// 获取或设置题目的时间限制，以毫秒为单位。
+        /// </summary>
+        public int TimeLimit { get; set; }
+
+        /// <summary>
+        /// 获取或设置题目的内存限制，以 KB 为单位。
+        /// </summary>
+        public int MemoryLimit { get; set; }
+
+        /// <summary>
+        /// 获取或设置一个值，该值指示当前题目的判题过程是否需要用户提供的 Judge 程序。
+        /// </summary>
+        public bool IsSpecialJudge { get; set; }
+
+        /// <summary>
         /// 获取或设置访问题目所需的最低权限。
         /// </summary>
         [Required(AllowEmptyStrings = false, ErrorMessage = "UserGroup is required.")]
         public string UserGroupName { get; set; }
 
         /// <summary>
-        /// 获取或设置关联到 ID 域的错误消息。
-        /// </summary>
-        public string IdErrorMessage { get; set; }
-
-        /// <summary>
-        /// 获取或设置关联到 Title 域的错误消息。
-        /// </summary>
-        public string TitleErrorMessage { get; set; }
-
-        /// <summary>
         /// 创建 AddProblemModel 类的新实例。
         /// </summary>
-        public AddProblemModel()
+        public ProblemDetailModel()
         {
             Id = string.Empty;
             Title = string.Empty;
@@ -93,18 +98,10 @@
             Hint = string.Empty;
             Source = string.Empty;
             Author = string.Empty;
+            TimeLimit = 1000;
+            MemoryLimit = 64;
+            IsSpecialJudge = false;
             UserGroupName = UsergroupConvert.ConvertToString(UserGroup.Guests);
-            IdErrorMessage = string.Empty;
-            TitleErrorMessage = string.Empty;
-        }
-
-        /// <summary>
-        /// 重置当前数据模型上的错误消息。
-        /// </summary>
-        public void ResetErrorMessages()
-        {
-            IdErrorMessage = string.Empty;
-            TitleErrorMessage = string.Empty;
         }
 
         /// <summary>

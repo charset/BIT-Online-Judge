@@ -1,5 +1,5 @@
 ﻿@using BITOJ.SiteUI.Models
-@model AddProblemModel
+@model ProblemDetailModel
 @{ 
     ViewBag.Title = "BITOJ - Add problem";
 }
@@ -19,20 +19,20 @@
                 <span class="input-group-addon">BIT</span>
                 @Html.TextBoxFor(model => model.Id, new { @class = "form-control lm-width", placeholder = "Problem ID" })
             </div>
-            @if (!string.IsNullOrEmpty(Model?.IdErrorMessage))
+            @if (!string.IsNullOrEmpty(ViewBag.IdErrorMessage))
             {
                 <div class="alert alert-danger">
-                    <p>@Model.IdErrorMessage</p>
+                    <p>@ViewBag.IdErrorMessage</p>
                 </div>
             }
         </div>
         <div class="form-group col-lg-8 col-lg-offset-2">
             <label class="control-label" for="Title">Title</label>
             @Html.TextBoxFor(model => model.Title, new { @class = "form-control", placeholder = "Title", style = "height: 42px; font-weight: 700; font-size: large;" })
-            @if (!string.IsNullOrEmpty(Model?.TitleErrorMessage))
+            @if (!string.IsNullOrEmpty(ViewBag.TitleErrorMessage))
             {
                 <div class="alert alert-danger">
-                    <p>@Model.TitleErrorMessage</p>
+                    <p>@ViewBag.TitleErrorMessage</p>
                 </div>
             }
         </div>

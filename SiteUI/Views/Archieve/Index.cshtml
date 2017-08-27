@@ -16,7 +16,7 @@
         @if (UserSession.IsAuthorized(Session) &&
             UserAuthorization.CheckAccessRights(UserGroup.Administrators, UserSession.GetUserGroup(Session)))
         {
-            <div class="hidden-xs hidden-sm btn-group-vertical">
+            <div class="hidden-xs hidden-sm btn-group-vertical" style="display: block;">
                 <a href="~/Archieve/Add" role="button" class="btn btn-warning">
                     <span class="glyphicon glyphicon-plus"></span>
                     Add a new problem
@@ -165,7 +165,7 @@
                                 if (UserAuthorization.CheckAccessRights(info.AuthorizationGroup,
                                     UserSession.GetUserGroup(Session)))
                                 {
-                                    string problemUrl = string.Format("~/Archieve/ShowProblem?id={0}", info.ProblemId);
+                                    string problemUrl = string.Format("/Archieve/ShowProblem?id={0}", info.ProblemId);
 
                                     <tr>
                                         <td><a href="@problemUrl">@info.ProblemId</a></td>
@@ -210,9 +210,9 @@
                                                     </a>
                                                 }
 
-                                                <a type="button" href="javascript:void(0);" class="btn btn-default btn-sm"
+                                                <a type="button" href="@problemUrl" class="btn btn-default btn-sm"
                                                    data-toggle="tooltip" data-placement="top" data-container="body"
-                                                   title="Open in new tab">
+                                                   title="Open in new tab" target="_blank">
                                                     <span class="glyphicon glyphicon-new-window"></span>
                                                 </a>
                                             </div>

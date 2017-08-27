@@ -270,7 +270,7 @@
         {
             get => m_disposed
                 ? throw new ObjectDisposedException(GetType().Name)
-                : m_entity.IsSpecialJudge = true;
+                : m_entity.IsSpecialJudge;
             set
             {
                 CheckAccess();

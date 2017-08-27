@@ -17,7 +17,12 @@
             ms_prototypes = new Dictionary<OJSystem, IProblemUrlResolver>()
             {
                 // 在这里添加原型对象。
+                { OJSystem.BZOJ, new BzojUrlResolver() },
+                { OJSystem.CodeForces, new CfUrlResolver() },
+                { OJSystem.Gym, new GymUrlResolver() },
                 { OJSystem.HDU, new HduUrlResolver() },
+                { OJSystem.POJ, new PojUrlResolver() },
+                { OJSystem.ZOJ, new ZojUrlResolver() },
             };
         }
 

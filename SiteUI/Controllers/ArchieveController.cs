@@ -5,6 +5,7 @@
     using BITOJ.Core.Convert;
     using BITOJ.Core.Data;
     using BITOJ.Core.Data.Queries;
+    using BITOJ.Core.Resolvers;
     using BITOJ.SiteUI.Models;
     using System;
     using System.Collections.Generic;
@@ -50,12 +51,12 @@
                 return Redirect("~/Error/AccessDenied");
             }
 
-            return View(new AddProblemModel());
+            return View(new ProblemDetailModel());
         }
 
         // POST: Archieve/Add
         [HttpPost]
-        public ActionResult Add(AddProblemModel model)
+        public ActionResult Add(ProblemDetailModel model)
         {
             if (!UserAuthorization.CheckAccessRights(UserGroup.Administrators, UserSession.GetUserGroup(Session)))
             {
@@ -64,19 +65,17 @@
             }
 
             // 检查数据模型验证状态。
-            model.ResetErrorMessages();
             bool hasError = false;
-
             TryValidateModel(model);
             if (ModelState.ContainsKey("Id") && ModelState["Id"].Errors.Count > 0)
             {
                 hasError = true;
-                model.IdErrorMessage = ModelState["Id"].Errors[0].ErrorMessage;
+                ViewBag.IdErrorMessage = ModelState["Id"].Errors[0].ErrorMessage;
             }
             if (ModelState.ContainsKey("Title") && ModelState["Title"].Errors.Count > 0)
             {
                 hasError = true;
-                model.TitleErrorMessage = ModelState["Title"].Errors[0].ErrorMessage;
+                ViewBag.TitleErrorMessage = ModelState["Title"].Errors[0].ErrorMessage;
             }
 
             if (hasError)
@@ -89,7 +88,7 @@
             string problemId = "BIT" + model.Id;
             if (ProblemArchieveManager.Default.IsProblemExist(problemId))
             {
-                model.IdErrorMessage = "Problem with the same ID already exist in the archieve.";
+                ViewBag.IdErrorMessage = "Problem with the same ID already exist in the archieve.";
                 return View(model);
             }
 
@@ -115,7 +114,56 @@
         // GET: Archieve/ShowProblem?id=...
         public ActionResult ShowProblem(string id = null)
         {
-            return View();
+            if (id == null)
+            {
+                return Redirect("~/Archieve");
+            }
+
+            ProblemHandle handle = new ProblemHandle(id);
+            if (handle.IsNativeProblem)
+            {
+                // 在数据库中查询题目信息。
+                handle = ProblemArchieveManager.Default.GetProblemById(id);
+                if (handle == null)
+                {
+                    // 题目不存在。
+                    return Redirect("~/Error/ProblemNotExist");
+                }
+
+                ProblemDetailModel model = new ProblemDetailModel();
+                using (ProblemDataProvider data = ProblemDataProvider.Create(handle, true))
+                {
+                    model.Id = handle.ProblemId;
+                    model.Title = data.Title;
+                    model.Description = data.Description;
+                    model.InputDescription = data.InputDescription;
+                    model.OutputDescription = data.OutputDescription;
+                    model.InputExample = data.InputExample;
+                    model.OutputExample = data.OutputExample;
+                    model.Hint = data.Hints;
+                    model.Source = data.Source;
+                    model.Author = data.Author;
+                    model.TimeLimit = data.TimeLimit;
+                    model.MemoryLimit = data.MemoryLimit;
+                    model.IsSpecialJudge = data.IsSpecialJudge;
+                }
+
+                return View(model);
+            }
+            else
+            {
+                // 解析远程 OJ 题目 URL。
+                IProblemUrlResolver resolver = ProblemUrlResolverFactory.GetUrlResolverFor(handle);
+                if (resolver == null)
+                {
+                    // 没有此题目来源 OJ 的 URL 解析器。
+                    return Redirect("~/Error/OJNotSupported");
+                }
+                else
+                {
+                    return Redirect(resolver.Resolve(handle));
+                }
+            }
         }
     }
 }

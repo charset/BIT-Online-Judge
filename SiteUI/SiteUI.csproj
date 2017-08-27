@@ -159,7 +159,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\AddProblemModel.cs" />
+    <Compile Include="Models\ProblemDetailModel.cs" />
     <Compile Include="Models\ArchieveCatalog.cs" />
     <Compile Include="Models\ArchieveModel.cs" />
     <Compile Include="Models\ProblemInfoModel.cs" />
@@ -216,6 +216,7 @@
     <Content Include="Views\Login\Succeed.cshtml" />
     <Content Include="Views\Archieve\Index.cshtml" />
     <Content Include="Views\Archieve\Add.cshtml" />
+    <Content Include="Views\Archieve\ShowProblem.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

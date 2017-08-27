@@ -1,0 +1,144 @@
+﻿@using BITOJ.SiteUI.Models
+@using BITOJ.Core
+@using BITOJ.Core.Authorization
+@model ProblemDetailModel
+@{ 
+    ViewBag.Title = string.Format("BITOJ - {0} - {1}", Model.Id, Model.Title);
+}
+
+<div class="jumbotron">
+    <h1>
+        @string.Format("{0} - {1}", Model.Id, Model.Title)
+        @if (!string.IsNullOrEmpty(Model.Author))
+        {
+            <small>by @Model.Author</small>
+        }
+    </h1>
+</div>
+
+<div class="row">
+    <div class="col-lg-3">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h4>Execution environment</h4>
+            </div>
+            <div class="panel-body">
+                <p>OS kernel: Linux</p>
+                <p>@string.Format("Time limit: {0} millsec.", Model.TimeLimit)</p>
+                <p>@string.Format("Memory limit: {0} kilobytes", Model.MemoryLimit)</p>
+                @if (Model.IsSpecialJudge)
+                {
+                    <p>Use special judge: yes</p>
+                }
+                else
+                {
+                    <p>Use special judge: no</p>
+                }
+            </div>
+        </div>
+
+        <div class="btn-group-vertical" style="display: block;">
+            @if (UserSession.IsAuthorized(Session))
+            {
+                <a href="javascript:void(0);" role="button" class="btn btn-primary">
+                    <span class="glyphicon glyphicon-open"></span>
+                    Submit solution
+                </a>
+            }
+
+            <a href="javascript:void(0);" role="button" class="btn btn-default">
+                <span class="glyphicon glyphicon-stats"></span>
+                Problem statistics
+            </a>
+
+            @if (UserAuthorization.CheckAccessRights(UserGroup.Administrators, UserSession.GetUserGroup(Session)))
+            {
+                <a href="javascript:void(0);" role="button" class="btn btn-warning">
+                    <span class="glyphicon glyphicon-pencil"></span>
+                    Edit problem
+                </a>
+                <a href="javascript:void(0);" role="button" class="btn btn-warning">
+                    <span class="glyphicon glyphicon-flash"></span>
+                    Edit exeuction environment
+                </a>
+            }
+        </div>
+    </div>
+
+    <div class="col-lg-9">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h4 class="panel-title">Problem description</h4>
+                </div>
+                <div class="panel-body">@Html.Raw(Model.Description)</div>
+            </div>
+
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h4 class="panel-title">Input description</h4>
+                </div>
+                <div class="panel-body">@Html.Raw(Model.InputDescription)</div>
+            </div>
+
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h4 class="panel-title">Output description</h4>
+                </div>
+                <div class="panel-body">@Html.Raw(Model.OutputDescription)</div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Input example</h4>
+                        </div>
+                        <div class="panel-body">
+                            <p class="text-code">@Html.Raw(Model.InputExample)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Output example</h4>
+                        </div>
+                        <div class="panel-body">
+                            <p class="text-code">@Html.Raw(Model.OutputExample)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.Hint))
+            {
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Hints</h4>
+                    </div>
+                    <div class="panel-body">@Model.Hint</div>
+                </div>
+            }
+
+            @if (!string.IsNullOrEmpty(Model.Source))
+            {
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Source</h4>
+                    </div>
+                    <div class="panel-body">@Model.Source</div>
+                </div>
+            }
+
+            @if (!string.IsNullOrEmpty(Model.Author))
+            {
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Author</h4>
+                    </div>
+                    <div class="panel-body">@Model.Author</div>
+                </div>
+            }
+        </di>
+    </div>
+</div>
