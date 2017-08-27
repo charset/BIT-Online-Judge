@@ -6,7 +6,7 @@
     using System.IO;
 
     /// <summary>
-    /// 封装对本地题目库中一道题目的访问接口。
+    /// 封装对本地题目库中一道题目详细信息的访问接口。
     /// </summary>
     public sealed class ProblemAccessHandle : IDisposable
     {
@@ -33,7 +33,7 @@
             };
         }
 
-        private ProblemEntity m_entity;
+        private string m_problemDirectory;
         private Dictionary<ProblemParts, string> m_parts;
         private bool m_disposed;
         private bool m_dirty;
@@ -45,153 +45,18 @@
         /// <exception cref="ArgumentNullException"/>
         public ProblemAccessHandle(ProblemEntity entity)
         {
-            m_entity = entity ?? throw new ArgumentNullException(nameof(entity));
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            m_problemDirectory = entity.ProblemDirectory;
             m_parts = new Dictionary<ProblemParts, string>();
             m_disposed = false;
             m_dirty = false;
         }
 
-        /// <summary>
-        /// 获取或设置题目的标题。
-        /// </summary>
-        public string Title
+        ~ProblemAccessHandle()
         {
-            get => m_disposed ? throw new ObjectDisposedException(GetType().Name) : m_entity.Title;
-            set
-            {
-                if (m_disposed)
-                    throw new ObjectDisposedException(GetType().Name);
-
-                m_entity.Title = value;
-            }
-        }
-
-        /// <summary>
-        /// 获取或设置题目的作者的用户名。
-        /// </summary>
-        public string Author
-        {
-            get => m_disposed ? throw new ObjectDisposedException(GetType().Name) : m_entity.Author;
-            set
-            {
-                if (m_disposed)
-                    throw new ObjectDisposedException(GetType().Name);
-
-                m_entity.Author = value;
-            }
-        }
-
-        /// <summary>
-        /// 获取或设置题目的来源。
-        /// </summary>
-        public string Source
-        {
-            get => m_disposed ? throw new ObjectDisposedException(GetType().Name) : m_entity.Source;
-            set
-            {
-                if (m_disposed)
-                    throw new ObjectDisposedException(GetType().Name);
-
-                m_entity.Source = value;
-            }
-        }
-
-        /// <summary>
-        /// 获取或设置题目的 CPU 时间限制，以毫秒为单位。
-        /// </summary>
-        public int TimeLimit
-        {
-            get => m_disposed ? throw new ObjectDisposedException(GetType().Name) : m_entity.TimeLimit;
-            set
-            {
-                if (m_disposed)
-                    throw new ObjectDisposedException(GetType().Name);
-
-                m_entity.TimeLimit = value;
-            }
-        }
-
-        /// <summary>
-        /// 获取或设置题目的峰值内存大小限制，以 KB 为单位。
-        /// </summary>
-        public int MemoryLimit
-        {
-            get => m_disposed ? throw new ObjectDisposedException(GetType().Name) : m_entity.MemoryLimit;
-            set
-            {
-                if (m_disposed)
-                    throw new ObjectDisposedException(GetType().Name);
-
-                m_entity.TimeLimit = value;
-            }
-        }
-
-        /// <summary>
-        /// 获取或设置一个值，该值指示当前题目的判题过程是否需要用户提供的 Judge 程序。
-        /// </summary>
-        public bool IsSpecialJudge
-        {
-            get => m_disposed ? throw new ObjectDisposedException(GetType().Name) : m_entity.IsSpecialJudge;
-            set
-            {
-                if (m_disposed)
-                    throw new ObjectDisposedException(GetType().Name);
-
-                m_entity.IsSpecialJudge = value;
-            }
-        }
-
-        /// <summary>
-        /// 获取或设置允许访问题目的用户组。
-        /// </summary>
-        public UserGroup AuthorizationGroup
-        {
-            get => m_disposed ? throw new ObjectDisposedException(GetType().Name) : m_entity.AuthorizationGroup;
-            set
-            {
-                if (m_disposed)
-                    throw new ObjectDisposedException(GetType().Name);
-
-                m_entity.AuthorizationGroup = value;
-            }
-        }
-
-        /// <summary>
-        /// 获取或设置当前题目的总提交数目。
-        /// </summary>
-        public int TotalSubmissions
-        {
-            get => m_disposed ? throw new ObjectDisposedException(GetType().Name) : m_entity.TotalSubmissions;
-            set
-            {
-                if (m_disposed)
-                    throw new ObjectDisposedException(GetType().Name);
-
-                m_entity.TotalSubmissions = value;
-            }
-        }
-
-        /// <summary>
-        /// 获取或设置当前题目的 AC 提交数目。
-        /// </summary>
-        public int AcceptedSubmissions
-        {
-            get => m_disposed ? throw new ObjectDisposedException(GetType().Name) : m_entity.AcceptedSubmissions;
-            set
-            {
-                if (m_disposed)
-                    throw new ObjectDisposedException(GetType().Name);
-
-                m_entity.AcceptedSubmissions = value;
-            }
-        }
-
-        /// <summary>
-        /// 获取当前题目所处的题目类别。
-        /// </summary>
-        public ICollection<ProblemCategoryEntity> Categories
-        {
-            get => m_disposed ? throw new ObjectDisposedException(GetType().Name) : m_entity.Categories;
+            Dispose();
         }
 
         /// <summary>
@@ -201,7 +66,7 @@
         /// <returns>给定部分的文件名。</returns>
         private string GetProblemPartFilename(ProblemParts part)
         {
-            return string.Concat(m_entity.ProblemDirectory, "\\", PartFileName[part]);
+            return string.Concat(m_problemDirectory, "\\", PartFileName[part]);
         }
 
         /// <summary>

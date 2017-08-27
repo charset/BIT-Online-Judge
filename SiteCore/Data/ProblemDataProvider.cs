@@ -37,13 +37,16 @@
             ProblemAccessHandle entryHandle = new ProblemAccessHandle(entity);
             return new ProblemDataProvider()
             {
+                m_entity = entity,
                 m_accessHandle = entryHandle,
                 m_readonly = isReadonly
             };
         }
-        
+
+        private ProblemEntity m_entity;
         private ProblemAccessHandle m_accessHandle;
         private bool m_readonly;
+        private bool m_dirty;
         private bool m_disposed;
 
         /// <summary>
@@ -51,8 +54,10 @@
         /// </summary>
         private ProblemDataProvider()
         {
+            m_entity = null;
             m_accessHandle = null;
             m_readonly = true;
+            m_dirty = false;
             m_disposed = false;
         }
 
@@ -81,11 +86,12 @@
         {
             get => m_disposed
                 ? throw new ObjectDisposedException(GetType().Name)
-                : m_accessHandle.Title;
+                : m_entity.Title;
             set
             {
                 CheckAccess();
-                m_accessHandle.Title = value;
+                m_entity.Title = value;
+                m_dirty = true;
             }
         }
 
@@ -96,11 +102,12 @@
         {
             get => m_disposed
                 ? throw new ObjectDisposedException(GetType().Name)
-                : m_accessHandle.Author;
+                : m_entity.Author;
             set
             {
                 CheckAccess();
-                m_accessHandle.Author = value;
+                m_entity.Author = value;
+                m_dirty = true;
             }
         }
 
@@ -198,11 +205,12 @@
         {
             get => m_disposed
                 ? throw new ObjectDisposedException(GetType().Name)
-                : m_accessHandle.Source;
+                : m_entity.Source;
             set
             {
                 CheckAccess();
-                m_accessHandle.Source = value;
+                m_entity.Source = value;
+                m_dirty = true;
             }
         }
 
@@ -230,11 +238,12 @@
         {
             get => m_disposed
                 ? throw new ObjectDisposedException(GetType().Name)
-                : m_accessHandle.TimeLimit;
+                : m_entity.TimeLimit;
             set
             {
                 CheckAccess();
-                m_accessHandle.TimeLimit = value;
+                m_entity.TimeLimit = value;
+                m_dirty = true;
             }
         }
 
@@ -245,11 +254,12 @@
         {
             get => m_disposed
                 ? throw new ObjectDisposedException(GetType().Name)
-                : m_accessHandle.MemoryLimit;
+                : m_entity.MemoryLimit;
             set
             {
                 CheckAccess();
-                m_accessHandle.MemoryLimit = value;
+                m_entity.MemoryLimit = value;
+                m_dirty = true;
             }
         }
 
@@ -260,11 +270,12 @@
         {
             get => m_disposed
                 ? throw new ObjectDisposedException(GetType().Name)
-                : m_accessHandle.IsSpecialJudge;
+                : m_entity.IsSpecialJudge = true;
             set
             {
                 CheckAccess();
-                m_accessHandle.IsSpecialJudge = value;
+                m_entity.IsSpecialJudge = value;
+                m_dirty = true;
             }
         }
 
@@ -275,11 +286,12 @@
         {
             get => m_disposed
                 ? throw new ObjectDisposedException(GetType().Name)
-                : (CoreUserGroup)m_accessHandle.AuthorizationGroup;
+                : (CoreUserGroup)m_entity.AuthorizationGroup;
             set
             {
                 CheckAccess();
-                m_accessHandle.AuthorizationGroup = (NativeUserGroup)value;
+                m_entity.AuthorizationGroup = (NativeUserGroup)value;
+                m_dirty = true;
             }
         }
 
@@ -290,11 +302,12 @@
         {
             get => m_disposed
                 ? throw new ObjectDisposedException(GetType().Name)
-                : m_accessHandle.TotalSubmissions;
+                : m_entity.TotalSubmissions;
             set
             {
                 CheckAccess();
-                m_accessHandle.TotalSubmissions = value;
+                m_entity.TotalSubmissions = value;
+                m_dirty = true;
             }
         }
 
@@ -305,11 +318,12 @@
         {
             get => m_disposed
                 ? throw new ObjectDisposedException(GetType().Name)
-                : m_accessHandle.AcceptedSubmissions;
+                : m_entity.AcceptedSubmissions;
             set
             {
                 CheckAccess();
-                m_accessHandle.AcceptedSubmissions = value;
+                m_entity.AcceptedSubmissions = value;
+                m_dirty = true;
             }
         }
 
@@ -325,12 +339,25 @@
         public ICollection<string> GetCategories()
         {
             List<string> collection = new List<string>();
-            foreach (ProblemCategoryEntity cat in m_accessHandle.Categories)
+            foreach (ProblemCategoryEntity cat in m_entity.Categories)
             {
                 collection.Add(cat.Name);
             }
 
             return collection;
+        }
+
+        /// <summary>
+        /// 将挂起的实体更改写入数据库中。
+        /// </summary>
+        public void Save()
+        {
+            if (!m_disposed && !m_readonly && m_dirty)
+            {
+                // 更新数据库上下文。
+                ProblemArchieveManager.Default.DataContext.SaveChanges();
+                m_dirty = false;
+            }
         }
 
         /// <summary>
@@ -342,9 +369,11 @@
             {
                 if (!m_readonly)
                 {
+                    Save();
                     m_accessHandle.Save();      // 将挂起的更改写入底层文件系统中。
                 }
 
+                m_accessHandle.Dispose();
                 m_disposed = true;
             }
         }

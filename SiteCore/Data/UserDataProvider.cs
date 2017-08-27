@@ -90,7 +90,6 @@
             set
             {
                 CheckAccess();
-
                 m_entity.Organization = value;
             }
         }
@@ -110,7 +109,6 @@
             set
             {
                 CheckAccess();
-
                 m_entity.Sex = (NativeUserSex)value;
             }
         }
@@ -130,7 +128,6 @@
             set
             {
                 CheckAccess();
-
                 m_entity.UserGroup = (NativeUserGroup)value;
             }
         }
@@ -174,7 +171,10 @@
         /// </summary>
         public void Dispose()
         {
-            UserManager.Default.DataContext.SaveChanges();
+            if (!m_readonly)
+            {
+                UserManager.Default.DataContext.SaveChanges();
+            }
             m_disposed = true;
         }
     }
