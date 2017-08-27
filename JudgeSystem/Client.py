@@ -164,6 +164,7 @@ class Judge(object):
         print " status: " + str(self.status),
         print " memory: " + str(self.exemem),
         print " time: " + str(self.exetime)
+        print " error: " + self.errinfo
 
     def judge(self):
         '''

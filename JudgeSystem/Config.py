@@ -44,7 +44,7 @@ OJ_JUDGE_PATH = "home/"
 OJ_DATA_PATH = "data/"
 OJ_ERR_FILE = "error.txt"
 OJ_OUTPUT_FILE = "userout.txt"
-OJ_PATH_ROOT = "/home/reskip/Desktop/try"
+OJ_PATH_ROOT = "/home/reskip/Desktop/judge/BIT-Online-Judge/JudgeSystem"
 
 USER_JUDGE = 1001
 
