@@ -3,21 +3,26 @@ methods of file opration in judge
 '''
 import os
 import shutil
-import filecmp
 import Config
 
-def walkdir(dir,topdown=True):
-    fileList = []
-    for root, dirs, files in os.walk(dir, topdown):
+def walkdir(path, topdown=True):
+    '''
+    Gets all the child filenames under the path
+    '''
+    filelist = []
+    for root, dirs, files in os.walk(path, topdown):
         for name in files:
-            fileList.append(os.path.join(root,name))
-    return fileList
+            filelist.append(os.path.join(root, name))
+    return filelist
 
-def copyfiles(dirSrc, dirDst):
-    files = walkdir(dirSrc)
-    for f in files:
-        os.path.join(dirDst, f.split('/')[-1] )
-        shutil.copy2(f, os.path.join(dirDst, f.split('/')[-1] ))
+def copyfiles(dirsrc, dirdst):
+    '''
+    Copy all the files under Src to Dst
+    '''
+    files = walkdir(dirsrc)
+    for curfile in files:
+        os.path.join(dirdst, curfile.split('/')[-1])
+        shutil.copy2(curfile, os.path.join(dirdst, curfile.split('/')[-1]))
 
 def getdatalist(proid, judgepath):
     '''
@@ -76,7 +81,7 @@ def compare(file1, file2):
 
     cmp1 = ""
     cmp2 = ""
-    
+
     space = 0
     for i in file1:
         if i != ' ' and i != '\n' and i != '\t':
