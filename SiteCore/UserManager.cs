@@ -104,6 +104,22 @@
         }
 
         /// <summary>
+        /// 使用指定的 Team ID 查询队伍。
+        /// </summary>
+        /// <param name="teamId">队伍 ID。</param>
+        /// <returns>查找到的队伍的队伍句柄。若未找到这样的队伍，返回 null。</returns>
+        public TeamHandle QueryTeamById(int teamId)
+        {
+            TeamProfileEntity entity = DataContext.QueryTeamProfileEntity(teamId);
+            if (entity == null)
+            {
+                return null;
+            }
+
+            return new TeamHandle(teamId);
+        }
+
+        /// <summary>
         /// 根据指定的查询参数查询用户句柄。
         /// </summary>
         /// <param name="query">查询参数。</param>
@@ -187,6 +203,34 @@
         }
 
         /// <summary>
+        /// 根据指定的
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"/>
+        public IList<TeamHandle> QueryTeams(TeamQueryParameter query)
+        {
+            if (query == null)
+                throw new ArgumentNullException(nameof(query));
+            if (query.QueryByName && query.Name == null)
+                throw new ArgumentNullException(nameof(query.Name));
+
+            IQueryable<TeamProfileEntity> set = m_context.GetAllTeamProfiles();
+            if (query.QueryByName)
+            {
+                set = UserDataContext.QueryTeamProfileEntityByName(set, query.Name);
+            }
+
+            List<TeamHandle> handles = new List<TeamHandle>();
+            foreach (TeamProfileEntity entity in set)
+            {
+                handles.Add(TeamHandle.FromTeamEntity(entity));
+            }
+
+            return handles;
+        }
+
+        /// <summary>
         /// 测试一个用户名是否已经被占用。
         /// </summary>
         /// <param name="username">要测试的用户名。</param>
@@ -199,6 +243,15 @@
 
             UserProfileEntity entity = DataContext.QueryUserProfileEntity(username);
             return entity != null;
+        }
+
+        /// <summary>
+        /// 检查给定句柄的
+        /// </summary>
+        /// <returns></returns>
+        public bool IsTeamExist(TeamHandle handle)
+        {
+            return DataContext.QueryTeamProfileEntity(handle.TeamId) != null;
         }
 
         /// <summary>

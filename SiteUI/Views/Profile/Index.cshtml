@@ -1,0 +1,29 @@
+﻿@{ 
+    ViewBag.Title = "BITOJ - Profile";
+}
+
+<div class="jumbotron">
+    <div class="row">
+        <h1>User profile library</h1>
+    </div>
+    <div class="row">
+        <div class="col-lg-7">
+            <p class="sup">Find the profile of the user you are looking for.</p>
+        </div>
+        <div class="col-lg-5">
+            <form method="post" class="form-inline">
+                <div class="form-group">
+                    <label for="username" class="sr-only">Username</label>
+                    <input type="text" class="form-control" id="username" name="username" placeholder="Username"/>
+                    @if (ViewBag.Error as bool? ?? false)
+                    {
+                        <div class="alert alert-danger">
+                            <p>Username not found.</p>
+                        </div>
+                    }
+                </div>
+                <button type="submit" class="btn btn-primary">Find user</button>
+            </form>
+        </div>
+    </div>
+</div>

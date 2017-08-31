@@ -8,6 +8,9 @@
     using CoreUserSex = UserSex;
     using NativeUserSex = BITOJ.Data.Entities.UserSex;
 
+    /// <summary>
+    /// 提供用户数据。
+    /// </summary>
     public sealed class UserDataProvider : IDisposable
     {
         /// <summary>
@@ -130,6 +133,26 @@
                 CheckAccess();
                 m_entity.UserGroup = (NativeUserGroup)value;
             }
+        }
+
+        /// <summary>
+        /// 获取当前用户所处的所有队伍。
+        /// </summary>
+        /// <returns>当前用户所处的所有队伍的队伍句柄。</returns>
+        /// <exception cref="ObjectDisposedException"/>
+        public TeamHandle[] GetTeams()
+        {
+            if (m_disposed)
+                throw new ObjectDisposedException(GetType().Name);
+
+            TeamHandle[] handles = new TeamHandle[m_entity.Teams.Count];
+            int i = 0;
+            foreach (TeamProfileEntity entity in m_entity.Teams)
+            {
+                handles[i++] = TeamHandle.FromTeamEntity(entity);
+            }
+
+            return handles;
         }
 
         /// <summary>

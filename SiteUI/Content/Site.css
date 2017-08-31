@@ -46,3 +46,46 @@
     color: gray;
     line-height: 28px;
 }
+
+.card-box,
+.card-box-default {
+    margin: 10px 10px 10px 10px;
+    padding: 15px 20px 15px 20px;
+    box-shadow: 0 0 15px rgb(210, 210, 210);
+
+    transition: box-shadow 0.5s;
+    -webkit-transition: box-shadow 0.5s;
+    -moz-transition: box-shadow 0.5s;
+    -o-transition: box-shadow 0.5s;
+}
+
+.card-box:hover,
+.card-box-default:hover {
+    box-shadow: 0 0 25px skyblue;
+}
+
+.card-box img {
+    margin-top: -15px;
+    margin-left: -20px;
+    margin-bottom: -15px;
+}
+
+.card-box-default {
+    background-color: white;
+}
+
+.profile-head-box,
+.profile-head-box-male,
+.profile-head-box-female {
+    background-repeat: no-repeat;
+    background-position: right -10px;
+    background-size: auto 200%;
+}
+
+.profile-head-box-male {
+    background-image: url('../Resources/Male_logo.png');
+}
+
+.profile-head-box-female {
+    background-image: url('../Resources/Female_logo.png');
+}

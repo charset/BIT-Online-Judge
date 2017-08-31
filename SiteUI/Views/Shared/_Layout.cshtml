@@ -35,10 +35,17 @@
 
         .bgimg {
             position: fixed;
-            left: 0px;
-            bottom: 0px;
-            width: 300px;
+            left: -200px;
+            bottom: -100px;
+            width: 500px;
             z-index: -1;
+
+            /* Rotation transformation. */
+            transform: rotate(15deg);
+            -ms-transform: rotate(15deg);        /* Internet Explorer */
+            -moz-transform: rotate(15deg);       /* Firefox */
+            -webkit-transform: rotate(15deg);   /* Safari 和 Chrome */
+            -o-transform: rotate(15deg);         /* Opera */
         }
 
         .text-footer {
@@ -62,10 +69,10 @@
             </div>
             <div class="navbar-collapse collapse" id="navdivResponsive">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Instruction", "Instruction", "Home")</li>
                     <li>@Html.ActionLink("Archieve", "Index", "Archieve")</li>
                     <li>@Html.ActionLink("Contests", "Index", "Contest")</li>
                     <li>@Html.ActionLink("Status", "Index", "Status")</li>
+                    <li>@Html.ActionLink("Users", "Index", "Profile")</li>
                     <li>@Html.ActionLink("About", "About", "Home")</li>
                 </ul>
                 <form class="navbar-form navbar-left" role="search" action="~/Archieve/ShowProblem">
@@ -87,7 +94,7 @@
                                     @UserSession.GetUsername(Session) <span class="caret"></span>
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="">Profile</a></li>
+                                    <li><a href="@string.Format("/Profile/ShowUser?username={0}", UserSession.GetUsername(Session))">Profile</a></li>
 
                                     @if (UserAuthorization.CheckAccessRights(BITOJ.Core.UserGroup.Administrators,
                                         UserSession.GetUserGroup(Session)))
@@ -130,12 +137,12 @@
                 Copyright &copy; 
                 <a href="http://www.bit.edu.cn" target="_blank">Beijing Institute of Technology</a> 
                 &amp; 
-                <a href="http://ss.bit.edu.cn/index.htm" target="_blank">BITSS</a> ACM Team 2017. All rights reserved.
+                <a href="http://ss.bit.edu.cn/index.htm" target="_blank">BITSS</a> ACM-ICPC Team 2017. All rights reserved.
             </p>
         </footer>
     </div>
 
-    <!--<img class="bgimg" src="~/Resources/BIT_Logo.jpg" />-->
+    <img class="bgimg hidden-xs hidden-sm" src="~/Resources/BIT_Logo_trans_filter.png" />
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")

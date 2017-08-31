@@ -208,7 +208,7 @@ namespace BITOJ.Data
                            where item.Name == teamName
                            select item;
             return entities;
-        } 
+        }
 
         /// <summary>
         /// 获取或设置用户信息数据集。

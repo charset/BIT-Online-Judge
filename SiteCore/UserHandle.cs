@@ -4,7 +4,7 @@
     using System;
 
     /// <summary>
-    /// 封装用户个人信息。
+    /// 表示用户标识句柄。
     /// </summary>
     public sealed class UserHandle
     {

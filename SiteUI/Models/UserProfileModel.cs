@@ -4,6 +4,7 @@
     using BITOJ.Core.Convert;
     using BITOJ.Core.Data;
     using System;
+    using System.Collections.Generic;
 
     /// <summary>
     /// 提供用户个人信息数据模型。
@@ -21,14 +22,19 @@
         public string Organization { get; set; }
 
         /// <summary>
-        /// 获取或设置用户权限集名称。
+        /// 获取或设置用户权限集。
         /// </summary>
-        public string UserGroupName { get; set; }
+        public UserGroup UserGroup { get; set; }
 
         /// <summary>
         /// 获取或设置用户性别的字符串表示。
         /// </summary>
-        public string Sex { get; set; }
+        public UserSex Sex { get; set; }
+
+        /// <summary>
+        /// 获取或设置用户所在的队伍。
+        /// </summary>
+        public ICollection<TeamBriefModel> Teams { get; set; }
 
         /// <summary>
         /// 获取或设置用户提交统计信息。
@@ -42,8 +48,9 @@
         {
             Username = string.Empty;
             Organization = string.Empty;
-            UserGroupName = string.Empty;
-            Sex = "Male";
+            UserGroup = UserGroup.Guests;
+            Sex = UserSex.Male;
+            Teams = new List<TeamBriefModel>();
             SubmissionStatistics = new UserSubmissionStatistics();
         }
 
@@ -65,8 +72,14 @@
             using (UserDataProvider userData = UserDataProvider.Create(handle, true))
             {
                 model.Organization = userData.Organization;
-                model.UserGroupName = UsergroupConvert.ConvertToString(userData.UserGroup);
-                model.Sex = SexConvert.ConvertToString(userData.Sex);
+                model.UserGroup = userData.UserGroup;
+                model.Sex = userData.Sex;
+
+                // 加载用户队伍信息。
+                foreach (TeamHandle team in userData.GetTeams())
+                {
+                    model.Teams.Add(TeamBriefModel.FromTeamHandle(team));
+                }
 
                 // TODO: 完成用户提交统计模块后，在这里添加代码将用户提交统计信息复制入模型中。
             }
