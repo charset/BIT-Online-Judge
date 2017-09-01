@@ -106,6 +106,19 @@
         }
 
         /// <summary>
+        /// 获取或设置领队用户名。
+        /// </summary>
+        public string Leader
+        {
+            get => m_disposed ? throw new ObjectDisposedException(GetType().Name) : m_entity.Leader;
+            set
+            {
+                CheckAccess();
+                m_entity.Leader = value;
+            }
+        }
+
+        /// <summary>
         /// 将挂起的更改写入数据库。
         /// </summary>
         public void Save()

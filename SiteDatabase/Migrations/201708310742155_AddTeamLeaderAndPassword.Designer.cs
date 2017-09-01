@@ -7,13 +7,13 @@ namespace BITOJ.Data.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class AddIsSpecialJudge : IMigrationMetadata
+    public sealed partial class AddTeamLeaderAndPassword : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(AddIsSpecialJudge));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(AddTeamLeaderAndPassword));
         
         string IMigrationMetadata.Id
         {
-            get { return "201708260843465_AddIsSpecialJudge"; }
+            get { return "201708310742155_AddTeamLeaderAndPassword"; }
         }
         
         string IMigrationMetadata.Source

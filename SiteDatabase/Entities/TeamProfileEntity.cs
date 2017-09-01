@@ -25,6 +25,16 @@
         public string Name { get; set; }
 
         /// <summary>
+        /// 获取或设置队伍领队用户名。
+        /// </summary>
+        public string Leader { get; set; }
+
+        /// <summary>
+        /// 获取或设置加入当前队伍所需的验证密钥。
+        /// </summary>
+        public byte[] PasswordHash { get; set; }
+
+        /// <summary>
         /// 获取或设置
         /// </summary>
         public virtual ICollection<UserProfileEntity> Members { get; set; }
@@ -36,6 +46,8 @@
         {
             Id = 0;
             Name = string.Empty;
+            Leader = string.Empty;
+            PasswordHash = new byte[0];
 
             Members = new List<UserProfileEntity>();
         }

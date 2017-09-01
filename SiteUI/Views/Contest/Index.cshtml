@@ -1,7 +1,6 @@
 ﻿@using BITOJ.Core
 @using BITOJ.Core.Authorization
 @using BITOJ.SiteUI.Models
-@using System.Text
 @model ContestModel
 
 <div class="jumbotron">
@@ -14,7 +13,7 @@
 <div class="row">
     <div class="col-lg-3">
         @if (UserSession.IsAuthorized(Session) &&
-                UserAuthorization.CheckAccessRights(UserGroup.Administrators, UserSession.GetUserGroup(Session)))
+             UserAuthorization.CheckAccessRights(UserGroup.Administrators, UserSession.GetUserGroup(Session)))
         {
             <div class="hidden-xs hidden-sm btn-group-vertical" style="display: block;">
                 <a href="~/Contest/Add" role="button" class="btn btn-warning">
@@ -37,16 +36,16 @@
             }
 
             <a class="@navAnchorClasses[0]" href="~/Archieve">
-                <h4 class="list-group-item-heading">All Contests</h4>
+                <h5 class="list-group-item-heading">All Contests</h5>
             </a>
             <a class="@navAnchorClasses[1]" href="~/Archieve">
-                <h4 class="list-group-item-heading">Sheduled Contests</h4>
+                <h5 class="list-group-item-heading">Sheduled Contests</h5>
             </a>
             <a class="@navAnchorClasses[2]" href="~/Archieve">
-                <h4 class="list-group-item-heading">Running Contests</h4>
+                <h5 class="list-group-item-heading">Running Contests</h5>
             </a>
             <a class="@navAnchorClasses[3]" href="~/Archieve">
-                <h4 class="list-group-item-heading">Ended Contests</h4>
+                <h5 class="list-group-item-heading">Ended Contests</h5>
             </a>
         </div>
 
@@ -82,7 +81,7 @@
                             <select class="form-control" id="ParticipationMode" name="ParticipationMode">
                                 <option>Both</option>
                                 <option>Individual Only</option>
-                                <option>Teamworks Only</option>
+                                <option>Teamwork Only</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -141,10 +140,8 @@
                     <tr>
                         <th>Title</th>
                         <th>Type</th>
-                        <th>Participation Mode</th>
-                        <th>Start Time</th>
-                        <th>End Time</th>
-                        <th>Duration</th>
+                        <th>Part.</th>
+                        <th>Calendar</th>
                         <th>Status</th>
                         <th>Holder</th>
                     </tr>

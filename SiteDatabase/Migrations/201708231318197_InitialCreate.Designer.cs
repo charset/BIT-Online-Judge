@@ -7,13 +7,13 @@ namespace BITOJ.Data.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class AddTimeMemoryLimit : IMigrationMetadata
+    public sealed partial class InitialCreate : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(AddTimeMemoryLimit));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(InitialCreate));
         
         string IMigrationMetadata.Id
         {
-            get { return "201708260635400_AddTimeMemoryLimit"; }
+            get { return "201708231318197_InitialCreate"; }
         }
         
         string IMigrationMetadata.Source

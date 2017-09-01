@@ -34,7 +34,7 @@
             return Redirect(url);
         }
 
-        // GET: Profile/ShowProfile
+        // GET: Profile/ShowUser
         public ActionResult ShowUser()
         {
             if (string.IsNullOrEmpty(Request.QueryString["username"]))
@@ -50,6 +50,52 @@
             }
 
             UserProfileModel model = UserProfileModel.FromUserHandle(handle);
+            return View(model);
+        }
+
+        // POST: Profile/ShowUser
+        [HttpPost]
+        public ActionResult ShowUser(FormCollection form, UserProfileModel model)
+        {
+            // 更新用户密码。
+            // 验证操作权限。
+            if (!UserSession.IsAuthorized(Session) ||
+                string.Compare(UserSession.GetUsername(Session), Request.QueryString["username"], false) != 0)
+            {
+                return Redirect("~/Error/AccessDenied");
+            }
+
+            // 验证用户输入。
+            if (string.IsNullOrEmpty(form["old"]))
+            {
+                ViewBag.PasswordErrorMessage = "Old password is required.";
+                return View(model);
+            }
+            if (string.IsNullOrEmpty(form["new"]))
+            {
+                ViewBag.PasswordErrorMessage = "New password is required.";
+                return View(model);
+            }
+            if (form["new"].Length < 6)
+            {
+                ViewBag.PasswordErrorMessage = "New password is too short.";
+                return View(model);
+            }
+            if (string.Compare(form["new"], form["confirm"], false) != 0)
+            {
+                ViewBag.PasswordErrorMessage = "Confirmed password is not the same as the new password.";
+                return View(model);
+            }
+
+            // 验证旧密码。
+            if (!UserAuthorization.CheckAuthorization(Request.QueryString["username"], form["old"]))
+            {
+                ViewBag.PasswordErrorMessage = "Old password is incorrect.";
+                return View(model);
+            }
+
+            // 更新用户密码。
+            UserAuthorization.UpdatePassword(Request.QueryString["username"], form["new"]);
             return View(model);
         }
     }

@@ -41,16 +41,16 @@
             }
 
             <a class="@navAnchorClasses[0]" href="~/Archieve">
-                <h4 class="list-group-item-heading">All problems</h4>
+                <h5 class="list-group-item-heading">All problems</h5>
             </a>
 
             @if (UserSession.IsAuthorized(Session))
             {
                 <a class="@navAnchorClasses[1]" href="~/Archieve/Solved">
-                    <h4 class="list-group-item-heading">Solved problems</h4>
+                    <h5 class="list-group-item-heading">Solved problems</h5>
                 </a>
                 <a class="@navAnchorClasses[2]" href="~/Archieve/Attempt">
-                    <h4 class="list-group-item-heading">Attempting problems</h4>
+                    <h5 class="list-group-item-heading">Attempting problems</h5>
                 </a>
             }
         </div>

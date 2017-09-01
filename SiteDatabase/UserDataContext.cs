@@ -211,6 +211,27 @@ namespace BITOJ.Data
         }
 
         /// <summary>
+        /// 使用给定的队伍领队名称从给定的数据源中查询队伍信息实体数据。
+        /// </summary>
+        /// <param name="source">数据源。</param>
+        /// <param name="leader">领队名称。</param>
+        /// <returns>一个可查询对象，该对象可查询到给定队伍领队名称所对应的队伍信息实体对象。</returns>
+        /// <exception cref="ArgumentNullException"/>
+        public static IQueryable<TeamProfileEntity> QueryTeamProfileEntityByLeader(IQueryable<TeamProfileEntity> source,
+            string leader)
+        {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (leader == null)
+                throw new ArgumentNullException(nameof(leader));
+
+            var entities = from item in source
+                           where item.Leader == leader
+                           select item;
+            return entities;
+        }
+
+        /// <summary>
         /// 获取或设置用户信息数据集。
         /// </summary>
         public virtual DbSet<UserProfileEntity> UserProfiles { get; set; }

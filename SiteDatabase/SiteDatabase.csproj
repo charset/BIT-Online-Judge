@@ -83,17 +83,13 @@
     <Compile Include="Entities\UserGroup.cs" />
     <Compile Include="Entities\UserProfileEntity.cs" />
     <Compile Include="Entities\SubmissionVerdictStatus.cs" />
-    <Compile Include="Migrations\201708250854475_InitialCreate.cs" />
-    <Compile Include="Migrations\201708250854475_InitialCreate.Designer.cs">
-      <DependentUpon>201708250854475_InitialCreate.cs</DependentUpon>
+    <Compile Include="Migrations\201708231318197_InitialCreate.cs" />
+    <Compile Include="Migrations\201708231318197_InitialCreate.Designer.cs">
+      <DependentUpon>201708231318197_InitialCreate.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201708260635400_AddTimeMemoryLimit.cs" />
-    <Compile Include="Migrations\201708260635400_AddTimeMemoryLimit.Designer.cs">
-      <DependentUpon>201708260635400_AddTimeMemoryLimit.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201708260843465_AddIsSpecialJudge.cs" />
-    <Compile Include="Migrations\201708260843465_AddIsSpecialJudge.Designer.cs">
-      <DependentUpon>201708260843465_AddIsSpecialJudge.cs</DependentUpon>
+    <Compile Include="Migrations\201708310742155_AddTeamLeaderAndPassword.cs" />
+    <Compile Include="Migrations\201708310742155_AddTeamLeaderAndPassword.Designer.cs">
+      <DependentUpon>201708310742155_AddTeamLeaderAndPassword.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ContestAuthorizationModel.cs" />
@@ -127,14 +123,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201708250854475_InitialCreate.resx">
-      <DependentUpon>201708250854475_InitialCreate.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201708231318197_InitialCreate.resx">
+      <DependentUpon>201708231318197_InitialCreate.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201708260635400_AddTimeMemoryLimit.resx">
-      <DependentUpon>201708260635400_AddTimeMemoryLimit.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201708260843465_AddIsSpecialJudge.resx">
-      <DependentUpon>201708260843465_AddIsSpecialJudge.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201708310742155_AddTeamLeaderAndPassword.resx">
+      <DependentUpon>201708310742155_AddTeamLeaderAndPassword.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

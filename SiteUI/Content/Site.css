@@ -74,18 +74,25 @@
     background-color: white;
 }
 
-.profile-head-box,
-.profile-head-box-male,
-.profile-head-box-female {
+.user-box,
+.user-box-male,
+.user-box-female {
     background-repeat: no-repeat;
     background-position: right -10px;
     background-size: auto 200%;
 }
 
-.profile-head-box-male {
+.user-box-male {
     background-image: url('../Resources/Male_logo.png');
 }
 
-.profile-head-box-female {
+.user-box-female {
     background-image: url('../Resources/Female_logo.png');
+}
+
+.team-box {
+    background-repeat: no-repeat;
+    background-position: right 45px;
+    background-image: url('../Resources/Team_logo.png');
+    background-size: auto 100%;
 }

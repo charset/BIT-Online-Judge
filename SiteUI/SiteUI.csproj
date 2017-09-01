@@ -153,6 +153,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\ArchieveController.cs" />
+    <Compile Include="Controllers\ContestController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
@@ -160,6 +161,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\ContestCatalog.cs" />
+    <Compile Include="Models\ContestInfoModel.cs" />
+    <Compile Include="Models\ContestModel.cs" />
     <Compile Include="Models\ProblemDetailModel.cs" />
     <Compile Include="Models\ProblemDisplayModel.cs" />
     <Compile Include="Models\ArchieveCatalog.cs" />
@@ -231,6 +235,7 @@
     <Content Include="Views\Error\ProblemNotExist.cshtml" />
     <Content Include="Views\Profile\Index.cshtml" />
     <Content Include="Views\Profile\ShowUser.cshtml" />
+    <Content Include="Views\Contest\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

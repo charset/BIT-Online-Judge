@@ -214,11 +214,17 @@
                 throw new ArgumentNullException(nameof(query));
             if (query.QueryByName && query.Name == null)
                 throw new ArgumentNullException(nameof(query.Name));
+            if (query.QueryByLeader && query.Leader == null)
+                throw new ArgumentNullException(nameof(query.Leader));
 
             IQueryable<TeamProfileEntity> set = m_context.GetAllTeamProfiles();
             if (query.QueryByName)
             {
                 set = UserDataContext.QueryTeamProfileEntityByName(set, query.Name);
+            }
+            if (query.QueryByLeader)
+            {
+                set = UserDataContext.QueryTeamProfileEntityByLeader(set, query.Leader);
             }
 
             List<TeamHandle> handles = new List<TeamHandle>();
