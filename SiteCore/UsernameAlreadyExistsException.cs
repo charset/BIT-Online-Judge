@@ -6,18 +6,18 @@
     public sealed class UsernameAlreadyExistsException : UserException
     {
         /// <summary>
-        /// 根据指定的用户名创建 UsernameAlreadyExistsException 类的新实例。
+        /// 根据指定的用户句柄创建 UsernameAlreadyExistsException 类的新实例。
         /// </summary>
-        /// <param name="username">用户名。</param>
-        public UsernameAlreadyExistsException(string username) : base(username, $"用户名 \" {username} \" 已经被占用。")
+        /// <param name="user">用户句柄。</param>
+        public UsernameAlreadyExistsException(UserHandle user) : base(user, $"用户名 \" {user.Username} \" 已经被占用。")
         { }
 
         /// <summary>
-        /// 根据指定的用户名和异常消息创建 UsernameAlreadyExistsException 类的新实例。
+        /// 根据指定的用户句柄和异常消息创建 UsernameAlreadyExistsException 类的新实例。
         /// </summary>
-        /// <param name="username">用户名。</param>
+        /// <param name="user">用户句柄。</param>
         /// <param name="message">异常消息。</param>
-        public UsernameAlreadyExistsException(string username, string message) : base(username, message)
+        public UsernameAlreadyExistsException(UserHandle user, string message) : base(user, message)
         { }
     }
 }

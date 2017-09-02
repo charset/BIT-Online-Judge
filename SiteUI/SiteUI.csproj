@@ -171,6 +171,7 @@
     <Compile Include="Models\ProblemBriefModel.cs" />
     <Compile Include="Models\SiteCatalog.cs" />
     <Compile Include="Models\TeamBriefModel.cs" />
+    <Compile Include="Models\TeamDetailModel.cs" />
     <Compile Include="Models\UserProfileModel.cs" />
     <Compile Include="Models\UserQueryModel.cs" />
     <Compile Include="Models\UserRegisterModel.cs" />
@@ -197,6 +198,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\create-team.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -205,6 +207,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\modify-team.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Web.config" />
@@ -236,6 +239,7 @@
     <Content Include="Views\Profile\Index.cshtml" />
     <Content Include="Views\Profile\ShowUser.cshtml" />
     <Content Include="Views\Contest\Index.cshtml" />
+    <Content Include="Views\Profile\ShowTeam.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

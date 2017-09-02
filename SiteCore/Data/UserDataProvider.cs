@@ -29,7 +29,7 @@
             // 在用户数据库中查询对应的用户实体对象。
             UserProfileEntity entity = UserManager.Default.DataContext.QueryUserProfileEntity(handle.Username);
             if (entity == null)
-                throw new UserNotFoundException(handle.Username);
+                throw new UserNotFoundException(handle);
 
             return new UserDataProvider(entity, isReadOnly);
         }

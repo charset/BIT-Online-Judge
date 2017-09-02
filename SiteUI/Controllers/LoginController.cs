@@ -114,7 +114,7 @@
                 return false;
             }
 
-            UserHandle handle = UserManager.Default.Create(model.Username);
+            UserHandle handle = UserManager.Default.CreateUser(model.Username);
             UserAuthorization.UpdatePassword(model.Username, model.Password);
 
             using (UserDataProvider data = UserDataProvider.Create(handle, false))

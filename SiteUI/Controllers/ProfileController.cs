@@ -2,6 +2,7 @@
 {
     using BITOJ.Core;
     using BITOJ.Core.Authorization;
+    using BITOJ.Core.Data;
     using BITOJ.SiteUI.Models;
     using System.Web.Mvc;
 
@@ -97,6 +98,185 @@
             // 更新用户密码。
             UserAuthorization.UpdatePassword(Request.QueryString["username"], form["new"]);
             return View(model);
+        }
+
+        // POST: Profile/CreateTeam
+        [HttpPost]
+        public ActionResult CreateTeam(FormCollection form)
+        {
+            // AJAX 查询，以 JSON 返回结果。
+            // 验证表单参数。
+            if (string.IsNullOrEmpty(form["teamName"]) || string.IsNullOrEmpty(form["leader"]))
+            {
+                return new ContentResult();
+            }
+
+            // 创建新的队伍。
+            TeamHandle handle = UserManager.Default.CreateTeam();
+            using (TeamDataProvider data = TeamDataProvider.Create(handle, false))
+            {
+                data.Name = form["teamName"];
+                data.Leader = form["leader"];
+
+                UserManager.Default.AddUserToTeam(handle, new UserHandle(form["leader"]));
+            }
+
+            return new ContentResult();
+        }
+
+        // GET: Profile/ShowTeam
+        public ActionResult ShowTeam()
+        {
+            if (string.IsNullOrEmpty(Request.QueryString["teamId"]))
+            {
+                return Redirect("~/Profile/Index");
+            }
+
+            int teamId;
+            if (!int.TryParse(Request.QueryString["teamId"], out teamId))
+            {
+                return Redirect("~/Profile/Index");
+            }
+
+            TeamHandle handle = UserManager.Default.QueryTeamById(teamId);
+            if (handle == null)
+            {
+                return Redirect("~/Error/TeamNotFound");
+            }
+
+            TeamDetailModel model = TeamDetailModel.FromTeamHandle(handle);
+            return View(model);
+        }
+
+        // POST: Profile/AddTeamUser
+        [HttpPost]
+        public ActionResult AddTeamUser()
+        {
+            // AJAX 查询响应
+            if (!UserSession.IsAuthorized(Session))
+            {
+                return new ContentResult();
+            }
+
+            if (string.IsNullOrEmpty(Request.QueryString["teamId"]) || 
+                string.IsNullOrEmpty(Request.QueryString["username"]))
+            {
+                return new ContentResult();
+            }
+
+            int teamId;
+            if (!int.TryParse(Request.QueryString["teamId"], out teamId))
+            {
+                return new ContentResult();
+            }
+
+            TeamHandle teamHandle = UserManager.Default.QueryTeamById(teamId);
+            if (teamHandle == null)
+            {
+                // 给定的队伍不存在于数据库中。
+                return new ContentResult();
+            }
+
+            UserHandle userHandle = UserManager.Default.QueryUserByName(Request.QueryString["username"]);
+            if (userHandle == null)
+            {
+                // 给定的用户不存在于数据库中。
+                return new ContentResult();
+            }
+
+            // 查询队伍信息。
+            using (TeamDataProvider data = TeamDataProvider.Create(teamHandle, true))
+            {
+                // 检查操作权限。
+                if (string.Compare(data.Leader, UserSession.GetUsername(Session), false) != 0)
+                {
+                    return new ContentResult();
+                }
+            }
+
+            UserManager.Default.AddUserToTeam(teamHandle, userHandle);
+            return new ContentResult();
+        }
+
+        // POST: Profile/RemoveTeamUser
+        [HttpPost]
+        public ActionResult RemoveTeamUser()
+        {
+            // AJAX 查询响应
+            if (!UserSession.IsAuthorized(Session))
+            {
+                return new ContentResult();
+            }
+
+            if (string.IsNullOrEmpty(Request.QueryString["teamId"]) ||
+                string.IsNullOrEmpty(Request.QueryString["username"]))
+            {
+                return new ContentResult();
+            }
+
+            int teamId;
+            if (!int.TryParse(Request.QueryString["teamId"], out teamId))
+            {
+                return new ContentResult();
+            }
+
+            TeamHandle teamHandle = UserManager.Default.QueryTeamById(teamId);
+            UserHandle userHandle = UserManager.Default.QueryUserByName(Request.QueryString["username"]);
+            if (teamHandle == null || userHandle == null)
+            {
+                return new ContentResult();
+            }
+
+            using (TeamDataProvider data = TeamDataProvider.Create(teamHandle, true))
+            {
+                // 检查操作权限。
+                if (string.Compare(data.Leader, UserSession.GetUsername(Session), false) != 0)
+                {
+                    return new ContentResult();
+                }
+            }
+
+            UserManager.Default.RemoveUserFromTeam(teamHandle, userHandle);
+            return new ContentResult();
+        }
+
+        // POST: Profile/DeleteTeam
+        [HttpPost]
+        public ActionResult DeleteTeam()
+        {
+            if (!UserSession.IsAuthorized(Session))
+            {
+                return new ContentResult();
+            }
+
+            if (string.IsNullOrEmpty(Request.QueryString["teamId"]))
+            {
+                return new ContentResult();
+            }
+
+            int teamId;
+            if (!int.TryParse(Request.QueryString["teamId"], out teamId))
+            {
+                return new ContentResult();
+            }
+
+            TeamHandle teamHandle = UserManager.Default.QueryTeamById(teamId);
+            if (teamHandle == null)
+            {
+                return new ContentResult();
+            }
+
+            using (TeamDataProvider data = TeamDataProvider.Create(teamHandle, true))
+            {
+                // 检查操作权限。
+                if (string.Compare(data.Leader, UserSession.GetUsername(Session), false) != 0)
+                {
+                    return new ContentResult();
+                }
+            }
+
+            UserManager.Default.RemoveTeam(teamHandle);
+            return new ContentResult();
         }
     }
 }

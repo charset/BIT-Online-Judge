@@ -1,5 +1,6 @@
 ﻿namespace BITOJ.Core
 {
+    using BITOJ.Core.Data;
     using BITOJ.Core.Data.Queries;
     using BITOJ.Data;
     using BITOJ.Data.Entities;
@@ -66,12 +67,12 @@
         /// <returns>新创建的用户的句柄。</returns>
         /// <exception cref="ArgumentNullException"/>
         /// <exception cref="UsernameAlreadyExistsException"/>
-        public UserHandle Create(string username)
+        public UserHandle CreateUser(string username)
         {
             if (username == null)
                 throw new ArgumentNullException(nameof(username));
             if (IsUserExist(username))
-                throw new UsernameAlreadyExistsException(username);
+                throw new UsernameAlreadyExistsException(new UserHandle(username));
 
             UserProfileEntity entity = new UserProfileEntity()
             {
@@ -81,6 +82,18 @@
             m_context.AddUserProfileEntity(entity);
 
             return new UserHandle(username);
+        }
+
+        /// <summary>
+        /// 在数据库中创建一个新的队伍实体对象。
+        /// </summary>
+        /// <returns>新创建的队伍句柄。</returns>
+        public TeamHandle CreateTeam()
+        {
+            TeamProfileEntity entity = new TeamProfileEntity();
+            entity = m_context.AddTeamProfileEntity(entity);
+
+            return TeamHandle.FromTeamEntity(entity);
         }
 
         /// <summary>
@@ -203,10 +216,10 @@
         }
 
         /// <summary>
-        /// 根据指定的
+        /// 根据指定的队伍查询参数查询队伍句柄。
         /// </summary>
-        /// <param name="query"></param>
-        /// <returns></returns>
+        /// <param name="query">查询参数。</param>
+        /// <returns>查询到的队伍句柄列表。</returns>
         /// <exception cref="ArgumentNullException"/>
         public IList<TeamHandle> QueryTeams(TeamQueryParameter query)
         {
@@ -237,6 +250,87 @@
         }
 
         /// <summary>
+        /// 添加给定的用户到给定的队伍中。
+        /// </summary>
+        /// <param name="team">队伍句柄。</param>
+        /// <param name="user">用户句柄。</param>
+        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="TeamNotFoundException"/>
+        /// <exception cref="UserNotFoundException"/>
+        public void AddUserToTeam(TeamHandle team, UserHandle user)
+        {
+            if (team == null)
+                throw new ArgumentNullException(nameof(team));
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
+
+            TeamProfileEntity teamEntity = m_context.QueryTeamProfileEntity(team.TeamId);
+            if (teamEntity == null)
+                throw new TeamNotFoundException(team);
+
+            UserProfileEntity userEntity = m_context.QueryUserProfileEntity(user.Username);
+            if (userEntity == null)
+                throw new UserNotFoundException(user);
+
+            teamEntity.Members.Add(userEntity);
+            m_context.SaveChanges();
+        }
+
+        /// <summary>
+        /// 从给定的队伍中移除给定的用户。
+        /// </summary>
+        /// <param name="team">队伍句柄。</param>
+        /// <param name="user">用户句柄。</param>
+        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="TeamNotFoundException"/>
+        /// <exception cref="UserNotFoundException"/>
+        public void RemoveUserFromTeam(TeamHandle team, UserHandle user)
+        {
+            if (team == null)
+                throw new ArgumentNullException(nameof(team));
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
+
+            TeamProfileEntity teamEntity = m_context.QueryTeamProfileEntity(team.TeamId);
+            if (teamEntity == null)
+                throw new TeamNotFoundException(team);
+
+            UserProfileEntity userEntity = m_context.QueryUserProfileEntity(user.Username);
+            if (userEntity == null)
+                throw new UserNotFoundException(user);
+            
+            foreach (UserProfileEntity teamUser in teamEntity.Members)
+            {
+                if (string.Compare(teamUser.Username, userEntity.Username, false) == 0)
+                {
+                    teamEntity.Members.Remove(teamUser);
+                    break;
+                }
+            }
+
+            m_context.SaveChanges();
+        }
+
+        /// <summary>
+        /// 从数据库中移除给定的队伍。
+        /// </summary>
+        /// <param name="team">要移除的队伍句柄。</param>
+        /// <exception cref="ArgumentNullException"/>
+        public void RemoveTeam(TeamHandle team)
+        {
+            if (team == null)
+                throw new ArgumentNullException(nameof(team));
+
+            TeamProfileEntity entity = m_context.QueryTeamProfileEntity(team.TeamId);
+            if (entity == null)
+            {
+                return;
+            }
+
+            m_context.RemoveTeamProfileEntity(entity);
+        }
+
+        /// <summary>
         /// 测试一个用户名是否已经被占用。
         /// </summary>
         /// <param name="username">要测试的用户名。</param>
@@ -252,7 +346,7 @@
         }
 
         /// <summary>
-        /// 检查给定句柄的
+        /// 检查给定句柄所对应的队伍实体对象是否存在于数据库中。
         /// </summary>
         /// <returns></returns>
         public bool IsTeamExist(TeamHandle handle)

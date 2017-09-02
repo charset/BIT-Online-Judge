@@ -1,0 +1,108 @@
+﻿@using BITOJ.Core
+@using BITOJ.Core.Authorization
+@using BITOJ.SiteUI.Models
+@model TeamDetailModel
+@{ 
+    ViewBag.Title = "BITOJ - " + Model.TeamName;
+    bool editable = UserSession.IsAuthorized(Session) 
+        && string.Compare(UserSession.GetUsername(Session), Model.Leader, false) == 0;
+}
+
+<div class="jumbotron team-box">
+    <h1>@Model.TeamName <small>led by @Model.Leader</small></h1>
+    <p>
+        <span class="glyphicon glyphicon-user"></span>
+        &times; @Model.Members.Count
+    </p>
+</div>
+
+<div class="row">
+    @if (editable)
+    {
+        <div class="col-lg-3">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3>Add user</h3>
+                </div>
+                <div class="panel-body">
+                    <form method="post" id="addUserForm">
+                        <div class="form-group">
+                            <label for="username" class="sr-only">Add user</label>
+                            <input type="text" class="form-control" id="username" name="username" placeholder="Username" />
+                        </div>
+                        <button type="submit" id="addUserButton" class="btn btn-block btn-primary">
+                            <span class="glyphicon glyphicon-plus"></span>
+                            Add user to this team
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="btn-group-vertical" style="display: block; margin-top: 15px;">
+                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#dismissConfirm">
+                    <span class="glyphicon glyphicon-remove"></span>
+                    Dismiss this team
+                </button>
+            </div>
+        </div>
+
+        <div class="modal fade in" id="dismissConfirm" tabindex="-1" role="dialog" aria-labelledby="confirmLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h3 class="modal-title" id="confirmLabel">Confirm sensitive operation</h3>
+                    </div>
+                    <div class="modal-body">
+                        <h4 class="text-danger">
+                            The operation you are performing is sensitive and needs your further confirmation.
+                        </h4>
+                        <p>Are you sure to dismiss this team? This operation is UNRECOVERABLE.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                        <button type="button" class="btn btn-danger" id="dismissTeam">Yes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="@(editable ? "col-lg-9" : "col-lg-12")">
+        <div class="row">
+            @{
+                foreach (UserProfileModel user in Model.Members)
+                {
+                    <div class="@(editable ? "col-lg-6" : "col-lg-4")">
+                        <div class="@string.Format("card-box card-box-default user-box {0}", 
+                                   user.Sex == UserSex.Female ? "user-box-female" : "user-box-male")">
+                            @if (editable && string.Compare(user.Username, Model.Leader, false) != 0)
+                            {
+                                <button type="button" class="close" id="removeUser" data-username="@user.Username"
+                                        aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            }
+
+                            <h3>
+                                <a href="@string.Format("/Profile/ShowUser?username={0}", user.Username)">
+                                    @user.Username
+                                </a>
+                            </h3>
+                            <p>@(string.Compare(user.Username, Model.Leader, false) == 0 ? "Leader" : "Member")</p>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="teamIdField" value="@Model.TeamId"/>
+<input type="hidden" id="teamLeaderField" value="@Model.Leader"/>
+
+@section scripts {
+    <script type="text/javascript" src="~/Scripts/modify-team.js"></script>
+}

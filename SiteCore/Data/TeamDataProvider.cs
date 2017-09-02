@@ -90,8 +90,6 @@
             return handles;
         }
 
-        // TODO: 实现队伍成员增删操作。
-
         /// <summary>
         /// 获取或设置队伍名称。
         /// </summary>

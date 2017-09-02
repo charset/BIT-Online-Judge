@@ -22,21 +22,26 @@ namespace BITOJ.Data
         /// 将给定的用户信息实体数据添加至数据库中。
         /// </summary>
         /// <param name="entity">要添加的用户信息实体数据。</param>
+        /// <returns>
+        /// 添加到数据集的实体对象。
+        /// </returns>
         /// <exception cref="ArgumentNullException"/>
         /// <exception cref="InvalidOperationException"/>
         /// <remarks>
         /// 若给定的实体数据已经存在于数据库中，抛出 InvalidOperationException 异常。
         /// 若要更新给定的实体数据，请使用 UpdateUserProfileEntity 方法。
         /// </remarks>
-        public void AddUserProfileEntity(UserProfileEntity entity)
+        public UserProfileEntity AddUserProfileEntity(UserProfileEntity entity)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
             if (QueryUserProfileEntity(entity.Username) != null)
                 throw new InvalidOperationException("给定的实体对象已经存在于数据库中。");
 
-            UserProfiles.Add(entity);
+            entity = UserProfiles.Add(entity);
             SaveChanges();
+
+            return entity;
         }
 
         /// <summary>
@@ -45,17 +50,22 @@ namespace BITOJ.Data
         /// <param name="entity">要添加的队伍信息实体数据。</param>
         /// <exception cref="ArgumentNullException"/>
         /// <exception cref="InvalidOperationException"/>
+        /// <returns>
+        /// 添加到数据集的实体对象。
+        /// </returns>
         /// <remarks>
         /// 若给定的实体对象已经存在于数据库中，抛出 InvalidOperationException 异常。
         /// 若要更新数据库中对应的实体数据，请调用 UpdateTeamProfileEntity 方法。
         /// </remarks>
-        public void AddTeamProfileEntity(TeamProfileEntity entity)
+        public TeamProfileEntity AddTeamProfileEntity(TeamProfileEntity entity)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
-            TeamProfiles.Add(entity);
+            entity = TeamProfiles.Add(entity);
             SaveChanges();
+
+            return entity;
         }
 
         /// <summary>

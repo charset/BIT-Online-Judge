@@ -8,18 +8,18 @@
     public sealed class UserNotFoundException : UserException
     {
 		/// <summary>
-        /// 使用给定的用户名创建 UserNotFoundException 类的一个新实例。
+        /// 使用给定的用户句柄创建 UserNotFoundException 类的一个新实例。
         /// </summary>
-        /// <param name="username">用户名。</param>
-		public UserNotFoundException(string username) : base(username, $"用户 \" {username} \" 不存在。")
+        /// <param name="user">用户句柄。</param>
+		public UserNotFoundException(UserHandle user) : base(user, $"用户 \" {user.Username} \" 不存在。")
         { }
 
 		/// <summary>
         /// 使用给定的用户名和异常消息创建 UserNotFoundException 类的一个新实例。
         /// </summary>
-        /// <param name="username">用户名。</param>
+        /// <param name="user">用户句柄。</param>
         /// <param name="message">异常消息。</param>
-		public UserNotFoundException(string username, string message) : base(username, message)
+		public UserNotFoundException(UserHandle user, string message) : base(user, message)
         { }
     }
 }
