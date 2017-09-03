@@ -85,7 +85,7 @@
             Source = string.Empty;
             Origin = OJSystem.BIT;
             TimeLimit = 1000;
-            MemoryLimit = 64;
+            MemoryLimit = 64 * 1024;
             IsSpecialJudge = false;
             AuthorizationGroup = UserGroup.Guests;
             TotalSubmissions = 0;

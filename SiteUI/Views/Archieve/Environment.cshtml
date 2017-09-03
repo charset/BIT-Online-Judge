@@ -1,0 +1,75 @@
+﻿@using BITOJ.SiteUI.Models
+@model ProblemEnvironmentModel
+@{ 
+    ViewBag.Title = "BITOJ - Modify problem environment";
+}
+
+<div class="jumbotron">
+    <h1>Edit execution environment</h1>
+</div>
+
+<div class="row">
+    <div class="col-lg-6 col-lg-offset-3">
+        <h3>Problem: @Model.Title</h3>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6 col-lg-offset-3">
+        <form method="post">
+            <div class="form-group">
+                <label class="control-label" for="problemId">Problem ID</label>
+                <input class="form-control" type="text" id="problemId" name="ProblemId" value="@Model.ProblemId" 
+                       readonly/>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="title">Title</label>
+                <input class="form-control" type="text" id="title" name="Title" value="@Model.Title"
+                       readonly/>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="timeLimit">Time limit</label>
+                <div class="input-group">
+                    <input class="form-control" type="number" id="timeLimit" name="TimeLimit"
+                           value="@Model.TimeLimit"/>
+                    <span class="input-group-addon">Millisec</span>
+                </div>
+
+                @if (!string.IsNullOrEmpty(ViewBag.TimeLimitErrorMessage))
+                {
+                    <div class="alert alert-danger">
+                        <span class="glyphicon glyphicon-remove"></span>
+                        @ViewBag.TimeLimitErrorMessage
+                    </div>
+                }
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="memLimit">Memory limit</label>
+                <div class="input-group">
+                    <input class="form-control" type="number" id="memLimit" name="MemoryLimit"
+                           value="@Model.MemoryLimit"/>
+                    <span class="input-group-addon">Killobytes</span>
+                </div>
+
+                @if (!string.IsNullOrEmpty(ViewBag.MemoryLimitErrorMessage))
+                {
+                    <div class="alert alert-danger">
+                        <span class="glyphicon glyphicon-remove"></span>
+                        @ViewBag.MemoryLimitErrorMessage
+                    </div>
+                }
+            </div>
+            <div class="checkbox">
+                <label>
+                    @Html.CheckBoxFor(model => model.UseSpecialJudge)
+
+                    Use special judge
+                </label>
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <span class="glyphicon glyphicon-ok"></span>
+                Confirm
+            </button>
+        </form>
+    </div>
+</div>

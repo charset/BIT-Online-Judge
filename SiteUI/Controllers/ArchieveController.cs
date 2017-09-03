@@ -76,7 +76,7 @@
                 return Redirect("~/Error/AccessDenied");
             }
 
-            return View(new ProblemDisplayModel());
+            return View(new ProblemDetailModel());
         }
 
         // POST: Archieve/Add
@@ -196,20 +196,21 @@
             return Redirect("~/Archieve");
         }
 
-        // GET: Archieve/Delete
+        // POST: Archieve/Delete
+        [HttpPost]
         public ActionResult Delete()
         {
             if (!UserAuthorization.CheckAccessRights(UserGroup.Administrators, UserSession.GetUserGroup(Session)))
             {
-                return Redirect("~/Error/AccessDenied");
+                return new ContentResult();
             }
             if (Request.QueryString["id"] == null)
             {
-                return Redirect("~/Error/ProblemNotExist");
+                return new ContentResult();
             }
 
             ProblemArchieveManager.Default.RemoveProblem(Request.QueryString["id"]);
-            return Redirect("~/Archieve");
+            return new ContentResult();
         }
 
         // GET: Archieve/ShowProblem?id=...
@@ -253,6 +254,76 @@
                     return Redirect(resolver.Resolve(handle));
                 }
             }
+        }
+
+        // GET: Archieve/Environment?id=...
+        public ActionResult Environment()
+        {
+            // 检查用户权限。
+            if (!UserSession.IsAuthorized(Session) ||
+                !UserAuthorization.CheckAccessRights(UserGroup.Administrators, UserSession.GetUserGroup(Session)))
+            {
+                return Redirect("~/Error/AccessDenied");
+            }
+
+            if (string.IsNullOrEmpty(Request.QueryString["id"]))
+            {
+                return Redirect("~/Archieve");
+            }
+
+            ProblemHandle handle = ProblemArchieveManager.Default.GetProblemById(Request.QueryString["id"]);
+            if (handle == null)
+            {
+                return Redirect("~/Error/ProblemNotExist");
+            }
+
+            ProblemEnvironmentModel model = ProblemEnvironmentModel.FromProblemHandle(handle);
+            return View(model);
+        }
+
+        // POST: Archieve/Environment
+        [HttpPost]
+        public ActionResult Environment(ProblemEnvironmentModel model)
+        {
+            // 检查操作权限。
+            if (!UserSession.IsAuthorized(Session) ||
+                !UserAuthorization.CheckAccessRights(UserGroup.Administrators, UserSession.GetUserGroup(Session)))
+            {
+                return Redirect("~/Error/AccessDenied");
+            }
+
+            if (!TryValidateModel(model))
+            {
+                if (ModelState["TimeLimit"] != null && ModelState["TimeLimit"].Errors.Count > 0)
+                {
+                    ViewBag.TimeLimitErrorMessage = ModelState["TimeLimit"].Errors[0].ErrorMessage;
+                }
+                if (ModelState["MemoryLimit"] != null && ModelState["MemoryLimit"].Errors.Count > 0)
+                {
+                    ViewBag.MemoryLimitErrorMessage = ModelState["MemoryLimit"].Errors[0].ErrorMessage;
+                }
+                return View(model);
+            }
+            if (string.IsNullOrEmpty(Request.Form["ProblemId"]))
+            {
+                return Redirect("~/Archieve");
+            }
+
+            // 更新数据库数据。
+            ProblemHandle handle = ProblemArchieveManager.Default.GetProblemById(model.ProblemId);
+            if (handle == null)
+            {
+                return Redirect("~/Error/ProblemNotExist");
+            }
+
+            using (ProblemDataProvider data = ProblemDataProvider.Create(handle, false))
+            {
+                data.TimeLimit = model.TimeLimit;
+                data.MemoryLimit = model.MemoryLimit;
+                data.IsSpecialJudge = model.UseSpecialJudge;
+            }
+
+            return Redirect(string.Format("~/Archieve/ShowProblem?id={0}", model.ProblemId));
         }
     }
 }

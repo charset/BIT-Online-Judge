@@ -169,6 +169,7 @@
     <Compile Include="Models\ArchieveCatalog.cs" />
     <Compile Include="Models\ArchieveModel.cs" />
     <Compile Include="Models\ProblemBriefModel.cs" />
+    <Compile Include="Models\ProblemEnvironmentModel.cs" />
     <Compile Include="Models\SiteCatalog.cs" />
     <Compile Include="Models\TeamBriefModel.cs" />
     <Compile Include="Models\TeamDetailModel.cs" />
@@ -199,6 +200,7 @@
     </Content>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\create-team.js" />
+    <Content Include="Scripts\delete-problem.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -240,6 +242,7 @@
     <Content Include="Views\Profile\ShowUser.cshtml" />
     <Content Include="Views\Contest\Index.cshtml" />
     <Content Include="Views\Profile\ShowTeam.cshtml" />
+    <Content Include="Views\Archieve\Environment.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
