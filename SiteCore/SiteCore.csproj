@@ -58,7 +58,9 @@
     <Compile Include="Convert\OJSystemConvert.cs" />
     <Compile Include="Convert\SexConvert.cs" />
     <Compile Include="Convert\UsergroupConvert.cs" />
+    <Compile Include="Data\Queries\SubmissionQueryParameter.cs" />
     <Compile Include="Data\Queries\TeamQueryParameter.cs" />
+    <Compile Include="Data\SubmissionDataProvider.cs" />
     <Compile Include="Data\TeamDataProvider.cs" />
     <Compile Include="Data\TeamNotFoundException.cs" />
     <Compile Include="Data\UserDataProvider.cs" />
@@ -82,6 +84,7 @@
     <Compile Include="Resolvers\ZojUrlResolver.cs" />
     <Compile Include="SubmissionHandle.cs" />
     <Compile Include="SubmissionLanguage.cs" />
+    <Compile Include="SubmissionManager.cs" />
     <Compile Include="SubmissionVerdict.cs" />
     <Compile Include="SubmissionVerdictStatus.cs" />
     <Compile Include="Data\ProblemDataProvider.cs" />

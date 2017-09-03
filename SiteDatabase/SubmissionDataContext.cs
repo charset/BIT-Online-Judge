@@ -22,14 +22,27 @@ namespace BITOJ.Data
         /// 将给定的用户提交记录添加至数据库中。
         /// </summary>
         /// <param name="entity">要添加的用户提交记录实体对象。</param>
+        /// <returns>添加的用户提交记录实体对象。</returns>
         /// <exception cref="ArgumentNullException"/>
-        public void AddSubmissionEntity(SubmissionEntity entity)
+        public SubmissionEntity AddSubmissionEntity(SubmissionEntity entity)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
-            Submissions.Add(entity);
+            entity = Submissions.Add(entity);
             SaveChanges();
+
+            return entity;
+        }
+
+        /// <summary>
+        /// 使用给定的提交 ID 查询提交实体对象。
+        /// </summary>
+        /// <param name="id">提交ID。</param>
+        /// <returns>用户提交实体对象。若给定的提交 ID 不存在于数据集中，返回 null。</returns>
+        public SubmissionEntity QuerySubmissionEntityById(int id)
+        {
+            return Submissions.Find(id);
         }
 
         /// <summary>
