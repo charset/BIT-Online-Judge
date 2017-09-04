@@ -44,6 +44,11 @@
         public SubmissionLanguage Language { get; set; }
 
         /// <summary>
+        /// 获取或设置要查询的用户提交的评测状态。
+        /// </summary>
+        public SubmissionVerdictStatus VerdictStatus { get; set; }
+
+        /// <summary>
         /// 获取或设置要查询的用户提交的 Judge 结果。
         /// </summary>
         public SubmissionVerdict VerdictResult { get; set; }
@@ -79,6 +84,11 @@
         public bool UseLanguage { get; set; }
 
         /// <summary>
+        /// 获取或设置一个值，该值指示是否使用评测状态进行查询。
+        /// </summary>
+        public bool UseVerdictStatus { get; set; }
+
+        /// <summary>
         /// 获取或设置一个值，该值指示是否使用 Judge 结果进行查询。
         /// </summary>
         public bool UseVerdictResult { get; set; }
@@ -94,6 +104,7 @@
             Username = string.Empty;
             ProblemId = string.Empty;
             Language = SubmissionLanguage.GnuCPlusPlus;
+            VerdictStatus = SubmissionVerdictStatus.Pending;
             VerdictResult = SubmissionVerdict.Unknown;
 
             UseId = false;
@@ -102,6 +113,7 @@
             UseTeamId = false;
             UseProblemId = false;
             UseLanguage = false;
+            UseVerdictStatus = false;
             UseVerdictResult = false;
         }
     }

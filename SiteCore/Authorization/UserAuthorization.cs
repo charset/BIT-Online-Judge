@@ -22,33 +22,6 @@
             ms_encoding = Encoding.Unicode;
         }
 
-        private static bool IsByteArraysEqual(byte[] array1, byte[] array2)
-        {
-            if (array1 == null && array2 == null)
-            {
-                return true;
-            }
-            else if (array1 == null || array2 == null)
-            {
-                return false;
-            }
-            else if (array1.Length != array2.Length)
-            {
-                return false;
-            }
-            else
-            {
-                for (int i = 0; i < array1.Length; ++i)
-                {
-                    if (array1[i] != array2[i])
-                    {
-                        return false;
-                    }
-                }
-                return true;
-            }
-        }
-
         /// <summary>
         /// 检查用户登录验证信息是否正确。
         /// </summary>
@@ -75,7 +48,7 @@
             using (UserDataProvider userData = UserDataProvider.Create(handle, true))
             {
                 // 比较密码哈希值是否相同。
-                return IsByteArraysEqual(pwdHash, userData.PasswordHash);
+                return Buffer.IsByteArraysEqual(pwdHash, userData.PasswordHash);
             }
         }
 

@@ -156,6 +156,7 @@
     <Compile Include="Controllers\ContestController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\InternalController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\ProfileController.cs" />
     <Compile Include="Global.asax.cs">
@@ -171,6 +172,10 @@
     <Compile Include="Models\ProblemBriefModel.cs" />
     <Compile Include="Models\ProblemEnvironmentModel.cs" />
     <Compile Include="Models\SiteCatalog.cs" />
+    <Compile Include="Models\SubmissionFetchRequestModel.cs" />
+    <Compile Include="Models\SubmissionFetchResponseModel.cs" />
+    <Compile Include="Models\SubmissionUpdateRequestModel.cs" />
+    <Compile Include="Models\SubmissionUpdateRespondModel.cs" />
     <Compile Include="Models\TeamBriefModel.cs" />
     <Compile Include="Models\TeamDetailModel.cs" />
     <Compile Include="Models\UserProfileModel.cs" />

@@ -52,6 +52,16 @@
         public string CodeFilename { get; set; }
 
         /// <summary>
+        /// 获取或设置用户程序运行的 CPU 时间，以毫秒为单位。
+        /// </summary>
+        public int ExecutionTime { get; set; }
+
+        /// <summary>
+        /// 获取或设置用户程序运行的峰值内存总量，以 KB 为单位。
+        /// </summary>
+        public int ExecutionMemory { get; set; }
+
+        /// <summary>
         /// 获取或设置该提交所使用的程序设计语言或编译系统。
         /// </summary>
         public SubmissionLanguage Language { get; set; }
@@ -84,6 +94,8 @@
             TeamId = 0;
             ProblemId = string.Empty;
             CodeFilename = string.Empty;
+            ExecutionTime = 0;
+            ExecutionMemory = 0;
             Language = SubmissionLanguage.GnuCPlusPlus;
             VerdictStatus = SubmissionVerdictStatus.Pending;
             VerdictResult = SubmissionVerdict.Unknown;

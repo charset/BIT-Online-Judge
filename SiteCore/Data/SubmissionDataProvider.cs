@@ -18,6 +18,26 @@
     /// </summary>
     public sealed class SubmissionDataProvider : IDisposable
     {
+        /// <summary>
+        /// 从给定的提交句柄对象创建 SubmissionDataProvider 类的新实例。
+        /// </summary>
+        /// <param name="handle">提交句柄对象。</param>
+        /// <param name="isReadonly">一个值，该值指示创建的对象是否为只读。</param>
+        /// <returns>创建的 SubmissionDataProvider 类对象。</returns>
+        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="SubmissionNotExistException"/>
+        public static SubmissionDataProvider Create(SubmissionHandle handle, bool isReadonly)
+        {
+            if (handle == null)
+                throw new ArgumentNullException(nameof(handle));
+
+            SubmissionEntity entity = SubmissionManager.Default.Context.QuerySubmissionEntityById(handle.SubmissionId);
+            if (entity == null)
+                throw new SubmissionNotExistException(handle);
+
+            return new SubmissionDataProvider(entity, isReadonly);
+        }
+
         private SubmissionEntity m_entity;
         private string m_code;
         private bool m_readonly;
@@ -180,6 +200,32 @@
         }
 
         /// <summary>
+        /// 获取或设置客户程序占用的 CPU 时间，以毫秒为单位。
+        /// </summary>
+        public int ExecutionTime
+        {
+            get => m_disposed ? throw new ObjectDisposedException(GetType().Name) : m_entity.ExecutionTime;
+            set
+            {
+                CheckAccess();
+                m_entity.ExecutionTime = value;
+            }
+        }
+
+        /// <summary>
+        /// 获取或设置客户程序占用的峰值内存，以 KB 为单位。
+        /// </summary>
+        public int ExecutionMemory
+        {
+            get => m_disposed ? throw new ObjectDisposedException(GetType().Name) : m_entity.ExecutionMemory;
+            set
+            {
+                CheckAccess();
+                m_entity.ExecutionMemory = value;
+            }
+        }
+
+        /// <summary>
         /// 获取或设置用户提交所使用的语言。
         /// </summary>
         public CoreSubmissionLanguage Language
@@ -221,6 +267,19 @@
             {
                 CheckAccess();
                 m_entity.VerdictStatus = (DatabaseSubmissionVerdictStatus)value;
+            }
+        }
+
+        /// <summary>
+        /// 获取或设置用户提交的评测消息。
+        /// </summary>
+        public string VerdictMessage
+        {
+            get => m_disposed ? throw new ObjectDisposedException(GetType().Name) : m_entity.VerdictMessage;
+            set
+            {
+                CheckAccess();
+                m_entity.VerdictMessage = value;
             }
         }
 

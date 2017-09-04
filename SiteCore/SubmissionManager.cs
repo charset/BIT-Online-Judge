@@ -6,6 +6,7 @@
     using BITOJ.Data;
     using BITOJ.Data.Components;
     using BITOJ.Data.Entities;
+    using DatabaseVerdictStatus = BITOJ.Data.Entities.SubmissionVerdictStatus;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -116,7 +117,14 @@
             var set = m_context.QuerySubmissionEntities(query.GetQueryHandle());
             
             // 将所有实体对象按照创建时间排序。
-            set = set.OrderByDescending(item => item.CreationTimestamp);
+            if (query.OrderByDescending)
+            {
+                set = set.OrderByDescending(item => item.CreationTimestamp);
+            }
+            else
+            {
+                set = set.OrderBy(item => item.CreationTimestamp);
+            }
             // 然后执行分页。
             set = set.Page(query.Page.Page, query.Page.EntriesPerPage);
 
@@ -127,6 +135,42 @@
             }
 
             return handles;
+        }
+
+        /// <summary>
+        /// 获取当前正处在等待评测状态的用户提交中创建时间最早的一条用户提交的句柄。
+        /// </summary>
+        /// <returns>当前正处在等待评测状态的用户提交中创建时间最早的一条用户提交的句柄。若不存在这样的用户提交，返回 null。</returns>
+        public SubmissionHandle GetPendingListFront()
+        {
+            SubmissionQueryHandle query = new SubmissionQueryHandle()
+            {
+                VerdictStatus = DatabaseVerdictStatus.Pending,
+                UseVerdictStatus = true
+            };
+
+            IList<SubmissionEntity> set = m_context.QuerySubmissionEntities(query)
+                .OrderBy(entity => entity.CreationTimestamp).Take(1).ToList();
+
+            if (set.Count == 0)
+            {
+                return null;
+            }
+            else
+            {
+                return SubmissionHandle.FromSubmissionEntity(set[0]);
+            }
+        }
+
+        /// <summary>
+        /// 检查某个用户提交是否存在。
+        /// </summary>
+        /// <param name="submissionId">用户提交 ID。</param>
+        /// <returns>一个值，该值指示给定的用户提交是否存在。</returns>
+        public bool IsSubmissionExist(int submissionId)
+        {
+            SubmissionEntity entity = m_context.QuerySubmissionEntityById(submissionId);
+            return entity != null;
         }
 
         /// <summary>
