@@ -111,9 +111,9 @@
         /// 使用给定的查询参数查询用户提交。
         /// </summary>
         /// <param name="query">查询参数。</param>
-        /// <returns>一个列表，该列表包含了所有的查询结果。</returns>
+        /// <returns>一个包含了所有的查询结果的结果对象。</returns>
         /// <exception cref="ArgumentNullException"/>
-        public IList<SubmissionHandle> QuerySubmissions(SubmissionQueryParameter query)
+        public QueryResult<SubmissionHandle> QuerySubmissions(SubmissionQueryParameter query)
         {
             if (query == null)
                 throw new ArgumentNullException(nameof(query));
@@ -124,7 +124,7 @@
 
             var set = m_context.QuerySubmissionEntities(query.GetQueryHandle());
             
-            // 将所有实体对象按照创建时间排序。
+            // 将所有实体对象按照创建时间排序以准备随时分页并显示。
             if (query.OrderByDescending)
             {
                 set = set.OrderByDescending(item => item.CreationTimestamp);
@@ -133,16 +133,9 @@
             {
                 set = set.OrderBy(item => item.CreationTimestamp);
             }
-            // 然后执行分页。
-            set = set.Page(query.Page.Page, query.Page.EntriesPerPage);
 
-            List<SubmissionHandle> handles = new List<SubmissionHandle>();
-            foreach (SubmissionEntity entity in set)
-            {
-                handles.Add(SubmissionHandle.FromSubmissionEntity(entity));
-            }
-
-            return handles;
+            return new QueryResult<SubmissionHandle>(set, item => 
+                SubmissionHandle.FromSubmissionEntity((SubmissionEntity)item));
         }
 
         /// <summary>

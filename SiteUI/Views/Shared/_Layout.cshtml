@@ -1,5 +1,6 @@
-﻿@using BITOJ.Core;
-@using BITOJ.Core.Authorization;
+﻿@using BITOJ.Core
+@using BITOJ.Core.Authorization
+@using BITOJ.Core.Convert
 
 @{ 
     UserSession.RenewSession(Session);
@@ -94,14 +95,8 @@
                                     @UserSession.GetUsername(Session) <span class="caret"></span>
                                 </a>
                                 <ul class="dropdown-menu">
+                                    <li class="dropdown-header">@UsergroupConvert.ConvertToString(UserSession.GetUserGroup(Session))</li>
                                     <li><a href="@string.Format("/Profile/ShowUser?username={0}", UserSession.GetUsername(Session))">Profile</a></li>
-
-                                    @if (UserAuthorization.CheckAccessRights(BITOJ.Core.UserGroup.Administrators,
-                                        UserSession.GetUserGroup(Session)))
-                                    {
-                                        // Show administration menu item.
-                                        <li><a href="~/Admin">Administration</a></li>
-                                    }
                                     
                                     <li role="separator" class="divider"></li>
                                     <li><a href="~/Login/Logout">Sign out</a></li>

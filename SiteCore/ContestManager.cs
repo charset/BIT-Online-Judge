@@ -6,7 +6,6 @@
     using BITOJ.Data;
     using BITOJ.Data.Entities;
     using System;
-    using System.Collections.Generic;
     using System.Linq;
 
     /// <summary>
@@ -115,10 +114,10 @@
         /// 使用给定的查询参数查询比赛句柄。
         /// </summary>
         /// <param name="query">封装查询参数的对象。</param>
-        /// <returns>一个列表，其中包含了所有查询到的比赛句柄。</returns>
+        /// <returns>一个查询结果对象，其中包含了所有查询到的比赛句柄。</returns>
         /// <exception cref="ArgumentNullException"/>
         /// <exception cref="ArgumentException"/>
-        public IList<ContestHandle> QueryContests(ContestQueryParameter query)
+        public QueryResult<ContestHandle> QueryContests(ContestQueryParameter query)
         {
             if (query == null)
                 throw new ArgumentNullException(nameof(query));
@@ -154,13 +153,7 @@
                 }
             }
 
-            List<ContestHandle> handles = new List<ContestHandle>();
-            foreach (ContestEntity entity in set)
-            {
-                handles.Add(ContestHandle.FromContestEntity(entity));
-            }
-
-            return handles;
+            return new QueryResult<ContestHandle>(set, item => ContestHandle.FromContestEntity((ContestEntity)item));
         }
 
         /// <summary>

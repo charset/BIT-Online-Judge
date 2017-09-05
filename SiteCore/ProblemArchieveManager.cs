@@ -145,10 +145,10 @@
         /// 使用指定的查询对象查询题目句柄。
         /// </summary>
         /// <param name="query">为查询提供参数。</param>
-        /// <returns>一个列表，该列表中包含了所有的查询结果。</returns>
+        /// <returns>一个包含了所有的查询结果的查询结果对象。</returns>
         /// <exception cref="ArgumentNullException"/>
         /// <exception cref="ArgumentOutOfRangeException"/>
-        public IList<ProblemHandle> QueryProblems(ProblemArchieveQueryParameter query)
+        public QueryResult<ProblemHandle> QueryProblems(ProblemArchieveQueryParameter query)
         {
             if (query == null)
                 throw new ArgumentNullException(nameof(query));
@@ -158,10 +158,6 @@
                 throw new ArgumentNullException(nameof(query.Source));
             if (query.QueryByAuthor && query.Author == null)
                 throw new ArgumentNullException(nameof(query.Author));
-            if (query.Page == null)
-                throw new ArgumentNullException(nameof(query.Page));
-            if (query.Page.Page <= 0 || query.Page.EntriesPerPage <= 0)
-                throw new ArgumentOutOfRangeException(nameof(query.Page));
             
             IQueryable<ProblemEntity> set = m_context.GetAllProblemEntities();
 
@@ -183,17 +179,10 @@
                 set = ProblemDataContext.QueryProblemEntitiesByOrigin(set, (NativeOJSystem)query.Origin);
             }
 
-            // 执行分页。
+            // 对数据集进行排序以准备随时执行分页。
             set = set.OrderBy(entity => entity.Id);
-            set = set.Page(query.Page.Page, query.Page.EntriesPerPage);
 
-            List<ProblemHandle> handleList = new List<ProblemHandle>();
-            foreach (ProblemEntity entity in set)
-            {
-                handleList.Add(ProblemHandle.FromProblemEntity(entity));
-            }
-
-            return handleList;
+            return new QueryResult<ProblemHandle>(set, item => ProblemHandle.FromProblemEntity((ProblemEntity)item));
         }
 
         /// <summary>

@@ -80,7 +80,7 @@ namespace BITOJ.Data
             if (creator == null)
                 throw new ArgumentNullException(nameof(creator));
 
-            var entities = from item in Contests
+            var entities = from item in source
                            where item.Creator == creator
                            select item;
             return entities;

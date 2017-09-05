@@ -8,16 +8,6 @@
     public sealed class UserQueryParameter
     {
         /// <summary>
-        /// 获取或设置一个值，该值指示是否按照用户名进行查询。
-        /// </summary>
-        public bool QueryByUsername { get; set; }
-
-        /// <summary>
-        /// 当 QueryByUser 为 true 时，获取或设置查询用户名。
-        /// </summary>
-        public string Username { get; set; }
-
-        /// <summary>
         /// 获取或设置一个值，该值指示是否按照组织名称进行查询。
         /// </summary>
         public bool QueryByOrganization { get; set; }
@@ -52,9 +42,6 @@
         /// </summary>
         public UserQueryParameter()
         {
-            QueryByUsername = false;
-            Username = string.Empty;
-
             QueryByOrganization = false;
             Organization = string.Empty;
 

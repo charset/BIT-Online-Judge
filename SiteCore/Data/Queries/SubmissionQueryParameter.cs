@@ -61,11 +61,6 @@
         public bool QueryByVerdict { get; set; }
 
         /// <summary>
-        /// 获取或设置分页查询参数。
-        /// </summary>
-        public PagedQueryParameters Page { get; set; }
-
-        /// <summary>
         /// 获取或设置一个值，该值指示是否应按创建时间戳降序排序查询结果。
         /// </summary>
         public bool OrderByDescending { get; set; }
@@ -85,7 +80,6 @@
             QueryByLanguage = false;
             Verdict = SubmissionVerdict.Accepted;
             QueryByVerdict = false;
-            Page = new PagedQueryParameters(1, 50);
             OrderByDescending = true;
         }
 

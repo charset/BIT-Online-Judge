@@ -5,7 +5,6 @@
     using BITOJ.Data;
     using BITOJ.Data.Entities;
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using NativeUserGroup = BITOJ.Data.Entities.UserGroup;
     using NativeUserSex = BITOJ.Data.Entities.UserSex;
@@ -137,82 +136,43 @@
         /// 根据指定的查询参数查询用户句柄。
         /// </summary>
         /// <param name="query">查询参数。</param>
-        /// <returns>一个列表，列表中包含了所有满足查询条件的用户句柄。</returns>
+        /// <returns>一个包含了所有满足查询条件的用户句柄的查询结果对象。</returns>
         /// <exception cref="ArgumentNullException"/>
-        public IList<UserHandle> QueryUsers(UserQueryParameter query)
+        public QueryResult<UserHandle> QueryUsers(UserQueryParameter query)
         {
             if (query == null)
                 throw new ArgumentNullException(nameof(query));
-            if (query.QueryByUsername && query.Username == null)
-                throw new ArgumentNullException(nameof(query.Username));
             if (query.QueryByOrganization && query.Organization == null)
                 throw new ArgumentNullException(nameof(query.Organization));
 
-            if (query.QueryByUsername)
+            bool hasQuery = query.QueryByOrganization || query.QueryByUsergroup;
+            if (!hasQuery)
             {
-                // 从用户名开始查找。
-                // 由于满足条件的实体对象至多一个，做特殊化处理。
-                UserProfileEntity profile = m_context.QueryUserProfileEntity(query.Username);
-                if (profile == null)
-                {
-                    // 未找到符合要求的实体对象。
-                    return new List<UserHandle>();
-                }
-                else
-                {
-                    // 检查其他条件是否满足。
-                    if (query.QueryByOrganization && string.Compare(query.Organization, profile.Organization, false) != 0)
-                    {
-                        return new List<UserHandle>();
-                    }
-
-                    if (query.QueryBySex && profile.Sex != (NativeUserSex)query.Sex)
-                    {
-                        return new List<UserHandle>();
-                    }
-
-                    if (query.QueryByUsergroup && profile.UserGroup != (NativeUserGroup)query.UserGroup)
-                    {
-                        return new List<UserHandle>();
-                    }
-
-                    // 唯一的用户信息实体对象满足条件。
-                    return new List<UserHandle>() { UserHandle.FromUserProfileEntity(profile) };
-                }
+                // 没有查询参数。返回空列表。
+                return QueryResult<UserHandle>.Empty;
             }
-            else    // query.QueryByUsername == false
+            else
             {
-                bool hasQuery = query.QueryByOrganization || query.QueryByUsergroup;
-                if (!hasQuery)
+                IQueryable<UserProfileEntity> profiles = m_context.GetAllUserProfiles();
+                if (query.QueryByOrganization)
                 {
-                    // 没有查询参数。返回空列表。
-                    return new List<UserHandle>();
+                    profiles = UserDataContext.QueryUserProfileEntitiesByOrganization(profiles, query.Organization);
                 }
-                else
+                if (query.QueryBySex)
                 {
-                    IQueryable<UserProfileEntity> profiles = m_context.GetAllUserProfiles();
-                    if (query.QueryByOrganization)
-                    {
-                        profiles = UserDataContext.QueryUserProfileEntitiesByOrganization(profiles, query.Organization);
-                    }
-                    if (query.QueryBySex)
-                    {
-                        profiles = UserDataContext.QueryUserProfileEntitiesBySex(profiles, (NativeUserSex)query.Sex);
-                    }
-                    if (query.QueryByUsergroup)
-                    {
-                        profiles = UserDataContext.QueryUserProfileEntitiesByUsergroup(profiles, 
-                            (NativeUserGroup)query.UserGroup);
-                    }
-
-                    List<UserHandle> handles = new List<UserHandle>();
-                    foreach (UserProfileEntity entity in profiles)
-                    {
-                        handles.Add(UserHandle.FromUserProfileEntity(entity));
-                    }
-
-                    return handles;
+                    profiles = UserDataContext.QueryUserProfileEntitiesBySex(profiles, (NativeUserSex)query.Sex);
                 }
+                if (query.QueryByUsergroup)
+                {
+                    profiles = UserDataContext.QueryUserProfileEntitiesByUsergroup(profiles,
+                        (NativeUserGroup)query.UserGroup);
+                }
+
+                // 对查询结果进行排序以准备随时分页。
+                profiles.OrderBy(item => item.Username);
+
+                return new QueryResult<UserHandle>(profiles, item => 
+                    UserHandle.FromUserProfileEntity((UserProfileEntity)item));
             }
         }
 
@@ -220,9 +180,9 @@
         /// 根据指定的队伍查询参数查询队伍句柄。
         /// </summary>
         /// <param name="query">查询参数。</param>
-        /// <returns>查询到的队伍句柄列表。</returns>
+        /// <returns>查询到的队伍句柄结果对象。</returns>
         /// <exception cref="ArgumentNullException"/>
-        public IList<TeamHandle> QueryTeams(TeamQueryParameter query)
+        public QueryResult<TeamHandle> QueryTeams(TeamQueryParameter query)
         {
             if (query == null)
                 throw new ArgumentNullException(nameof(query));
@@ -241,13 +201,7 @@
                 set = UserDataContext.QueryTeamProfileEntityByLeader(set, query.Leader);
             }
 
-            List<TeamHandle> handles = new List<TeamHandle>();
-            foreach (TeamProfileEntity entity in set)
-            {
-                handles.Add(TeamHandle.FromTeamEntity(entity));
-            }
-
-            return handles;
+            return new QueryResult<TeamHandle>(set, item => TeamHandle.FromTeamEntity((TeamProfileEntity)item));
         }
 
         /// <summary>

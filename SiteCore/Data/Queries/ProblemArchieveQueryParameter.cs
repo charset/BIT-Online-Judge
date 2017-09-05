@@ -46,11 +46,6 @@
         public bool QueryByOrigin { get; set; }
 
         /// <summary>
-        /// 获取或设置分页查询参数。
-        /// </summary>
-        public PagedQueryParameters Page { get; set; }
-
-        /// <summary>
         /// 创建 ProblemArchieveQueryParameter 类的新实例。
         /// </summary>
         public ProblemArchieveQueryParameter()
@@ -63,7 +58,6 @@
             QueryBySource = false;
             QueryByAuthor = false;
             QueryByOrigin = false;
-            Page = new PagedQueryParameters(1, int.MaxValue);
         }
     }
 }

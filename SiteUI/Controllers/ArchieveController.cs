@@ -7,8 +7,6 @@
     using BITOJ.Core.Data.Queries;
     using BITOJ.Core.Resolvers;
     using BITOJ.SiteUI.Models;
-    using System;
-    using System.Collections.Generic;
     using System.Web.Mvc;
 
     public class ArchieveController : Controller
@@ -44,16 +42,17 @@
                 Author = Request.QueryString["author"],
                 QueryByOrigin = true,
                 Origin = OJSystemConvert.ConvertFromString(Request.QueryString["origin"] ?? "BIT"),
-                Page = new PagedQueryParameters(page, ItemsPerPage),
             };
 
-            ICollection<ProblemHandle> result = ProblemArchieveManager.Default.QueryProblems(query);
-            foreach (ProblemHandle handle in result)
+            QueryResult<ProblemHandle> result = ProblemArchieveManager.Default.QueryProblems(query);
+            model.Pages = result.GetTotalPages(ItemsPerPage);
+
+            // 执行分页。
+            foreach (ProblemHandle handle in result.Page(page, ItemsPerPage))
             {
                 model.Problems.Add(ProblemBriefModel.FromProblemHandle(handle));
             }
 
-            model.Pages = result.Count / ItemsPerPage + Math.Sign(result.Count % ItemsPerPage);
             return View(model);
         }
 

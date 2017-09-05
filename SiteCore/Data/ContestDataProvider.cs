@@ -17,6 +17,26 @@
     /// </summary>
     public sealed class ContestDataProvider : IDisposable
     {
+        /// <summary>
+        /// 从给定的题目句柄创建 ContestDataProvider 类的新实例。
+        /// </summary>
+        /// <param name="handle">比赛句柄。</param>
+        /// <param name="isReadonly">一个值，该值指示当前对象是否为只读对象。</param>
+        /// <returns>从给定的题目句柄创建的 ContestDataProvider 对象。</returns>
+        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="ContestNotFoundException"/>
+        public static ContestDataProvider Create(ContestHandle handle, bool isReadonly)
+        {
+            if (handle == null)
+                throw new ArgumentNullException(nameof(handle));
+
+            ContestEntity entity = ContestManager.Default.Context.QueryContestById(handle.ContestId);
+            if (entity == null)
+                throw new ContestNotFoundException(handle);
+
+            return new ContestDataProvider(entity, isReadonly);
+        }
+
         private ContestEntity m_entity;
         private ContestAccessHandle m_access;
         private bool m_readonly;

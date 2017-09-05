@@ -1,4 +1,5 @@
 ﻿@using BITOJ.Core
+@using BITOJ.Core.Convert
 @using BITOJ.Core.Authorization
 @using BITOJ.SiteUI.Models
 @model ContestModel
@@ -13,10 +14,10 @@
 <div class="row">
     <div class="col-lg-3">
         @if (UserSession.IsAuthorized(Session) &&
-             UserAuthorization.CheckAccessRights(UserGroup.Administrators, UserSession.GetUserGroup(Session)))
+             UserAuthorization.CheckAccessRights(UserGroup.Insiders, UserSession.GetUserGroup(Session)))
         {
             <div class="hidden-xs hidden-sm btn-group-vertical" style="display: block;">
-                <a href="~/Contest/Add" role="button" class="btn btn-warning">
+                <a href="~/Contest/Add" role="button" class="btn btn-primary">
                     <span class="glyphicon glyphicon-plus"></span>
                     Add a new contest
                 </a>
@@ -68,23 +69,6 @@
                             <input type="text" class="form-control" id="Title" name="Title" />
                         </div>
                         <div class="form-group">
-                            <label class="control-label" for="Type">Type</label>
-                            <select class="form-control" id="Type" name="Type">
-                                <option>All</option>
-                                <option>Public</option>
-                                <option>Protected</option>
-                                <option>Private</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label" for="ParticipationMode">Participation Mode</label>
-                            <select class="form-control" id="ParticipationMode" name="ParticipationMode">
-                                <option>Both</option>
-                                <option>Individual Only</option>
-                                <option>Teamwork Only</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
                             <label class="control-label" for="Holder">Holder</label>
                             <input type="text" class="form-control" id="Holder" name="Holder" />
                         </div>
@@ -116,10 +100,8 @@
                             }
                             else
                             {
-                                string pageUrl = string.Format("~/Contest/Local/{0}", page);
-
                                 <li>
-                                    <a href="@pageUrl">@page</a>
+                                    <a href="@string.Format("/Contest?page={0}", page)">@page</a>
                                 </li>
                             }
                         }
@@ -129,6 +111,7 @@
             else
             {
                 <div class="alert alert-info">
+                    <span class="glyphicon glyphicon-exclamation-sign"></span>
                     <p>There are no contests yet.</p>
                 </div>
             }
@@ -150,18 +133,23 @@
                     @{
                         if (Model != null)
                         {
-                            foreach (ContestInfoModel info in Model.Contests)
+                            foreach (ContestBriefModel info in Model.Contests)
                             {
                                 string contestUrl = string.Format("/Contest/ShowContest?id={0}", info.ContestId);
                                 <tr>
                                     <td><a href="@contestUrl"><strong>@info.Title</strong></a></td>
-                                    <td>{{MODIFY_HERE(比赛种类)}}</td>
-                                    <td>{{MODIFY_HERE(比赛参与模式)}}</td>
-                                    <td>@info.StartTime.ToString("yyyy-MM-dd HH:mm:ss")</td>
-                                    <td>@info.EndTime.ToString("yyyy-MM-dd HH:mm:ss")</td>
-                                    <td>@info.GetDurationString()</td>
-                                    <td>@info.GetStatus()</td>
-                                    <td>@info.Holder</td>
+                                    <td>@ContestAuthorizationModeConvert.ConvertToString(info.AuthorizationMode)</td>
+                                    <td>@ContestParticipationModeConvert.ConvertToString(info.ParticipationMode)</td>
+                                    <td>
+                                        <a tabindex="0" class="btn btn-default" role="button" data-toggle="popover"
+                                           data-trigger="focus" title="Contest calendar"
+                                           data-content="@Html.Encode(info.GetCalenderString())"
+                                           data-html="true">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                        </a>
+                                    </td>
+                                    <td>@ContestStatusConvert.ConvertToString(info.Status)</td>
+                                    <td>@info.Creator</td>
                                 </tr>
                             }
                         }

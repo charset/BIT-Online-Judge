@@ -1,18 +1,12 @@
-﻿
-namespace BITOJ.SiteUI.Models
+﻿namespace BITOJ.SiteUI.Models
 {
     using System.Collections.Generic;
     
     /// <summary>
-    /// 
+    /// 为比赛列表页面提供数据模型。
     /// </summary>
     public class ContestModel
     {
-        /// <summary>
-        /// 获取或设置当前 Contest 视图中应当呈现的题目。
-        /// </summary>
-        public ICollection<ContestInfoModel> Contests { get; set; }
-
         /// <summary>
         /// 获取或设置比赛总页数。
         /// </summary>
@@ -28,12 +22,20 @@ namespace BITOJ.SiteUI.Models
         /// </summary>
         public ContestCatalog Catalog { get; set; }
 
+        /// <summary>
+        /// 获取或设置当前 Contest 视图中应当呈现的题目。
+        /// </summary>
+        public ICollection<ContestBriefModel> Contests { get; set; }
+
+        /// <summary>
+        /// 创建 ContestModel 类的新实例。
+        /// </summary>
         public ContestModel()
         {
-            Contests = new List<ContestInfoModel>();
             Pages = 0;
             CurrentPage = 0;
             Catalog = ContestCatalog.All;
+            Contests = new List<ContestBriefModel>();
         }
     }
 }
