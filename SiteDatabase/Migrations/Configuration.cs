@@ -5,15 +5,14 @@ namespace BITOJ.Data.Migrations
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<BITOJ.Data.UserDataContext>
+    internal sealed class Configuration : DbMigrationsConfiguration<BITOJ.Data.ProblemDataContext>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
-            ContextKey = "BITOJ.Data.UserDataContext";
         }
 
-        protected override void Seed(BITOJ.Data.UserDataContext context)
+        protected override void Seed(BITOJ.Data.ProblemDataContext context)
         {
             //  This method will be called after migrating to the latest version.
 

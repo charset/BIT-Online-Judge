@@ -47,7 +47,11 @@
         {
             DateTime date = DateTime.Now;
             int days = (date.Year - 1) * 365 + (date.Year - 1) / 4 - (date.Year - 1) / 100 + (date.Year - 1) / 400
-                + MonthDays[date.Month - 1] + date.Day;
+                + date.Day;
+            if (date.Month >= 2)
+            {
+                days += MonthDays[date.Month - 2];
+            }
 
             if (IsLeapYear(date.Year) && date.Month >= 3)
             {

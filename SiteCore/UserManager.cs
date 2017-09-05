@@ -57,6 +57,7 @@
 
         ~UserManager()
         {
+            m_context.SaveChanges();
             m_context.Dispose();
         }
 

@@ -83,13 +83,9 @@
     <Compile Include="Entities\UserGroup.cs" />
     <Compile Include="Entities\UserProfileEntity.cs" />
     <Compile Include="Entities\SubmissionVerdictStatus.cs" />
-    <Compile Include="Migrations\201708231318197_InitialCreate.cs" />
-    <Compile Include="Migrations\201708231318197_InitialCreate.Designer.cs">
-      <DependentUpon>201708231318197_InitialCreate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201708310742155_AddTeamLeaderAndPassword.cs" />
-    <Compile Include="Migrations\201708310742155_AddTeamLeaderAndPassword.Designer.cs">
-      <DependentUpon>201708310742155_AddTeamLeaderAndPassword.cs</DependentUpon>
+    <Compile Include="Migrations\201709050144169_AddContestId.cs" />
+    <Compile Include="Migrations\201709050144169_AddContestId.Designer.cs">
+      <DependentUpon>201709050144169_AddContestId.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ContestAuthorizationModel.cs" />
@@ -123,11 +119,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201708231318197_InitialCreate.resx">
-      <DependentUpon>201708231318197_InitialCreate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201708310742155_AddTeamLeaderAndPassword.resx">
-      <DependentUpon>201708310742155_AddTeamLeaderAndPassword.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201709050144169_AddContestId.resx">
+      <DependentUpon>201709050144169_AddContestId.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

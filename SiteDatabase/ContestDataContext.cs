@@ -23,13 +23,15 @@ namespace BITOJ.Data
         /// </summary>
         /// <param name="entity">要添加的比赛实体。</param>
         /// <exception cref="ArgumentNullException"/>
-        public void AddContest(ContestEntity entity)
+        public ContestEntity AddContest(ContestEntity entity)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity));
 
-            Contests.Add(entity);
+            entity = Contests.Add(entity);
             SaveChanges();
+
+            return entity;
         }
 
         /// <summary>
@@ -45,30 +47,36 @@ namespace BITOJ.Data
         }
 
         /// <summary>
-        /// 按标题查询比赛实体对象。
+        /// 按标题从给定的数据源中查询比赛实体对象。
         /// </summary>
         /// <param name="title">要查询的标题。</param>
+        /// <param name="source">数据源。</param>
         /// <returns>一个可查询对象，该对象包含了所有标题为给定值的比赛实体对象。</returns>
         /// <exception cref="ArgumentNullException"/>
-        public IQueryable<ContestEntity> QueryContestsByTitle(string title)
+        public static IQueryable<ContestEntity> QueryContestsByTitle(IQueryable<ContestEntity> source, string title)
         {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
             if (title == null)
                 throw new ArgumentNullException(nameof(title));
 
-            var entities = from item in Contests
+            var entities = from item in source
                            where item.Title == title
                            select item;
             return entities;
         }
 
         /// <summary>
-        /// 按作者查询比赛实体对象。
+        /// 按作者从给定的数据源中查询比赛实体对象。
         /// </summary>
         /// <param name="creator">要查询的作者的用户名。</param>
+        /// <param name="source">数据源。</param>
         /// <returns>一个可查询对象，该对象包含了所有作者为给定值的比赛实体对象。</returns>
         /// <exception cref="ArgumentNullException"/>
-        public IQueryable<ContestEntity> QueryContestsByCreator(string creator)
+        public static IQueryable<ContestEntity> QueryContestsByCreator(IQueryable<ContestEntity> source, string creator)
         {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
             if (creator == null)
                 throw new ArgumentNullException(nameof(creator));
 
@@ -79,39 +87,51 @@ namespace BITOJ.Data
         }
 
         /// <summary>
-        /// 查询所有未开始的比赛实体对象。
+        /// 查询所有的比赛实体对象。
         /// </summary>
+        /// <returns>一个可查询对象，该对象可查询到所有的比赛实体对象。</returns>
+        public IQueryable<ContestEntity> QueryAllContests()
+        {
+            return Contests;
+        }
+
+        /// <summary>
+        /// 从给定的数据源中查询所有未开始的比赛实体对象。
+        /// </summary>
+        /// <param name="source">数据源。</param>
         /// <returns>一个可查询对象，该对象可查询到所有的未开始的比赛实体对象。</returns>
-        public IQueryable<ContestEntity> QueryUnstartedContests()
+        public static IQueryable<ContestEntity> QueryUnstartedContests(IQueryable<ContestEntity> source)
         {
             DateTime now = DateTime.Now;
-            var entities = from item in Contests
+            var entities = from item in source
                            where item.StartTime > now
                            select item;
             return entities;
         }
 
         /// <summary>
-        /// 查询所有正在进行的比赛实体对象。
+        /// 从给定的数据源中查询所有正在进行的比赛实体对象。
         /// </summary>
+        /// <param name="source">数据源。</param>
         /// <returns>一个可查询对象，该对象可查询到所有的正在进行的比赛实体对象。</returns>
-        public IQueryable<ContestEntity> QueryRunningContests()
+        public static IQueryable<ContestEntity> QueryRunningContests(IQueryable<ContestEntity> source)
         {
             DateTime now = DateTime.Now;
-            var entities = from item in Contests
+            var entities = from item in source
                            where item.StartTime <= now && item.EndTime >= now
                            select item;
             return entities;
         }
 
         /// <summary>
-        /// 查询所有已结束的比赛实体对象。
+        /// 从给定的数据源中查询所有已结束的比赛实体对象。
         /// </summary>
+        /// <param name="source">数据源。</param>
         /// <returns>一个可查询对象，该对象可查询到所有的已结束的比赛实体对象。</returns>
-        public IQueryable<ContestEntity> QueryEndedContests()
+        public static IQueryable<ContestEntity> QueryEndedContests(IQueryable<ContestEntity> source)
         {
             DateTime now = DateTime.Now;
-            var entities = from item in Contests
+            var entities = from item in source
                            where item.EndTime < now
                            select item;
             return entities;
@@ -133,6 +153,6 @@ namespace BITOJ.Data
         /// <summary>
         /// 获取或设置比赛数据集。
         /// </summary>
-        protected virtual DbSet<ContestEntity> Contests { get; set; }
+        public virtual DbSet<ContestEntity> Contests { get; set; }
     }
 }

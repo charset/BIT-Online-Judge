@@ -27,15 +27,17 @@
             ms_syncLock = new object();
 
             // 加载用户提交代码文件目录信息。
-            FileSystemSettingProvider settings = new FileSystemSettingProvider();
-            if (settings.Contains(SubmissionCodeFileDirectorySettingName))
+            using (FileSystemSettingProvider settings = new FileSystemSettingProvider())
             {
-                SubmissionCodeFilesDirectory = settings.Get<string>(SubmissionCodeFileDirectorySettingName);
-            }
-            else
-            {
-                // 加载默认设置。
-                SubmissionCodeFilesDirectory = ApplicationDirectory.GetAppSubDirectory("Submissions");
+                if (settings.Contains(SubmissionCodeFileDirectorySettingName))
+                {
+                    SubmissionCodeFilesDirectory = settings.Get<string>(SubmissionCodeFileDirectorySettingName);
+                }
+                else
+                {
+                    // 加载默认设置。
+                    SubmissionCodeFilesDirectory = ApplicationDirectory.GetAppSubDirectory("Submissions");
+                }
             }
         }
 
@@ -69,6 +71,12 @@
         private SubmissionManager()
         {
             m_context = new SubmissionDataContext();
+        }
+
+        ~SubmissionManager()
+        {
+            m_context.SaveChanges();
+            m_context.Dispose();
         }
 
         /// <summary>

@@ -30,6 +30,11 @@
         public string Source { get; set; }
 
         /// <summary>
+        /// 获取或设置题目的比赛 ID。若该题目不是某个 BITOJ 比赛的题目，该数据域为 -1。
+        /// </summary>
+        public int ContestId { get; set; }
+
+        /// <summary>
         /// 获取或设置题目的来源 OJ 系统。
         /// </summary>
         public OJSystem Origin { get; set; }
@@ -83,6 +88,7 @@
             Title = string.Empty;
             Author = string.Empty;
             Source = string.Empty;
+            ContestId = -1;
             Origin = OJSystem.BIT;
             TimeLimit = 1000;
             MemoryLimit = 64 * 1024;

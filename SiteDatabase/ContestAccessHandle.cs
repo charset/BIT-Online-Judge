@@ -62,7 +62,7 @@
             if (!m_disposed && m_dirty)
             {
                 File.WriteAllText(m_entity.ContestConfigurationFile, JsonConvert.SerializeObject(m_config));
-                m_dirty = true;
+                m_dirty = false;
             }
         }
 
@@ -76,6 +76,41 @@
             m_config.Problems.CopyTo(problems, 0);
 
             return problems;
+        }
+
+        /// <summary>
+        /// 将给定的题目添加到当前的比赛中。
+        /// </summary>
+        /// <param name="problemId">要添加的题目 ID。</param>
+        /// <exception cref="ArgumentNullException"/>
+        public void AddProblem(string problemId)
+        {
+            if (problemId == null)
+                throw new ArgumentNullException(nameof(problemId));
+
+            m_config.Problems.Add(problemId);
+            m_dirty = true;
+        }
+
+        /// <summary>
+        /// 从当前比赛中删除给定的题目。
+        /// </summary>
+        /// <param name="problemId">要删除的题目 ID。</param>
+        /// <exception cref="ArgumentNullException"/>
+        public void RemoveProblem(string problemId)
+        {
+            if (problemId == null)
+                throw new ArgumentNullException(nameof(problemId));
+
+            foreach (string item in m_config.Problems)
+            {
+                if (string.Compare(item, problemId, true) == 0)
+                {
+                    m_config.Problems.Remove(item);
+                }
+            }
+
+            m_dirty = true;
         }
 
         /// <summary>

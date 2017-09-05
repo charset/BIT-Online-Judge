@@ -49,15 +49,17 @@
             ms_sync = new object();
 
             // 初始化本地主题目库根目录。
-            FileSystemSettingProvider settings = new FileSystemSettingProvider();
-            if (!settings.Contains(ArchieveDiretcorySettingName))
+            using (FileSystemSettingProvider settings = new FileSystemSettingProvider())
             {
-                // 设置集中无根目录设置。设置为默认目录。
-                ms_archieveDirectory = ApplicationDirectory.GetAppSubDirectory("ProblemArchieve");
-            }
-            else
-            {
-                ms_archieveDirectory = settings.Get<string>(ArchieveDiretcorySettingName);
+                if (!settings.Contains(ArchieveDiretcorySettingName))
+                {
+                    // 设置集中无根目录设置。设置为默认目录。
+                    ms_archieveDirectory = ApplicationDirectory.GetAppSubDirectory("ProblemArchieve");
+                }
+                else
+                {
+                    ms_archieveDirectory = settings.Get<string>(ArchieveDiretcorySettingName);
+                }
             }
         }
 
@@ -73,6 +75,7 @@
 
         ~ProblemArchieveManager()
         {
+            m_context.SaveChanges();
             m_context.Dispose();
         }
 

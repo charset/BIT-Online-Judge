@@ -45,7 +45,7 @@
         public string Creator { get; set; }
 
         /// <summary>
-        /// 获取或设置存储该场比赛详细配置数据的本地文件系统目录。
+        /// 获取或设置存储该场比赛详细配置数据的本地数据文件。
         /// </summary>
         public string ContestConfigurationFile { get; set; }
 
