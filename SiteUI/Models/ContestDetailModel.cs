@@ -3,7 +3,10 @@
     using BITOJ.Core;
     using BITOJ.Core.Convert;
     using BITOJ.Core.Data;
+    using BITOJ.SiteUI.Models.Validation;
     using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
     using System.Globalization;
 
     /// <summary>
@@ -19,16 +22,20 @@
         /// <summary>
         /// 获取或设置比赛标题。
         /// </summary>
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Title is required.")]
         public string Title { get; set; }
 
         /// <summary>
         /// 获取或设置比赛创建者。
         /// </summary>
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Creator is required.")]
         public string Creator { get; set; }
 
         /// <summary>
         /// 获取或设置比赛所需的最低身份权限集名称。
         /// </summary>
+        [Required(AllowEmptyStrings = false)]
+        [EqualTo("Administrator", "Insider", "Standard", "Guest", ErrorMessage = "User group is invalid.")]
         public string UsergroupName { get; set; }
 
         /// <summary>
@@ -39,17 +46,35 @@
         /// <summary>
         /// 获取或设置比赛的开始时间的字符串表示。
         /// </summary>
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Start time is required.")]
+        [RegularExpression(@"^\s*\d{4}-\d{2}-\d{2} [012]?\d:[0-5]\d:[0-5]\d\s*$", ErrorMessage = "Start time is invalid.")]
         public string StartTimeString { get; set; }
 
         /// <summary>
         /// 获取或设置比赛的结束时间。
         /// </summary>
+        [Required(AllowEmptyStrings = false, ErrorMessage = "End time is required.")]
+        [RegularExpression(@"^\s*\d{4}-\d{2}-\d{2} [012]?\d:[0-5]\d:[0-5]\d\s*$", ErrorMessage = "End time is invalid.")]
         public string EndTimeString { get; set; }
 
         /// <summary>
         /// 获取或设置比赛的参与模式名称。
         /// </summary>
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Participation mode is required.")]
+        [EqualTo("Individual only", "Teamwork only", "Individual and Teamwork")]
         public string ParticipationModeName { get; set; }
+
+        /// <summary>
+        /// 获取或设置比赛的身份验证模式。
+        /// </summary>
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Authorization mode is required.")]
+        [EqualTo("Public", "Protected", "Private", ErrorMessage = "Authorization mode is invalid.")]
+        public string AuthorizationModeName { get; set; }
+
+        /// <summary>
+        /// 当身份验证模式为 Protected 时，获取或设置比赛的密码。
+        /// </summary>
+        public string Password { get; set; }
 
         /// <summary>
         /// 创建 ContestDetailModel 类的新实例。
@@ -64,99 +89,8 @@
             StartTimeString = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             EndTimeString = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             ParticipationModeName = ContestParticipationModeConvert.ConvertToString(ContestParticipationMode.Both);
-        }
-
-        /// <summary>
-        /// 验证数据模型有效性。
-        /// </summary>
-        /// <param name="errors">用于存储错误信息的动态对象。</param>
-        /// <returns>一个值，该值指示数据验证是否通过。</returns>
-        public bool Validate(dynamic errors)
-        {
-            bool pass = true;
-
-            if (string.IsNullOrEmpty(Title))
-            {
-                pass = false;
-                if (errors != null)
-                {
-                    errors.TitleErrorMessage = "Title is required.";
-                }
-            }
-
-            if (string.IsNullOrEmpty(Creator))
-            {
-                pass = false;
-                if (errors != null)
-                {
-                    errors.CreatorErrorMessage = "Creator is required.";
-                }
-            }
-
-            if (string.IsNullOrEmpty(UsergroupName))
-            {
-                pass = false;
-                if (errors != null)
-                {
-                    errors.UsergroupNameErrorMessage = "Usergroup is required.";
-                }
-            }
-            else
-            {
-                try
-                {
-                    UsergroupConvert.ConvertFromString(UsergroupName);
-                }
-                catch (ArgumentException)
-                {
-                    pass = false;
-                    if (errors != null)
-                    {
-                        errors.UsergroupNameErrorMessage = "Usergroup is invalid.";
-                    }
-                }
-            }
-
-            DateTime startTime;
-            if (!DateTime.TryParseExact(StartTimeString, "yyyy-MM-dd HH:mm:ss", new CultureInfo("en-US"),
-                DateTimeStyles.AllowWhiteSpaces | DateTimeStyles.AssumeLocal, out startTime))
-            {
-                pass = false;
-                errors.StartTimeStringErrorMessage = "Start time is invalid.";
-            }
-
-            DateTime endTime;
-            if (!DateTime.TryParseExact(EndTimeString, "yyyy-MM-dd HH:mm:ss", new CultureInfo("en-US"),
-                DateTimeStyles.AllowWhiteSpaces | DateTimeStyles.AssumeLocal, out endTime))
-            {
-                pass = false;
-                errors.EndTimeStringErrorMessage = "End time is invalid.";
-            }
-
-            if (endTime <= startTime)
-            {
-                pass = false;
-                errors.EndTimeStringErrorMessage = "End time must be later than start time.";
-            }
-
-            if (string.IsNullOrEmpty(ParticipationModeName))
-            {
-                pass = false;
-                errors.ParticipationModeNameErrorMessage = "Participation mode is required.";
-            }
-            else
-            {
-                try
-                {
-                    ContestParticipationModeConvert.ConvertFromString(ParticipationModeName);
-                }
-                catch (ArgumentException)
-                {
-                    errors.ParticipationModeNameErrorMessage = "Participation mode is invalid.";
-                }
-            }
-
-            return pass;
+            AuthorizationModeName = ContestAuthorizationModeConvert.ConvertToString(ContestAuthorizationMode.Protected);
+            Password = string.Empty;
         }
 
         /// <summary>
@@ -177,6 +111,7 @@
                 data.StartTime = DateTime.ParseExact(StartTimeString, "yyyy-MM-dd HH:mm:ss", new CultureInfo("en-US"));
                 data.EndTime = DateTime.ParseExact(EndTimeString, "yyyy-MM-dd HH:mm:ss", new CultureInfo("en-US"));
                 data.ParticipationMode = ContestParticipationModeConvert.ConvertFromString(ParticipationModeName);
+                data.AuthorizationMode = ContestAuthorizationModeConvert.ConvertFromString(AuthorizationModeName);
             }
         }
 

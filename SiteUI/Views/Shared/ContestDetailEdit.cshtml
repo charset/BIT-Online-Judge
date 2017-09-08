@@ -14,6 +14,7 @@
             </div>
         }
     </div>
+
     <div class="form-group">
         <label class="control-label" for="Creator">Creator</label>
         <input type="text" class="form-control" id="Creator" name="Creator" value="@UserSession.GetUsername(Session)" 
@@ -26,6 +27,7 @@
             </div>
         }
     </div>
+
     <div class="form-group">
         <label class="control-label" for="UsergroupName">User group</label>
         <select class="form-control" id="UsergroupName" name="UsergroupName">
@@ -73,6 +75,7 @@
             </div>
         }
     </div>
+
     <div class="form-group">
         <label class="control-label" for="StartTime">
             Start time (format: yyyy-MM-dd HH:mm:ss)
@@ -87,6 +90,7 @@
             </div>
         }
     </div>
+
     <div class="form-group">
         <label class="control-label" for="EndTime">
             End time (format: yyyy-MM-dd HH:mm:ss)
@@ -101,18 +105,93 @@
             </div>
         }
     </div>
+
     <div class="form-group">
         <label class="control-label" for="ParticipationMode">Participation mode</label>
-        <select class="form-control" id="ParticipationMode" name="ParticipationModeString">
-            <option value="Individual only">Individuals ONLY</option>
-            <option value="Teamwork only">Teamwork ONLY</option>
-            <option value="Individual and Teamwork" selected>Individuals and Teamwork</option>
+        <select class="form-control" id="ParticipationMode" name="ParticipationModeName">
+            @if (string.Compare(Model.ParticipationModeName, "Individual only", true) == 0)
+            {
+                <option value="Individual only" selected>Individuals ONLY</option>
+            }
+            else
+            {
+                <option value="Individual only">Individuals ONLY</option>
+            }
+
+            @if (string.Compare(Model.ParticipationModeName, "Teamwork only", true) == 0)
+            {
+                <option value="Teamwork only" selected>Teamwork ONLY</option>
+            }
+            else
+            {
+                <option value="Teamwork only">Teamwork ONLY</option>
+            }
+
+            @if (string.Compare(Model.ParticipationModeName, "Individual and Teamwork", true) == 0)
+            {
+                <option value="Individual and Teamwork" selected>Individuals and Teamwork</option>
+            }
+            else
+            {
+                <option value="Individual and Teamwork" selected>Individuals and Teamwork</option>
+            }
         </select>
 
-        @if (!string.IsNullOrEmpty(ViewBag.ParticipationModeStringErrorMessage))
+        @if (!string.IsNullOrEmpty(ViewBag.ParticipationModeNameErrorMessage))
         {
             <div class="alert alert-danger">
-                <p>@ViewBag.ParticipationModeStringErrorMessage</p>
+                <p>@ViewBag.ParticipationModeNameErrorMessage</p>
+            </div>
+        }
+    </div>
+
+    <div class="form-group">
+        <label class="control-label" for="AuthorizationMode">Authorization mode</label>
+        <select class="form-control" id="AuthorizationMode" name="AuthorizationModeName">
+            @if (string.Compare(Model.AuthorizationModeName, "Public", true) == 0)
+            {
+                <option value="Public" selected>Public - any one can take part in</option>
+            }
+            else
+            {
+                <option value="Public">Public - any one can take part in</option>
+            }
+
+            @if (string.Compare(Model.AuthorizationModeName, "Protected", true) == 0)
+            {
+                <option value="Protected" selected>Protected - password is required</option>
+            }
+            else
+            {
+                <option value="Protected">Protected - password is required</option>
+            }
+
+            @if (string.Compare(Model.AuthorizationModeName, "Private", true) == 0)
+            {
+                <option value="Private" selected>Private - whitelist is applied.</option>
+            }
+            else
+            {
+                <option value="Private">Private - whitelist is applied</option>
+            }
+        </select>
+
+        @if (!string.IsNullOrEmpty(ViewBag.AuthorizationModeNameErrorMessage))
+        {
+            <div class="alert alert-danger">
+                @ViewBag.AuthorizationModelNameErrorMessage
+            </div>
+        }
+    </div>
+
+    <div class="form-group">
+        <label class="control-label" for="Password">Password</label>
+        <input type="text" class="form-control" id="Password" name="Password" placeholder="Password for the contest"/>
+
+        @if (!string.IsNullOrEmpty(ViewBag.PasswordErrorMessage))
+        {
+            <div class="alert alert-danger">
+                @ViewBag.PasswordErrorMessage
             </div>
         }
     </div>

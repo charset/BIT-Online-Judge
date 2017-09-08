@@ -87,15 +87,16 @@
         }
 
         /// <summary>
-        /// 获取比赛日历的字符串表示。
+        /// 获取比赛日历的 HTML 表示。
         /// </summary>
-        /// <returns>比赛日历的字符串表示。</returns>
-        public string GetCalenderString()
+        /// <returns>比赛日历的 HTML 表示。</returns>
+        public string GetCalendarHtml()
         {
             StringBuilder builder = new StringBuilder();
-            builder.AppendLine(string.Format("Start time: {0}", StartTime.ToString("yyyy-MM-dd HH:mm:ss")));
-            builder.AppendLine(string.Format("End time: {0}", EndTime.ToString("yyyy-MM-dd HH:mm:ss")));
-            builder.AppendFormat("Duration: {0}", GetDurationString());
+
+            builder.AppendFormat("<p>Start time: {0:yyyy-MM-dd HH:mm:ss}</p>", StartTime);
+            builder.AppendFormat("<p>End time: {0:yyyy-MM-dd HH:mm:ss}</p>", EndTime);
+            builder.AppendFormat("<p>Duration: {0}</p>", GetDurationString());
 
             return builder.ToString();
         }

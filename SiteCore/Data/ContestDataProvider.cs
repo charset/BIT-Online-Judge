@@ -215,62 +215,6 @@
         }
 
         /// <summary>
-        /// 获取或设置比赛用户列表角色。
-        /// </summary>
-        public ContestListRole UserListRole
-        {
-            get
-            {
-                if (m_disposed)
-                    throw new ObjectDisposedException(GetType().Name);
-                
-                if (m_access.Configuration.Authorization.UseUsersAsBlacklist)
-                {
-                    return ContestListRole.Blacklist;
-                }
-                else
-                {
-                    return ContestListRole.Whitelist;
-                }
-            }
-            set
-            {
-                CheckAccess();
-                m_access.Configuration.Authorization.UseTeamsAsBlacklist = (value == ContestListRole.Blacklist);
-
-                m_dirty = true;
-            }
-        }
-        
-        /// <summary>
-        /// 获取或设置比赛队伍列表角色。
-        /// </summary>
-        public ContestListRole TeamListRole
-        {
-            get
-            {
-                if (m_disposed)
-                    throw new ObjectDisposedException(GetType().Name);
-
-                if (m_access.Configuration.Authorization.UseTeamsAsBlacklist)
-                {
-                    return ContestListRole.Blacklist;
-                }
-                else
-                {
-                    return ContestListRole.Whitelist;
-                }
-            }
-            set
-            {
-                CheckAccess();
-                m_access.Configuration.Authorization.UseTeamsAsBlacklist = (value == ContestListRole.Blacklist);
-
-                m_dirty = true;
-            }
-        }
-
-        /// <summary>
         /// 获取或设置比赛的密码哈希值。
         /// </summary>
         internal byte[] PasswordHash
@@ -297,6 +241,40 @@
             for (int i = 0; i < handles.Length; ++i)
             {
                 handles[i] = new ProblemHandle(problemIds[i]);
+            }
+
+            return handles;
+        }
+
+        /// <summary>
+        /// 获取所有已经通过比赛身份验证的用户名单。
+        /// </summary>
+        /// <returns>所有已经通过比赛身份验证的用户句柄。</returns>
+        internal UserHandle[] GetAuthorizedUsers()
+        {
+            UserHandle[] handles = new UserHandle[m_access.Configuration.Authorization.AuthorizedUsers.Count];
+
+            int i = 0;
+            foreach (string username in m_access.Configuration.Authorization.AuthorizedUsers)
+            {
+                handles[i++] = new UserHandle(username);
+            }
+
+            return handles;
+        }
+
+        /// <summary>
+        /// 获取所有已经通过比赛身份验证的队伍名单。
+        /// </summary>
+        /// <returns>所有已经通过比赛身份验证的队伍句柄。</returns>
+        internal TeamHandle[] GetAuthorizedTeams()
+        {
+            TeamHandle[] handles = new TeamHandle[m_access.Configuration.Authorization.AuthorizedTeams.Count];
+
+            int i = 0;
+            foreach (int teamId in m_access.Configuration.Authorization.AuthorizedTeams)
+            {
+                handles[i++] = new TeamHandle(teamId);
             }
 
             return handles;
@@ -339,12 +317,12 @@
         /// </summary>
         /// <param name="user">要添加的用户句柄。</param>
         /// <exception cref="ArgumentNullException"/>
-        public void AddUserToList(UserHandle user)
+        public void AddUserToAuthorizedList(UserHandle user)
         {
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
 
-            m_access.Configuration.Authorization.Users.Add(user.Username);
+            m_access.Configuration.Authorization.AuthorizedUsers.Add(user.Username);
             m_dirty = true;
         }
 
@@ -353,18 +331,18 @@
         /// </summary>
         /// <param name="user">要移除的用户。</param>
         /// <exception cref="ArgumentNullException"/>
-        public void RemoveUserFromList(UserHandle user)
+        public void RemoveUserFromAuthorizedList(UserHandle user)
         {
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
 
             CheckAccess();
 
-            foreach (string username in m_access.Configuration.Authorization.Users)
+            foreach (string username in m_access.Configuration.Authorization.AuthorizedUsers)
             {
                 if (string.Compare(username, user.Username, false) == 0)
                 {
-                    m_access.Configuration.Authorization.Users.Remove(username);
+                    m_access.Configuration.Authorization.AuthorizedUsers.Remove(username);
                 }
             }
 
@@ -376,13 +354,13 @@
         /// </summary>
         /// <param name="team">要添加的队伍句柄。</param>
         /// <exception cref="ArgumentNullException"/>
-        public void AddTeamToList(TeamHandle team)
+        public void AddTeamToAuthorizedList(TeamHandle team)
         {
             if (team == null)
                 throw new ArgumentNullException(nameof(team));
 
             CheckAccess();
-            m_access.Configuration.Authorization.Teams.Add(team.TeamId);
+            m_access.Configuration.Authorization.AuthorizedTeams.Add(team.TeamId);
 
             m_dirty = true;
         }
@@ -391,18 +369,18 @@
         /// 将给定的队伍从当前比赛的白名单或黑名单中移除。
         /// </summary>
         /// <param name="team">要移除的队伍句柄。</param>
-        public void RemoveTeamFromList(TeamHandle team)
+        public void RemoveTeamFromAuthorizedList(TeamHandle team)
         {
             if (team == null)
                 throw new ArgumentNullException(nameof(team));
 
             CheckAccess();
 
-            foreach (int teamId in m_access.Configuration.Authorization.Teams)
+            foreach (int teamId in m_access.Configuration.Authorization.AuthorizedTeams)
             {
                 if (teamId == team.TeamId)
                 {
-                    m_access.Configuration.Authorization.Teams.Remove(teamId);
+                    m_access.Configuration.Authorization.AuthorizedTeams.Remove(teamId);
                 }
             }
 

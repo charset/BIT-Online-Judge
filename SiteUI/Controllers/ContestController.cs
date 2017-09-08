@@ -4,6 +4,7 @@
     using BITOJ.Core.Authorization;
     using BITOJ.Core.Data.Queries;
     using BITOJ.SiteUI.Models;
+    using BITOJ.SiteUI.Models.Validation;
     using System;
     using System.Web.Mvc;
 
@@ -95,7 +96,7 @@
 
             return View(model);
         }
-        
+
         // POST: Contest/Add
         [HttpPost]
         public ActionResult Add(ContestDetailModel model)
@@ -108,7 +109,27 @@
             }
 
             // 验证数据模型。
-            if (!model.Validate(ViewBag))
+            bool validationPassed = TryValidateModel(model);
+            if (!validationPassed)
+            {
+                ViewBag.TitleErrorMessage = ModelStateHelper.GetFirstError(ModelState, "Title");
+                ViewBag.CreatorErrorMessage = ModelStateHelper.GetFirstError(ModelState, "Creator");
+                ViewBag.UsergroupNameErrorMessage = ModelStateHelper.GetFirstError(ModelState, "UsergroupName");
+                ViewBag.StartTimeStringErrorMessage = ModelStateHelper.GetFirstError(ModelState, "StartTimeString");
+                ViewBag.EndTimeStringErrorMessage = ModelStateHelper.GetFirstError(ModelState, "EndTimeString");
+                ViewBag.ParticipationModeNameErrorMessage = ModelStateHelper.GetFirstError(ModelState, "ParticipationModeName");
+                ViewBag.AuthorizationModeNameErrorMessage = ModelStateHelper.GetFirstError(ModelState, "AuthorizationModeName");
+            }
+            if (string.Compare(model.AuthorizationModeName, "Protected", true) == 0 &&
+                (string.IsNullOrEmpty(model.Password) || model.Password.Length < 6))
+            {
+                validationPassed = false;
+
+                ViewBag.PasswordErrorMessage = "Password should be at least 6 characters long.";
+                return View(model);
+            }
+
+            if (!validationPassed)
             {
                 return View(model);
             }

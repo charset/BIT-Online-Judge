@@ -54,13 +54,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Authorization\Buffer.cs" />
+    <Compile Include="Authorization\ContestAuthorization.cs" />
     <Compile Include="Authorization\UserAuthorization.cs" />
     <Compile Include="Authorization\UserSession.cs" />
     <Compile Include="Authorization\VerdictAuthorization.cs" />
     <Compile Include="ContestAuthorizationMode.cs" />
     <Compile Include="ContestException.cs" />
     <Compile Include="ContestHandle.cs" />
-    <Compile Include="ContestListRole.cs" />
     <Compile Include="ContestManager.cs" />
     <Compile Include="ContestParticipationMode.cs" />
     <Compile Include="ContestStatus.cs" />

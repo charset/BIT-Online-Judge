@@ -125,7 +125,7 @@
                         <th>Part.</th>
                         <th>Calendar</th>
                         <th>Status</th>
-                        <th>Holder</th>
+                        <th>Creator</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -163,9 +163,9 @@
                                     <td>@ContestParticipationModeConvert.ConvertToString(info.ParticipationMode)</td>
                                     <td>
                                         <a tabindex="0" class="btn btn-default" role="button" data-toggle="popover"
-                                           data-trigger="focus" title="Contest calendar"
-                                           data-content="@Html.Encode(info.GetCalenderString())"
-                                           data-html="true">
+                                           data-trigger="focus" title="Contest calendar" data-placement="top"
+                                           data-content="@info.GetCalendarHtml()"
+                                           data-html="true" data-container="body">
                                             <span class="glyphicon glyphicon-calendar"></span>
                                         </a>
                                     </td>

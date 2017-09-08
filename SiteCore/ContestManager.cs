@@ -6,6 +6,7 @@
     using BITOJ.Data;
     using BITOJ.Data.Entities;
     using System;
+    using System.IO;
     using System.Linq;
 
     /// <summary>
@@ -171,6 +172,9 @@
             if (entity != null)
             {
                 m_context.RemoveContest(entity);
+
+                // 删除本地配置文件。
+                File.Delete(entity.ContestConfigurationFile);
             }
         }
 
