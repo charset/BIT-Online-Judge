@@ -44,7 +44,7 @@
                 Origin = OJSystemConvert.ConvertFromString(Request.QueryString["origin"] ?? "BIT"),
             };
 
-            QueryResult<ProblemHandle> result = ProblemArchieveManager.Default.QueryProblems(query);
+            IPageableQueryResult<ProblemHandle> result = ProblemArchieveManager.Default.QueryProblems(query);
             model.Pages = result.GetTotalPages(ItemsPerPage);
 
             // 执行分页。

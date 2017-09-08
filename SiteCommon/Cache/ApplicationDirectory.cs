@@ -40,7 +40,13 @@
             if (name == null)
                 throw new ArgumentNullException(nameof(name));
 
-            return string.Concat(AppDirectory, "\\", name);
+            string directoryName = string.Concat(AppDirectory, "\\", name);
+            if (!Directory.Exists(directoryName))
+            {
+                Directory.CreateDirectory(directoryName);
+            }
+
+            return directoryName;
         }
     }
 }

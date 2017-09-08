@@ -1,0 +1,20 @@
+﻿@using BITOJ.Core
+@using BITOJ.SiteUI.Models
+@model ContestDetailModel
+@{ 
+    ViewBag.Title = "BITOJ - Create a new contest";
+    ViewData.Add("AccessGroup", UserGroup.Insiders);
+}
+
+<div class="jumbotron">
+    <h1>Create a new contest</h1>
+    <p class="sup">
+        Fill in the chart below to complete the information about the contest.
+    </p>
+</div>
+
+<div class="row">
+    <div class="col-lg-6 col-lg-offset-3">
+        @Html.Partial("~/Views/Shared/ContestDetailEdit.cshtml", Model);
+    </div>
+</div>

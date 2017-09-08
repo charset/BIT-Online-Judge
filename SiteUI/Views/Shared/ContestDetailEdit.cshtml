@@ -1,0 +1,128 @@
+﻿@using BITOJ.Core.Authorization
+@using BITOJ.SiteUI.Models
+@model ContestDetailModel
+
+<form method="post">
+    <div class="form-group">
+        <label class="control-label" for="Title">Title</label>
+        <input type="text" class="form-control" id="Title" name="Title" value="@Model.Title" placeholder="Title"/>
+
+        @if (!string.IsNullOrEmpty(ViewBag.TitleErrorMessage))
+        {
+            <div class="alert alert-danger">
+                <p>@ViewBag.TitleErrorMessage</p>
+            </div>
+        }
+    </div>
+    <div class="form-group">
+        <label class="control-label" for="Creator">Creator</label>
+        <input type="text" class="form-control" id="Creator" name="Creator" value="@UserSession.GetUsername(Session)" 
+               placeholder="Creator" readonly/>
+
+        @if (!string.IsNullOrEmpty(ViewBag.CreatorErrorMessage))
+        {
+            <div class="alert alert-danger">
+                <p>@ViewBag.CreatorErrorMessage</p>
+            </div>
+        }
+    </div>
+    <div class="form-group">
+        <label class="control-label" for="UsergroupName">User group</label>
+        <select class="form-control" id="UsergroupName" name="UsergroupName">
+            @if (string.Compare(Model.UsergroupName, "Administrator", true) == 0)
+            {
+                <option value="Administrator" selected>Administrator</option>
+            }
+            else
+            {
+                <option value="Administrator">Administrator</option>
+            }
+
+            @if (string.Compare(Model.UsergroupName, "Insider", true) == 0)
+            {
+                <option value="Insider" selected>Insider</option>
+            }
+            else
+            {
+                <option value="Insider">Insider</option>
+            }
+
+            @if (string.Compare(Model.UsergroupName, "Standard", true) == 0)
+            {
+                <option value="Standard" selected>Standard</option>
+            }
+            else
+            {
+                <option value="Standard">Standard</option>
+            }
+
+            @if (string.Compare(Model.UsergroupName, "Guest", true) == 0)
+            {
+                <option value="Guest">Guest</option>
+            }
+            else
+            {
+                <option value="Guest">Guest</option>
+            }
+        </select>
+
+        @if (!string.IsNullOrEmpty(ViewBag.UsergroupNameErrorMessage))
+        {
+            <div class="alert alert-danger">
+                <p>@ViewBag.UsergroupNameErrorMessage</p>
+            </div>
+        }
+    </div>
+    <div class="form-group">
+        <label class="control-label" for="StartTime">
+            Start time (format: yyyy-MM-dd HH:mm:ss)
+        </label>
+        <input type="text" class="form-control" id="StartTime" name="StartTimeString" placeholder="e.g.: 2017-08-31 14:30:00"
+               value="@Model.StartTimeString"/>
+
+        @if (!string.IsNullOrEmpty(ViewBag.StartTimeStringErrorMessage))
+        {
+            <div class="alert alert-danger">
+                <p>@ViewBag.StartTimeStringErrorMessage</p>
+            </div>
+        }
+    </div>
+    <div class="form-group">
+        <label class="control-label" for="EndTime">
+            End time (format: yyyy-MM-dd HH:mm:ss)
+        </label>
+        <input type="text" class="form-control" id="EndTime" name="EndTimeString" placeholder="e.g.: 2017-08-31 16:30:00"
+               value="@Model.EndTimeString"/>
+
+        @if (!string.IsNullOrEmpty(ViewBag.EndTimeStringErrorMessage))
+        {
+            <div class="alert alert-danger">
+                <p>@ViewBag.EndTimeStringErrorMessage</p>
+            </div>
+        }
+    </div>
+    <div class="form-group">
+        <label class="control-label" for="ParticipationMode">Participation mode</label>
+        <select class="form-control" id="ParticipationMode" name="ParticipationModeString">
+            <option value="Individual only">Individuals ONLY</option>
+            <option value="Teamwork only">Teamwork ONLY</option>
+            <option value="Individual and Teamwork" selected>Individuals and Teamwork</option>
+        </select>
+
+        @if (!string.IsNullOrEmpty(ViewBag.ParticipationModeStringErrorMessage))
+        {
+            <div class="alert alert-danger">
+                <p>@ViewBag.ParticipationModeStringErrorMessage</p>
+            </div>
+        }
+    </div>
+
+    <div class="row">
+        <div class="col-lg-4 col-lg-offset-8">
+            <button type="submit" class="btn btn-primary btn-block">
+                <span class="glyphicon glyphicon-ok"></span>
+                Confirm
+            </button>
+        </div>
+    </div>
+</form>

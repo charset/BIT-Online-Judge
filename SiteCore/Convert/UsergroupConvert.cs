@@ -41,8 +41,8 @@
         /// </summary>
         /// <param name="str">枚举值的字符串表示。</param>
         /// <returns>枚举值。</returns>
-        /// <exception cref="FormatException"/>
         /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="ArgumentException"/>
         public static UserGroup ConvertFromString(string str)
         {
             if (str == null)
@@ -57,7 +57,7 @@
             else if (string.Compare(str, GuestString, true) == 0)
                 return UserGroup.Guests;
             else
-                throw new FormatException("传入的字符串不合法。");
+                throw new ArgumentException("传入的字符串不合法。");
         }
     }
 }

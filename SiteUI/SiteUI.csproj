@@ -163,6 +163,7 @@
     </Compile>
     <Compile Include="Models\ContestCatalog.cs" />
     <Compile Include="Models\ContestBriefModel.cs" />
+    <Compile Include="Models\ContestDetailModel.cs" />
     <Compile Include="Models\ContestModel.cs" />
     <Compile Include="Models\ProblemDetailModel.cs" />
     <Compile Include="Models\ProblemDisplayModel.cs" />
@@ -214,6 +215,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\modify-team.js" />
+    <Content Include="Scripts\paged-result.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Web.config" />
@@ -245,6 +247,8 @@
     <Content Include="Views\Contest\Index.cshtml" />
     <Content Include="Views\Profile\ShowTeam.cshtml" />
     <Content Include="Views\Archieve\Environment.cshtml" />
+    <Content Include="Views\Contest\Add.cshtml" />
+    <Content Include="Views\Shared\ContestDetailEdit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -4,7 +4,6 @@
     using BITOJ.Common.Cache.Settings;
     using BITOJ.Core.Data.Queries;
     using BITOJ.Data;
-    using BITOJ.Data.Components;
     using BITOJ.Data.Entities;
     using DatabaseVerdictStatus = BITOJ.Data.Entities.SubmissionVerdictStatus;
     using System;
@@ -113,7 +112,7 @@
         /// <param name="query">查询参数。</param>
         /// <returns>一个包含了所有的查询结果的结果对象。</returns>
         /// <exception cref="ArgumentNullException"/>
-        public QueryResult<SubmissionHandle> QuerySubmissions(SubmissionQueryParameter query)
+        public IPageableQueryResult<SubmissionHandle> QuerySubmissions(SubmissionQueryParameter query)
         {
             if (query == null)
                 throw new ArgumentNullException(nameof(query));
@@ -134,8 +133,9 @@
                 set = set.OrderBy(item => item.CreationTimestamp);
             }
 
-            return new QueryResult<SubmissionHandle>(set, item => 
-                SubmissionHandle.FromSubmissionEntity((SubmissionEntity)item));
+            PageableQueryResult<SubmissionEntity> originResult = new PageableQueryResult<SubmissionEntity>(set);
+            return new MappedQueryResult<SubmissionEntity, SubmissionHandle>(originResult,
+                entity => SubmissionHandle.FromSubmissionEntity(entity));
         }
 
         /// <summary>

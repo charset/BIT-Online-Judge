@@ -72,17 +72,17 @@
             if (minutes >= 2 * 24 * 60)
             {
                 // 大于两天的时长，按照天为单位进行格式化
-                return string.Format("{0:C1} day(s)", minutes / (24 * 60));
+                return string.Format("{0:N1} day(s)", minutes / (24 * 60));
             }
             else if (minutes >= 60)
             {
                 // 大于一个小时并且小于两天，按照小时为单位进行格式化
-                return string.Format("{0:C1} hour(s)", minutes / 60D);
+                return string.Format("{0:N1} hour(s)", minutes / 60D);
             }
             else
             {
                 // 少于一个小时。按照分钟为单位进行格式化。
-                return string.Format("{0:C0} minute(s)", minutes);
+                return string.Format("{0:N0} minute(s)", minutes);
             }
         }
 
@@ -93,8 +93,8 @@
         public string GetCalenderString()
         {
             StringBuilder builder = new StringBuilder();
-            builder.AppendLine(string.Format("Start time: {0}", StartTime.ToString("yyyy-MM-dd hh:mm:ss")));
-            builder.AppendLine(string.Format("End time: {0}", EndTime.ToString("yyyy-MM-dd hh:mm:ss")));
+            builder.AppendLine(string.Format("Start time: {0}", StartTime.ToString("yyyy-MM-dd HH:mm:ss")));
+            builder.AppendLine(string.Format("End time: {0}", EndTime.ToString("yyyy-MM-dd HH:mm:ss")));
             builder.AppendFormat("Duration: {0}", GetDurationString());
 
             return builder.ToString();

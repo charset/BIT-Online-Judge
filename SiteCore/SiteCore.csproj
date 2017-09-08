@@ -73,7 +73,10 @@
     <Compile Include="Data\ContestDataProvider.cs" />
     <Compile Include="Data\ContestNotFoundException.cs" />
     <Compile Include="Data\Queries\ContestQueryParameter.cs" />
-    <Compile Include="Data\Queries\QueryResult.cs" />
+    <Compile Include="Data\Queries\IPageableQueryResult.cs" />
+    <Compile Include="Data\Queries\IQueryResult.cs" />
+    <Compile Include="Data\Queries\MappedQueryResult.cs" />
+    <Compile Include="Data\Queries\PageableQueryResult.cs" />
     <Compile Include="Data\Queries\SubmissionQueryParameter.cs" />
     <Compile Include="Data\Queries\TeamQueryParameter.cs" />
     <Compile Include="Data\SubmissionDataProvider.cs" />
@@ -106,7 +109,6 @@
     <Compile Include="SubmissionVerdict.cs" />
     <Compile Include="SubmissionVerdictStatus.cs" />
     <Compile Include="Data\ProblemDataProvider.cs" />
-    <Compile Include="Data\Queries\PagedQueryParameters.cs" />
     <Compile Include="ProblemArchieveManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TeamException.cs" />

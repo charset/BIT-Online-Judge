@@ -69,8 +69,8 @@
                             <input type="text" class="form-control" id="Title" name="Title" />
                         </div>
                         <div class="form-group">
-                            <label class="control-label" for="Holder">Holder</label>
-                            <input type="text" class="form-control" id="Holder" name="Holder" />
+                            <label class="control-label" for="Creator">Creator</label>
+                            <input type="text" class="form-control" id="Creator" name="Creator" />
                         </div>
 
                         <hr />
@@ -111,7 +111,6 @@
             else
             {
                 <div class="alert alert-info">
-                    <span class="glyphicon glyphicon-exclamation-sign"></span>
                     <p>There are no contests yet.</p>
                 </div>
             }
@@ -138,7 +137,29 @@
                                 string contestUrl = string.Format("/Contest/ShowContest?id={0}", info.ContestId);
                                 <tr>
                                     <td><a href="@contestUrl"><strong>@info.Title</strong></a></td>
-                                    <td>@ContestAuthorizationModeConvert.ConvertToString(info.AuthorizationMode)</td>
+                                    <td>
+                                        @switch (info.AuthorizationMode)
+                                        {
+                                            case ContestAuthorizationMode.Private:
+                                                <p class="text-contest-private">
+                                                    @ContestAuthorizationModeConvert.ConvertToString(
+                                                        info.AuthorizationMode)
+                                                </p>
+                                                break;
+                                            case ContestAuthorizationMode.Protected:
+                                                <p class="text-contest-protected">
+                                                    @ContestAuthorizationModeConvert.ConvertToString(
+                                                        info.AuthorizationMode)
+                                                </p>
+                                                break;
+                                            case ContestAuthorizationMode.Public:
+                                                <p class="text-contest-public">
+                                                    @ContestAuthorizationModeConvert.ConvertToString(
+                                                        info.AuthorizationMode)
+                                                </p>
+                                                break;
+                                        }
+                                    </td>
                                     <td>@ContestParticipationModeConvert.ConvertToString(info.ParticipationMode)</td>
                                     <td>
                                         <a tabindex="0" class="btn btn-default" role="button" data-toggle="popover"
@@ -148,7 +169,26 @@
                                             <span class="glyphicon glyphicon-calendar"></span>
                                         </a>
                                     </td>
-                                    <td>@ContestStatusConvert.ConvertToString(info.Status)</td>
+                                    <td>
+                                        @switch (info.Status)
+                                        {
+                                            case ContestStatus.Pending:
+                                                <p class="text-contest-pending">
+                                                    @ContestStatusConvert.ConvertToString(info.Status)
+                                                </p>
+                                                break;
+                                            case ContestStatus.Running:
+                                                <p class="text-contest-running">
+                                                    @ContestStatusConvert.ConvertToString(info.Status)
+                                                </p>
+                                                break;
+                                            case ContestStatus.Ended:
+                                                <p class="text-contest-ended">
+                                                    @ContestStatusConvert.ConvertToString(info.Status)
+                                                </p>
+                                                break;
+                                        }
+                                    </td>
                                     <td>@info.Creator</td>
                                 </tr>
                             }

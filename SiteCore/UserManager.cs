@@ -138,7 +138,7 @@
         /// <param name="query">查询参数。</param>
         /// <returns>一个包含了所有满足查询条件的用户句柄的查询结果对象。</returns>
         /// <exception cref="ArgumentNullException"/>
-        public QueryResult<UserHandle> QueryUsers(UserQueryParameter query)
+        public IPageableQueryResult<UserHandle> QueryUsers(UserQueryParameter query)
         {
             if (query == null)
                 throw new ArgumentNullException(nameof(query));
@@ -149,7 +149,7 @@
             if (!hasQuery)
             {
                 // 没有查询参数。返回空列表。
-                return QueryResult<UserHandle>.Empty;
+                return new PageableQueryResult<UserHandle>();
             }
             else
             {
@@ -171,8 +171,9 @@
                 // 对查询结果进行排序以准备随时分页。
                 profiles.OrderBy(item => item.Username);
 
-                return new QueryResult<UserHandle>(profiles, item => 
-                    UserHandle.FromUserProfileEntity((UserProfileEntity)item));
+                PageableQueryResult<UserProfileEntity> originResult = new PageableQueryResult<UserProfileEntity>(profiles);
+                return new MappedQueryResult<UserProfileEntity, UserHandle>(originResult,
+                    entity => UserHandle.FromUserProfileEntity(entity));
             }
         }
 
@@ -182,7 +183,7 @@
         /// <param name="query">查询参数。</param>
         /// <returns>查询到的队伍句柄结果对象。</returns>
         /// <exception cref="ArgumentNullException"/>
-        public QueryResult<TeamHandle> QueryTeams(TeamQueryParameter query)
+        public IPageableQueryResult<TeamHandle> QueryTeams(TeamQueryParameter query)
         {
             if (query == null)
                 throw new ArgumentNullException(nameof(query));
@@ -201,7 +202,9 @@
                 set = UserDataContext.QueryTeamProfileEntityByLeader(set, query.Leader);
             }
 
-            return new QueryResult<TeamHandle>(set, item => TeamHandle.FromTeamEntity((TeamProfileEntity)item));
+            PageableQueryResult<TeamProfileEntity> originResult = new PageableQueryResult<TeamProfileEntity>(set);
+            return new MappedQueryResult<TeamProfileEntity, TeamHandle>(originResult,
+                entity => TeamHandle.FromTeamEntity(entity));
         }
 
         /// <summary>

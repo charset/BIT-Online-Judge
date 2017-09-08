@@ -117,7 +117,7 @@
         /// <returns>一个查询结果对象，其中包含了所有查询到的比赛句柄。</returns>
         /// <exception cref="ArgumentNullException"/>
         /// <exception cref="ArgumentException"/>
-        public QueryResult<ContestHandle> QueryContests(ContestQueryParameter query)
+        public IPageableQueryResult<ContestHandle> QueryContests(ContestQueryParameter query)
         {
             if (query == null)
                 throw new ArgumentNullException(nameof(query));
@@ -153,7 +153,12 @@
                 }
             }
 
-            return new QueryResult<ContestHandle>(set, item => ContestHandle.FromContestEntity((ContestEntity)item));
+            // 对数据实体对象进行排序以准备随时执行分页操作并显示。
+            set = set.OrderByDescending(entity => entity.CreationTime);
+
+            PageableQueryResult<ContestEntity> originResult = new PageableQueryResult<ContestEntity>(set);
+            return new MappedQueryResult<ContestEntity, ContestHandle>(originResult, 
+                entity => ContestHandle.FromContestEntity(entity));
         }
 
         /// <summary>

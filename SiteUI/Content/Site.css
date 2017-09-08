@@ -24,21 +24,57 @@
     font-family: Consolas, 'Courier New', monospace;
 }
 
-.ver-ac {
+.text-verdict-ac {
     color: forestgreen;
     font-weight:700;
 }
 
-.ver-pe {
+.text-verdict-pe {
     color: darkorange;
 }
 
-.ver-err {
+.text-verdict-err {
     color: red;
 }
 
-.ver-se {
+.text-verdict-se {
     color: gray;
+}
+
+.text-contest-public,
+.text-contest-protected,
+.text-contest-private {
+    font-weight: 700;
+}
+
+.text-contest-public {
+    color: forestgreen;
+}
+
+.text-contest-protected {
+    color: orange;
+}
+
+.text-contest-private {
+    color: red;
+}
+
+.text-contest-pending,
+.text-contest-running,
+.text-contest-ended {
+    font-weight: 700;
+}
+
+.text-contest-pending {
+    color: deepskyblue;
+}
+
+.text-contest-running {
+    color: forestgreen;
+}
+
+.text-contest-ended {
+    color: red;
 }
 
 /* Supplementary explanaton */

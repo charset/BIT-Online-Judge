@@ -4,13 +4,11 @@
     using BITOJ.Common.Cache.Settings;
     using BITOJ.Core.Data.Queries;
     using BITOJ.Data;
-    using BITOJ.Data.Components;
     using BITOJ.Data.Entities;
-    using NativeOJSystem = BITOJ.Data.Entities.OJSystem;
     using System;
-    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using NativeOJSystem = BITOJ.Data.Entities.OJSystem;
 
     /// <summary>
     /// 对 BITOJ 题目库提供管理、访问服务。
@@ -148,7 +146,7 @@
         /// <returns>一个包含了所有的查询结果的查询结果对象。</returns>
         /// <exception cref="ArgumentNullException"/>
         /// <exception cref="ArgumentOutOfRangeException"/>
-        public QueryResult<ProblemHandle> QueryProblems(ProblemArchieveQueryParameter query)
+        public IPageableQueryResult<ProblemHandle> QueryProblems(ProblemArchieveQueryParameter query)
         {
             if (query == null)
                 throw new ArgumentNullException(nameof(query));
@@ -182,7 +180,9 @@
             // 对数据集进行排序以准备随时执行分页。
             set = set.OrderBy(entity => entity.Id);
 
-            return new QueryResult<ProblemHandle>(set, item => ProblemHandle.FromProblemEntity((ProblemEntity)item));
+            PageableQueryResult<ProblemEntity> originResult = new PageableQueryResult<ProblemEntity>(set);
+            return new MappedQueryResult<ProblemEntity, ProblemHandle>(originResult,
+                entity => ProblemHandle.FromProblemEntity(entity));
         }
 
         /// <summary>

@@ -36,7 +36,7 @@
         /// <param name="str">字符串。</param>
         /// <returns>UserSex 枚举值。</returns>
         /// <exception cref="ArgumentNullException"/>
-        /// <exception cref="FormatException"/>
+        /// <exception cref="ArgumentException"/>
         public static UserSex ConvertFromString(string str)
         {
             if (str == null)
@@ -47,7 +47,7 @@
             else if (string.Compare(str, MaleString, true) == 0)
                 return UserSex.Male;
             else
-                throw new FormatException("传入的字符串格式不正确。");
+                throw new ArgumentException("传入的字符串不合法。");
         }
     }
 }
