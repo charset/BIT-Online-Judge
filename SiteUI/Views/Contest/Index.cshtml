@@ -134,7 +134,7 @@
                         {
                             foreach (ContestBriefModel info in Model.Contests)
                             {
-                                string contestUrl = string.Format("/Contest/ShowContest?id={0}", info.ContestId);
+                                string contestUrl = string.Format("/Contest/Verify?id={0}", info.ContestId);
                                 <tr>
                                     <td><a href="@contestUrl"><strong>@info.Title</strong></a></td>
                                     <td>

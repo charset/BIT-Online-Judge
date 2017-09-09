@@ -140,5 +140,44 @@
 
             return Redirect("~/Contest");
         }
+
+        // GET: Contest/Verify?id={ContestID}
+        public ActionResult Verify()
+        {
+            // 检查用户操作权限。
+            if (!UserSession.IsAuthorized(Session))
+            {
+                return LoginController.RequestForLogin(this);
+            }
+
+            // 检查 URL 查询参数。
+            if (string.IsNullOrEmpty(Request.QueryString["id"]))
+            {
+                return Redirect("~/Contest");
+            }
+
+            int id;
+            if (!int.TryParse(Request.QueryString["id"], out id))
+            {
+                return Redirect("~/Contest");
+            }
+
+            ContestHandle contest = new ContestHandle(id);
+            UserHandle user = new UserHandle(UserSession.GetUsername(Session));
+            ContestAuthorizationState state = ContestAuthorization.GetAuthorizationState(contest, user);
+            
+            switch (state)
+            {
+                case ContestAuthorizationState.Authorized:
+                    return Redirect($"~/Contest/Show?id={id}");
+
+                case ContestAuthorizationState.AuthorizationRequired:
+                    return View();
+
+                case ContestAuthorizationState.AuthorizationFailed:
+                default:
+                    return Redirect("~/Contest");
+            }
+        }
     }
 }

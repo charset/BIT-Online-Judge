@@ -1,11 +1,11 @@
 ﻿namespace BITOJ.SiteUI.Models
 {
     using BITOJ.Core;
+    using BITOJ.Core.Authorization;
     using BITOJ.Core.Convert;
     using BITOJ.Core.Data;
     using BITOJ.SiteUI.Models.Validation;
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.Globalization;
 
@@ -113,6 +113,8 @@
                 data.ParticipationMode = ContestParticipationModeConvert.ConvertFromString(ParticipationModeName);
                 data.AuthorizationMode = ContestAuthorizationModeConvert.ConvertFromString(AuthorizationModeName);
             }
+
+            ContestAuthorization.UpdateContestPassword(handle, Password);
         }
 
         /// <summary>

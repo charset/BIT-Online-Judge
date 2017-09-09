@@ -253,6 +253,7 @@
     <Content Include="Views\Archieve\Environment.cshtml" />
     <Content Include="Views\Contest\Add.cshtml" />
     <Content Include="Views\Shared\ContestDetailEdit.cshtml" />
+    <Content Include="Views\Contest\Verify.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

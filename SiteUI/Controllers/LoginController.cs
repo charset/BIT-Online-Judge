@@ -10,6 +10,20 @@
 
     public class LoginController : Controller
     {
+        /// <summary>
+        /// 当控制器请求用户登录验证时，调用此方法向用户返回结果。
+        /// </summary>
+        /// <param name="invoker">调用视图。</param>
+        /// <returns>向用户返回的操作结果。</returns>
+        /// <exception cref="ArgumentNullException"/>
+        public static ActionResult RequestForLogin(Controller invoker)
+        {
+            if (invoker == null)
+                throw new ArgumentNullException(nameof(invoker));
+
+            return new RedirectResult($"~/Login/Login?request={invoker.Request.Url}");
+        }
+
         // GET: Login
         public ActionResult Index()
         {

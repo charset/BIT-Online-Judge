@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="Authorization\Buffer.cs" />
     <Compile Include="Authorization\ContestAuthorization.cs" />
+    <Compile Include="Authorization\ContestAuthorizationState.cs" />
     <Compile Include="Authorization\UserAuthorization.cs" />
     <Compile Include="Authorization\UserSession.cs" />
     <Compile Include="Authorization\VerdictAuthorization.cs" />
