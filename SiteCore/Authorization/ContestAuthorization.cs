@@ -35,6 +35,24 @@
 
             using (ContestDataProvider data = ContestDataProvider.Create(contest, true))
             {
+                if (string.Compare(data.Creator, user.Username, false) == 0)
+                {
+                    // 比赛创建者总是授权用户。
+                    return ContestAuthorizationState.Authorized;
+                }
+
+                // 检查用户身份是否满足参加比赛的最低要求身份。
+                if (!UserAuthorization.CheckAccessRights(data.AuthorizationGroup, user))
+                {
+                    return ContestAuthorizationState.AuthorizationFailed;
+                }
+
+                if (data.AuthorizationMode == ContestAuthorizationMode.Public)
+                {
+                    // Public 比赛总是授权通过。
+                    return ContestAuthorizationState.Authorized;
+                }
+
                 foreach (UserHandle authorized in data.GetAuthorizedUsers())
                 {
                     if (authorized == user)
@@ -48,7 +66,7 @@
                 {
                     return ContestAuthorizationState.AuthorizationRequired;
                 }
-                else
+                else        // data.AuthorizationMode == ContestAuthorizationMode.Private
                 {
                     return ContestAuthorizationState.AuthorizationFailed;
                 }

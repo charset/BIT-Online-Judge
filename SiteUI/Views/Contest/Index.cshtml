@@ -1,5 +1,4 @@
 ﻿@using BITOJ.Core
-@using BITOJ.Core.Convert
 @using BITOJ.Core.Authorization
 @using BITOJ.SiteUI.Models
 @model ContestModel
@@ -36,16 +35,16 @@
                 navAnchorClasses[(int)Model.Catalog] += " active";
             }
 
-            <a class="@navAnchorClasses[0]" href="~/Archieve">
+            <a class="@navAnchorClasses[0]" href="~/Contest?catalog=0">
                 <h5 class="list-group-item-heading">All Contests</h5>
             </a>
-            <a class="@navAnchorClasses[1]" href="~/Archieve">
+            <a class="@navAnchorClasses[1]" href="~/Contest?catalog=1">
                 <h5 class="list-group-item-heading">Sheduled Contests</h5>
             </a>
-            <a class="@navAnchorClasses[2]" href="~/Archieve">
+            <a class="@navAnchorClasses[2]" href="~/Contest?catalog=2">
                 <h5 class="list-group-item-heading">Running Contests</h5>
             </a>
-            <a class="@navAnchorClasses[3]" href="~/Archieve">
+            <a class="@navAnchorClasses[3]" href="~/Contest?catalog=3">
                 <h5 class="list-group-item-heading">Ended Contests</h5>
             </a>
         </div>
@@ -55,22 +54,24 @@
         <div class="panel panel-info" id="queryPanel">
             <div class="text-center panel-heading" id="queryHeading">
                 <h4 class="panel-title">
-                    <a role="button" data-toggle="collapse" data-parent="#queryPanel" href="#queryForm"
-                       aria-expanded="true" aria-controls="queryForm">
+                    <a role="button" data-toggle="collapse" data-parent="#queryPanel" href="#queryFormDiv"
+                       aria-expanded="true" aria-controls="queryFormDiv">
                         <strong>Query Contests</strong>
                     </a>
                 </h4>
             </div>
-            <div class="panel-collapse collase in" id="queryForm" aria-labelledby="queryHeading">
+            <div class="panel-collapse collase in" id="queryFormDiv" aria-labelledby="queryHeading">
                 <div class="panel-body">
-                    <form role="search" action="~/Contest/Query">
+                    <form role="search" method="post" action="@string.Format("/Contest/Query?catalog={0}", (int)Model.Catalog)">
                         <div class="form-group">
                             <label class="control-label" for="Title">Title</label>
-                            <input type="text" class="form-control" id="Title" name="Title" />
+                            <input type="text" class="form-control" id="Title" name="Title" 
+                                   value="@(Request.QueryString["title"] ?? string.Empty)"/>
                         </div>
                         <div class="form-group">
                             <label class="control-label" for="Creator">Creator</label>
-                            <input type="text" class="form-control" id="Creator" name="Creator" />
+                            <input type="text" class="form-control" id="Creator" name="Creator" 
+                                   value="@(Request.QueryString["creator"] ?? string.Empty)"/>
                         </div>
 
                         <hr />
@@ -116,86 +117,6 @@
             }
         }
 
-        <div>
-            <table class="table table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th>Title</th>
-                        <th>Type</th>
-                        <th>Part.</th>
-                        <th>Calendar</th>
-                        <th>Status</th>
-                        <th>Creator</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @{
-                        if (Model != null)
-                        {
-                            foreach (ContestBriefModel info in Model.Contests)
-                            {
-                                string contestUrl = string.Format("/Contest/Verify?id={0}", info.ContestId);
-                                <tr>
-                                    <td><a href="@contestUrl"><strong>@info.Title</strong></a></td>
-                                    <td>
-                                        @switch (info.AuthorizationMode)
-                                        {
-                                            case ContestAuthorizationMode.Private:
-                                                <p class="text-contest-private">
-                                                    @ContestAuthorizationModeConvert.ConvertToString(
-                                                        info.AuthorizationMode)
-                                                </p>
-                                                break;
-                                            case ContestAuthorizationMode.Protected:
-                                                <p class="text-contest-protected">
-                                                    @ContestAuthorizationModeConvert.ConvertToString(
-                                                        info.AuthorizationMode)
-                                                </p>
-                                                break;
-                                            case ContestAuthorizationMode.Public:
-                                                <p class="text-contest-public">
-                                                    @ContestAuthorizationModeConvert.ConvertToString(
-                                                        info.AuthorizationMode)
-                                                </p>
-                                                break;
-                                        }
-                                    </td>
-                                    <td>@ContestParticipationModeConvert.ConvertToString(info.ParticipationMode)</td>
-                                    <td>
-                                        <a tabindex="0" class="btn btn-default" role="button" data-toggle="popover"
-                                           data-trigger="focus" title="Contest calendar" data-placement="top"
-                                           data-content="@info.GetCalendarHtml()"
-                                           data-html="true" data-container="body">
-                                            <span class="glyphicon glyphicon-calendar"></span>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        @switch (info.Status)
-                                        {
-                                            case ContestStatus.Pending:
-                                                <p class="text-contest-pending">
-                                                    @ContestStatusConvert.ConvertToString(info.Status)
-                                                </p>
-                                                break;
-                                            case ContestStatus.Running:
-                                                <p class="text-contest-running">
-                                                    @ContestStatusConvert.ConvertToString(info.Status)
-                                                </p>
-                                                break;
-                                            case ContestStatus.Ended:
-                                                <p class="text-contest-ended">
-                                                    @ContestStatusConvert.ConvertToString(info.Status)
-                                                </p>
-                                                break;
-                                        }
-                                    </td>
-                                    <td>@info.Creator</td>
-                                </tr>
-                            }
-                        }
-                    }
-                </tbody>
-            </table>
-        </div>
+        @Html.Partial("~/Views/Shared/ContestList.cshtml", Model.Contests)
     </div>
 </div>

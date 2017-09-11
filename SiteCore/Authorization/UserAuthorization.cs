@@ -23,6 +23,23 @@
         }
 
         /// <summary>
+        /// 提供快捷方法获取给定用户的操作权限信息。
+        /// </summary>
+        /// <param name="handle">用户句柄。</param>
+        /// <returns>给定用户的操作权限信息。</returns>
+        /// <exception cref="ArgumentNullException"/>
+        public static UserGroup GetUserGroup(UserHandle handle)
+        {
+            if (handle == null)
+                throw new ArgumentNullException(nameof(handle));
+
+            using (UserDataProvider data = UserDataProvider.Create(handle, true))
+            {
+                return data.UserGroup;
+            }
+        }
+
+        /// <summary>
         /// 检查用户登录验证信息是否正确。
         /// </summary>
         /// <param name="username">用户名。</param>
@@ -89,6 +106,21 @@
         public static bool CheckAccessRights(UserGroup expected, UserGroup user)
         {
             return (int)user >= (int)expected;
+        }
+
+        /// <summary>
+        /// 检查给定用户是否有权限执行某个操作。
+        /// </summary>
+        /// <param name="expected">执行操作所需最低权限。</param>
+        /// <param name="handle">用户句柄。</param>
+        /// <returns>一个值，指示给定用户是否有足够的权限执行操作。</returns>
+        /// <exception cref="ArgumentNullException"/>
+        public static bool CheckAccessRights(UserGroup expected, UserHandle handle)
+        {
+            if (handle == null)
+                throw new ArgumentNullException(nameof(handle));
+
+            return CheckAccessRights(expected, GetUserGroup(handle));
         }
 
         /// <summary>

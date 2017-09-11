@@ -165,7 +165,9 @@
     <Compile Include="Models\ContestCatalog.cs" />
     <Compile Include="Models\ContestBriefModel.cs" />
     <Compile Include="Models\ContestDetailModel.cs" />
+    <Compile Include="Models\ContestDisplayModel.cs" />
     <Compile Include="Models\ContestModel.cs" />
+    <Compile Include="Models\Extensions\StyleSheetExtension.cs" />
     <Compile Include="Models\ProblemDetailModel.cs" />
     <Compile Include="Models\ProblemDisplayModel.cs" />
     <Compile Include="Models\ArchieveCatalog.cs" />
@@ -254,6 +256,9 @@
     <Content Include="Views\Contest\Add.cshtml" />
     <Content Include="Views\Shared\ContestDetailEdit.cshtml" />
     <Content Include="Views\Contest\Verify.cshtml" />
+    <Content Include="Views\Shared\ContestList.cshtml" />
+    <Content Include="Views\Shared\ProblemList.cshtml" />
+    <Content Include="Views\Contest\Show.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

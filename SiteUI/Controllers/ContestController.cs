@@ -6,6 +6,7 @@
     using BITOJ.SiteUI.Models;
     using BITOJ.SiteUI.Models.Validation;
     using System;
+    using System.Text;
     using System.Web.Mvc;
 
     public class ContestController : Controller
@@ -73,6 +74,27 @@
             }
 
             return View(model);
+        }
+
+        // POST: Contest/Query
+        [HttpPost]
+        public ActionResult Query(FormCollection form)
+        {
+            StringBuilder queryBuilder = new StringBuilder();
+            if (!string.IsNullOrEmpty(Request.QueryString["catalog"]))
+            {
+                queryBuilder.AppendFormat("catalog={0}&", Request.QueryString["catalog"]);
+            }
+            if (!string.IsNullOrEmpty(form["Title"]))
+            {
+                queryBuilder.AppendFormat("title={0}&", form["Title"]);
+            }
+            if (!string.IsNullOrEmpty(form["Creator"]))
+            {
+                queryBuilder.AppendFormat("creator={0}&", form["Creator"]);
+            }
+
+            return Redirect("~/Contest?" + queryBuilder.ToString());
         }
 
         // GET: Contest/Add
@@ -173,6 +195,40 @@
 
                 case ContestAuthorizationState.AuthorizationRequired:
                     return View();
+
+                case ContestAuthorizationState.AuthorizationFailed:
+                default:
+                    ViewBag.Failed = true;
+                    return View();
+            }
+        }
+
+        // GET: Contest/Show?id={ContestID}
+        public ActionResult Show()
+        {
+            // 检查 URL 查询参数。
+            if (string.IsNullOrEmpty(Request.QueryString["id"]))
+            {
+                return Redirect("~/Contest");
+            }
+
+            int id;
+            if (!int.TryParse(Request.QueryString["id"], out id))
+            {
+                return Redirect("~/Contest");
+            }
+
+            // 检查用户权限。
+            ContestHandle contest = new ContestHandle(id);
+            UserHandle user = new UserHandle(UserSession.GetUsername(Session));
+
+            switch (ContestAuthorization.GetAuthorizationState(contest, user))
+            {
+                case ContestAuthorizationState.Authorized:
+                    return View(ContestDisplayModel.FromContestHandle(contest));
+
+                case ContestAuthorizationState.AuthorizationRequired:
+                    return Redirect($"~/Contest/Verify?id={id}");
 
                 case ContestAuthorizationState.AuthorizationFailed:
                 default:

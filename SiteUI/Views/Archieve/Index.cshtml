@@ -1,8 +1,13 @@
 ﻿@using BITOJ.Core
 @using BITOJ.Core.Authorization
 @using BITOJ.SiteUI.Models
-@using System.Text
 @model ArchieveModel
+
+@{ 
+    ViewBag.ProblemListSubmitable = UserSession.IsAuthorized(Session);
+    ViewBag.ProblemListEditable = UserSession.IsAuthorized(Session) &&
+        UserAuthorization.CheckAccessRights(UserGroup.Administrators, UserSession.GetUserGroup(Session));
+}
 
 <div class="jumbotron">
     <h1>Problem archieve</h1>
@@ -150,103 +155,6 @@
             }
         }
 
-        <div>
-            <table class="table table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Title</th>
-                        <th>Categories</th>
-                        <th>Operations</th>
-                        <th>Accepted Ratio</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @{
-                        if (Model != null)
-                        {
-                            foreach (ProblemBriefModel info in Model.Problems)
-                            {
-                                if (UserAuthorization.CheckAccessRights(info.AuthorizationGroup,
-                                    UserSession.GetUserGroup(Session)))
-                                {
-                                    string problemUrl = string.Format("/Archieve/ShowProblem?id={0}", info.ProblemId);
-
-                                    <tr>
-                                        <td><a href="@problemUrl">@info.ProblemId</a></td>
-                                        <td><a href="@problemUrl"><strong>@info.Title</strong></a></td>
-                                        <td>
-                                            @{
-                                                StringBuilder categoryBuilder = new StringBuilder();
-                                                foreach (string cat in info.Categories)
-                                                {
-                                                    categoryBuilder.AppendFormat("{0}; ", cat);
-                                                }
-                                                if (info.Categories.Count == 0)
-                                                {
-                                                    categoryBuilder.Append("(None)");
-                                                }
-                                            }
-                                            <a role="button" tabindex="0" class="btn btn-default btn-info btn-sm"
-                                               data-toggle="popover" data-placement="top" data-container="body"
-                                               data-trigger="focus" title="Categories"
-                                               data-content="@categoryBuilder.ToString()">
-                                                <span class="glyphicon glyphicon-tags"></span>
-                                            </a>
-                                        </td>
-                                        <td>
-                                            <div class="btn-group" role="group">
-                                                @if (UserSession.IsAuthorized(Session))
-                                                {
-                                                    <a type="button" href="javascript:void(0);" class="btn btn-primary btn-sm"
-                                                       data-toggle="tooltip" data-placement="top" data-container="body"
-                                                       title="Submit">
-                                                        <span class="glyphicon glyphicon-open"></span>
-                                                    </a>
-                                                }
-
-                                                @if (UserAuthorization.CheckAccessRights(UserGroup.Administrators,
-                                                    UserSession.GetUserGroup(Session)))
-                                                {
-                                                    <a type="button" 
-                                                       href="@string.Format("/Archieve/Modify?id={0}", info.ProblemId)" 
-                                                       class="btn btn-warning btn-sm" data-toggle="tooltip" 
-                                                       data-placement="top" data-container="body" title="Edit">
-                                                        <span class="glyphicon glyphicon-pencil"></span>
-                                                    </a>
-                                                }
-
-                                                <a type="button" href="@problemUrl" class="btn btn-default btn-sm"
-                                                   data-toggle="tooltip" data-placement="top" data-container="body"
-                                                   title="Open in new tab" target="_blank">
-                                                    <span class="glyphicon glyphicon-new-window"></span>
-                                                </a>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            @{
-                                                string submitText = string.Format("{0} submissions, {1} accpeted.",
-                                                    info.TotalSubmissions, info.TotalAccepted);
-                                                string ratioText = "N/A";
-                                                if (info.TotalSubmissions > 0)
-                                                {
-                                                    ratioText = string.Format("{0:N2} %",
-                                                        (double)info.TotalAccepted / (double)info.TotalSubmissions * 100D);
-                                                }
-                                            }
-                                            <span>
-                                                @submitText
-                                                <br />
-                                                Ratio: @ratioText
-                                            </span>
-                                        </td>
-                                    </tr>
-                                }
-                            }
-                        }
-                    }
-                </tbody>
-            </table>
-        </div>
+        @Html.Partial("~/Views/Shared/ProblemList.cshtml", Model.Problems)
     </div>
 </div>

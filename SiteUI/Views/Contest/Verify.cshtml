@@ -2,28 +2,40 @@
     ViewBag.Title = "BITOJ - Contest authorization";
 }
 
-<div class="jumbotron">
-    <h1>Contest authorization</h1>
+@if ((bool?)ViewBag.Failed ?? false)
+{
+    <div class="jumbotron">
+        <h1>Contest authorization failed.</h1>
+        <p class="sup">
+            Sorry, but you don't have access to this priviledged content.
+        </p>
+    </div>
+}
+else
+{
+    <div class="jumbotron">
+        <h1>Contest authorization</h1>
 
-    <div class="row">
-        <div class="col-lg-7">
-            <p class="sup">
-                This contest needs password authorization.
-                Please enter the password given by the creator of the contest to continue.
-            </p>
-        </div>
-        <div class="col-lg-5">
-            <form method="post">
-                <div class="form-group">
-                    <label for="Password" class="control-label sr-only">Password</label>
-                    <input type="password" class="form-control" id="Password" name="Password"
-                           placeholder="Enter contest password..."/>
-                </div>
-                <button type="submit" class="btn btn-primary">
-                    <span class="glyphicon glyphicon-ok"></span>
-                    Confirm
-                </button>
-            </form>
+        <div class="row">
+            <div class="col-lg-7">
+                <p class="sup">
+                    This contest needs password authorization.
+                    Please enter the password given by the creator of the contest to continue.
+                </p>
+            </div>
+            <div class="col-lg-5">
+                <form method="post">
+                    <div class="form-group">
+                        <label for="Password" class="control-label sr-only">Password</label>
+                        <input type="password" class="form-control" id="Password" name="Password"
+                               placeholder="Enter contest password..." />
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <span class="glyphicon glyphicon-ok"></span>
+                        Confirm
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
-</div>
+}

@@ -1,0 +1,126 @@
+﻿@using BITOJ.Core
+@using BITOJ.Core.Authorization
+@using BITOJ.Core.Convert
+@using BITOJ.SiteUI.Models
+@using BITOJ.SiteUI.Models.Extensions
+@model ContestDisplayModel
+@{ 
+    ViewBag.Title = Model.Title;
+
+    ViewBag.ProblemListShowCategory = false;
+    ViewBag.ProblemListEditable = UserSession.IsAuthorized(Session) &&
+        string.Compare(UserSession.GetUsername(Session), Model.Creator, false) == 0;
+}
+
+<div class="jumbotron">
+    <h1>@Model.Title  <small>by @Model.Creator</small></h1>
+
+    <hr />
+
+    <div class="row">
+        <div class="col-lg-4 text-left">
+            <p>Start time:</p>
+            <p>@Model.StartTime.ToString("yyyy-MM-dd HH:mm:ss")</p>
+        </div>
+        <div class="col-lg-4 text-center">
+            <p>
+                <span class="@StyleSheetExtension.GetContestAuthorizationModeClass(Model.AuthorizationMode)">
+                    @ContestAuthorizationModeConvert.ConvertToString(Model.AuthorizationMode)
+                </span>
+                ,
+                <span class="@StyleSheetExtension.GetContestStatusClass(Model.Status)">
+                    @ContestStatusConvert.ConvertToString(Model.Status)
+                </span>
+            </p>
+            <p>@ContestParticipationModeConvert.ConvertToString(Model.ParticipationMode)</p>
+        </div>
+        <div class="col-lg-4 text-right">
+            <p>End time:</p>
+            <p>@Model.EndTime.ToString("yyyy-MM-dd HH:mm:ss")</p>
+        </div>
+    </div>
+
+    <div class="@("progress progress-striped" + (Model.Status == ContestStatus.Running ? " active" : string.Empty))">
+        <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" 
+             aria-valuenow="@Model.GetRunningPercentage()" 
+             style="@string.Format("width: {0}%;", Model.GetRunningPercentage())"></div>
+    </div>
+
+    @if (Model.Status != ContestStatus.Ended)
+    {
+        <div class="text-center">
+            @{ 
+                TimeSpan countdown;
+                if (Model.Status == ContestStatus.Pending)
+                {
+                    countdown = Model.StartTime - DateTime.Now;
+                }
+                else        // Model.Status == ContestStatus.Running
+                {
+                    countdown = Model.EndTime - DateTime.Now;
+                }
+
+                <p>
+                    Countdown:
+                    @(countdown.Days) d. @(countdown.Hours) hr. @(countdown.Minutes) min. @(countdown.Seconds) sec.
+                </p>
+            }
+        </div>
+    }
+</div>
+
+<div class="row">
+    <div class="col-lg-3">
+        @if (string.Compare(UserSession.GetUsername(Session), Model.Creator, false) == 0)
+        {
+            <div class="btn-group btn-group-vertical" style="display: block;">
+                <a href="javascript:void(0);" class="btn btn-block btn-warning">
+                    <span class="glyphicon glyphicon-plus"></span>
+                    Add custom problem
+                </a>
+                <button type="button" class="btn btn-block btn-warning" data-toggle="modal" 
+                        data-target="#addProblemDialog">
+                    <span class="glyphicon glyphicon-plus"></span>
+                    Add archieve problem
+                </button>
+                <a href="javascript:void(0);" class="btn btn-block btn-warning">
+                    <span class="glyphicon glyphicon-pencil"></span>
+                    Edit contest
+                </a>
+            </div>
+
+            <div class="modal fade" id="addProblemDialog" tabindex="-1" role="dialog" 
+                 aria-labelledby="addProblemDialogLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 class="modal-title" id="addProblemDialogLabel">Add archieve problem</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <div class="form-group">
+                                    <label for="ProblemId" class="control-label">Problem ID</label>
+                                    <input type="text" class="form-control" id="ProblemId" name="ProblemId"
+                                           placeholder="Enter Problem ID"/>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">
+                                <span class="glyphicon glyphicon-ok"></span>
+                                Confirm
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="col-lg-9">
+        @Html.Partial("~/Views/Shared/ProblemList.cshtml", Model.Problems)
+    </div>
+</div>

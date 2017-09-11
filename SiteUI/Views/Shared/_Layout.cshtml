@@ -55,7 +55,8 @@
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-default navbar-fixed-top" role="navigation" style="opacity: 0.95;">
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation" 
+         style="opacity: 0.95; box-shadow: lightgray 0 0 5px;">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navdivResponsive">
@@ -120,20 +121,22 @@
             </div>
         </div>
     </nav>
-    <div class="container body-content">
-        @RenderBody()
+    <div class="container body-content content-wrapper">
+        <div class="content">
+            @RenderBody()
 
-        <hr />
-        <footer class="text-right text-footer">
-            <p>BIT Online Judge Platform, Version 1.0</p>
-            <p>Website server time: @DateTime.Now UTC+8</p>
-            <p>Leader developers: Lancern, Reskip from School of Software, BIT.</p>
-            <p>
-                Copyright &copy; 
-                <a href="http://www.bit.edu.cn" target="_blank">Beijing Institute of Technology</a>.
-                &ensp; All rights reserved.
-            </p>
-        </footer>
+            <hr />
+            <footer class="text-right text-footer">
+                <p>BIT Online Judge Platform, Version 1.0</p>
+                <p>Website server time: @DateTime.Now UTC+8</p>
+                <p>Leader developers: Lancern, Reskip from School of Software, BIT.</p>
+                <p>
+                    Copyright &copy;
+                    <a href="http://www.bit.edu.cn" target="_blank">Beijing Institute of Technology</a>.
+                    &ensp; All rights reserved.
+                </p>
+            </footer>
+        </div>
     </div>
 
     <img class="bgimg hidden-xs hidden-sm" src="~/Resources/BIT_Logo_trans_filter.png" />
