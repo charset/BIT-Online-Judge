@@ -114,7 +114,7 @@
                 data.AuthorizationMode = ContestAuthorizationModeConvert.ConvertFromString(AuthorizationModeName);
             }
 
-            ContestAuthorization.UpdateContestPassword(handle, Password);
+            ContestAuthorization.UpdateContestPassword(handle, Password ?? string.Empty);
         }
 
         /// <summary>
@@ -136,8 +136,9 @@
                 model.Creator = data.Creator;
                 model.UsergroupName = UsergroupConvert.ConvertToString(data.AuthorizationGroup);
                 model.CreationTime = data.CreationTime;
-                model.StartTimeString = data.CreationTime.ToString("yyyy-MM-dd HH:mm:ss");
+                model.StartTimeString = data.StartTime.ToString("yyyy-MM-dd HH:mm:ss");
                 model.EndTimeString = data.EndTime.ToString("yyyy-MM-dd HH:mm:ss");
+                model.AuthorizationModeName = ContestAuthorizationModeConvert.ConvertToString(data.AuthorizationMode);
                 model.ParticipationModeName = ContestParticipationModeConvert.ConvertToString(data.ParticipationMode);
             }
 

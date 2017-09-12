@@ -12,18 +12,19 @@
         /// <summary>
         /// 获取或设置比赛的参与模式。
         /// </summary>
-        [JsonProperty("participate_mode")]
+        [JsonProperty("part_mode")]
         public ContestParticipationMode ParticipationMode { get; set; }
 
         /// <summary>
         /// 获取或设置比赛的授权模式。
         /// </summary>
-        [JsonProperty("mode")]
+        [JsonProperty("auth_mode")]
         public ContestAuthorizationMode AuthorizationMode { get; set; }
 
         /// <summary>
         /// 当授权模式在 Protected 模式时，获取或设置比赛密码的哈希值。
         /// </summary>
+        [JsonProperty("password")]
         public byte[] PasswordHash { get; set; }
 
         /// <summary>

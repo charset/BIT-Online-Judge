@@ -1,0 +1,22 @@
+﻿@using BITOJ.SiteUI.Models
+@model ProblemDetailModel
+@{ 
+    ViewBag.Title = "BITOJ - Add custom problem";
+    ViewBag.ProblemDetailEditShowProblemId = false;
+    ViewBag.ProblemDetailEditAllowProblemId = false;
+    ViewBag.ProblemDetailEditShowUserGroup = false;
+}
+
+<div class="jumbotron">
+    <h1>Add custom problem</h1>
+    <p class="sup">
+        Add a custom problem to the contest you created. Later administrators can clone
+        the problem to the main archieve if necessary.
+    </p>
+</div>
+
+<div class="row">
+    <div class="col-lg-8 col-lg-offset-2">
+        @Html.Partial("~/Views/Shared/ProblemDetailEdit.cshtml", Model);
+    </div>
+</div>

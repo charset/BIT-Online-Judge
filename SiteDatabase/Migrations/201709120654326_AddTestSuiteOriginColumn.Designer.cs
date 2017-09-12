@@ -7,13 +7,13 @@ namespace BITOJ.Data.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class AddContestId : IMigrationMetadata
+    public sealed partial class AddTestSuiteOriginColumn : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(AddContestId));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(AddTestSuiteOriginColumn));
         
         string IMigrationMetadata.Id
         {
-            get { return "201709050144169_AddContestId"; }
+            get { return "201709120654326_AddTestSuiteOriginColumn"; }
         }
         
         string IMigrationMetadata.Source

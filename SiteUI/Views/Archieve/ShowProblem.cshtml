@@ -8,7 +8,7 @@
 
 <div class="jumbotron">
     <h1>
-        @string.Format("{0} - {1}", Model.ProblemId, Model.Title)
+        @string.Format("{0}", Model.Title)
         @if (!string.IsNullOrEmpty(Model.Author))
         {
             <small>by @Model.Author</small>
@@ -59,8 +59,8 @@
                     <span class="glyphicon glyphicon-pencil"></span>
                     Edit problem
                 </a>
-                <a href="@string.Format("/Archieve/Environment?id={0}", Model.ProblemId)" role="button" 
-                   class="btn btn-warning">
+                <a href="@string.Format("/Archieve/Environment?id={0}", Model.ProblemId)" role="button"
+                    class="btn btn-warning">
                     <span class="glyphicon glyphicon-flash"></span>
                     Edit exeuction environment
                 </a>

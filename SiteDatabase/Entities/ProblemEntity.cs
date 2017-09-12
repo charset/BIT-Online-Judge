@@ -40,6 +40,11 @@
         public OJSystem Origin { get; set; }
 
         /// <summary>
+        /// 获取或设置题目评测数据的来源题目 ID。若该题目拥有独立的评测数据集，返回 null。
+        /// </summary>
+        public string TestSuiteOrigin { get; set; }
+
+        /// <summary>
         /// 获取或设置题目的时间限制，以毫秒为单位。
         /// </summary>
         public int TimeLimit { get; set; }
@@ -90,6 +95,7 @@
             Source = string.Empty;
             ContestId = -1;
             Origin = OJSystem.BIT;
+            TestSuiteOrigin = null;
             TimeLimit = 1000;
             MemoryLimit = 64 * 1024;
             IsSpecialJudge = false;

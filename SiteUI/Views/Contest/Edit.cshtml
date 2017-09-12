@@ -1,0 +1,15 @@
+﻿@using BITOJ.SiteUI.Models
+@model ContestDetailModel
+@{ 
+    ViewBag.Title = "BITOJ - Edit contest";
+}
+
+<div class="jumbotron">
+    <h1>Edit contest</h1>
+</div>
+
+<div class="row">
+    <div class="col-lg-6 col-lg-offset-3">
+        @Html.Partial("~/Views/Shared/ContestDetailEdit.cshtml", Model);
+    </div>
+</div>

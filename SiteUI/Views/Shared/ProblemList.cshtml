@@ -1,5 +1,4 @@
-﻿@using BITOJ.Core
-@using BITOJ.Core.Authorization
+﻿@using BITOJ.Core.Authorization
 @using BITOJ.SiteUI.Models
 @using System.Text
 @model IEnumerable<ProblemBriefModel>
@@ -8,13 +7,18 @@
     <table class="table table-striped table-hover">
         <thead>
             <tr>
-                <th>ID</th>
+                @if ((bool?)ViewBag.ProblemListShowId ?? true)
+                {
+                    <th>ID</th>
+                }
+
                 <th>Title</th>
 
                 @if ((bool?)ViewBag.ProblemListShowCategory ?? true)
                 {
                     <th>Categories</th>
                 }
+
                 <th>Operations</th>
                 <th>Accepted Ratio</th>
             </tr>
@@ -31,10 +35,14 @@
                             string problemUrl = string.Format("/Archieve/ShowProblem?id={0}", info.ProblemId);
 
                             <tr>
-                                <td><a href="@problemUrl">@info.ProblemId</a></td>
+                                @if ((bool?)ViewBag.ProblemListShowId ?? true)
+                                {
+                                    <td><a href="@problemUrl">@info.ProblemId</a></td>
+                                }
+
                                 <td><a href="@problemUrl"><strong>@info.Title</strong></a></td>
 
-                                @if ((bool?)ViewBag.ProblemListShowCatalog ?? true)
+                                @if ((bool?)ViewBag.ProblemListShowCategory ?? true)
                                 {
                                     <td>
                                         @{
@@ -89,7 +97,7 @@
                                     @{
                                         string submitText = string.Format("{0} submissions, {1} accpeted.",
                                             info.TotalSubmissions, info.TotalAccepted);
-                                        string ratioText = "N/A";
+                                        string ratioText = "NAN";
                                         if (info.TotalSubmissions > 0)
                                         {
                                             ratioText = string.Format("{0:N2} %",

@@ -3,7 +3,9 @@
 @model ProblemDetailModel
 @{ 
     ViewBag.Title = "BITOJ - Add problem";
-    ViewData.Add("ProblemDetailEdit_AllowProblemId", true);
+    ViewBag.ProblemDetailEditShowProblemId = true;
+    ViewBag.ProblemDetailEditAllowProblemId = true;
+    ViewBag.ProblemDetailEditShowUserGroup = true;
     ViewData.Add("AccessGroup", UserGroup.Administrators);
 }
 

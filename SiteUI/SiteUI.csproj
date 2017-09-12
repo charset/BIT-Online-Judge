@@ -209,6 +209,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\contest-add-archieve-problem.js" />
     <Content Include="Scripts\contest-detail-editor.js" />
     <Content Include="Scripts\create-team.js" />
     <Content Include="Scripts\delete-problem.js" />
@@ -259,6 +260,8 @@
     <Content Include="Views\Shared\ContestList.cshtml" />
     <Content Include="Views\Shared\ProblemList.cshtml" />
     <Content Include="Views\Contest\Show.cshtml" />
+    <Content Include="Views\Contest\Edit.cshtml" />
+    <Content Include="Views\Contest\AddProblem.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

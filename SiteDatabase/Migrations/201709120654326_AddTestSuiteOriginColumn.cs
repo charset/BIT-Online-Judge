@@ -3,16 +3,16 @@ namespace BITOJ.Data.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class AddContestId : DbMigration
+    public partial class AddTestSuiteOriginColumn : DbMigration
     {
         public override void Up()
         {
-            AddColumn("dbo.ProblemEntities", "ContestId", builder => builder.Int(nullable: false));
+            AddColumn("dbo.ProblemEntities", "TestSuiteOrigin", builder => builder.String());
         }
         
         public override void Down()
         {
-            DropColumn("dbo.ProblemEntities", "ContestId");
+            DropColumn("dbo.ProblemEntities", "TestSuiteOrigin");
         }
     }
 }

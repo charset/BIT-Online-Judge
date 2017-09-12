@@ -388,6 +388,15 @@
         }
 
         /// <summary>
+        /// 获取下一个为该比赛分配的题目 ID。
+        /// </summary>
+        /// <returns>下一个为该比赛分配的题目 ID。</returns>
+        public string PeekNextProblemId()
+        {
+            return string.Format("BIT_CONTEST_{0}_{1}", ContestId, m_access.GetProblems().Length);
+        }
+
+        /// <summary>
         /// 将挂起的更改写入文件系统及数据库中。
         /// </summary>
         public void Save()

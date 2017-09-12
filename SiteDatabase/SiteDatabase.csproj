@@ -82,9 +82,9 @@
     <Compile Include="Entities\UserGroup.cs" />
     <Compile Include="Entities\UserProfileEntity.cs" />
     <Compile Include="Entities\SubmissionVerdictStatus.cs" />
-    <Compile Include="Migrations\201709050144169_AddContestId.cs" />
-    <Compile Include="Migrations\201709050144169_AddContestId.Designer.cs">
-      <DependentUpon>201709050144169_AddContestId.cs</DependentUpon>
+    <Compile Include="Migrations\201709120654326_AddTestSuiteOriginColumn.cs" />
+    <Compile Include="Migrations\201709120654326_AddTestSuiteOriginColumn.Designer.cs">
+      <DependentUpon>201709120654326_AddTestSuiteOriginColumn.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ContestAuthorizationModel.cs" />
@@ -118,8 +118,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201709050144169_AddContestId.resx">
-      <DependentUpon>201709050144169_AddContestId.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201709120654326_AddTestSuiteOriginColumn.resx">
+      <DependentUpon>201709120654326_AddTestSuiteOriginColumn.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

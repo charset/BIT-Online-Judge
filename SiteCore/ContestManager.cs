@@ -158,7 +158,7 @@
             set = set.OrderByDescending(entity => entity.CreationTime);
 
             PageableQueryResult<ContestEntity> originResult = new PageableQueryResult<ContestEntity>(set);
-            return new MappedQueryResult<ContestEntity, ContestHandle>(originResult, 
+            return new MappedQueryResult<ContestEntity, ContestHandle>(originResult,
                 entity => ContestHandle.FromContestEntity(entity));
         }
 
@@ -176,6 +176,16 @@
                 // 删除本地配置文件。
                 File.Delete(entity.ContestConfigurationFile);
             }
+        }
+
+        /// <summary>
+        /// 检查给定比赛 ID 所代表的比赛是否存在。
+        /// </summary>
+        /// <param name="contestId">比赛 ID 。</param>
+        /// <returns>一个值，该值指示给定比赛 ID 所代表的比赛是否存在。</returns>
+        public bool IsContestExist(int contestId)
+        {
+            return m_context.Contests.Find(contestId) != null;
         }
 
         /// <summary>

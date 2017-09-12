@@ -1,7 +1,9 @@
 ﻿namespace BITOJ.SiteUI.Models
 {
+    using BITOJ.Core;
     using BITOJ.Core.Convert;
     using BITOJ.Core.Data;
+    using BITOJ.SiteUI.Models.Validation;
     using System;
     using System.ComponentModel.DataAnnotations;
 
@@ -66,6 +68,7 @@
         /// <summary>
         /// 获取或设置用户权限集名称。
         /// </summary>
+        [EqualTo("Administrator", "Insider", "Standard", "Guest", ErrorMessage = "Invalid user group.")]
         public string UserGroupName { get; set; }
 
         /// <summary>
@@ -125,48 +128,57 @@
         }
 
         /// <summary>
-        /// 从给定的题目数据提供器加载题目数据到当前的数据模型中。
+        /// 从给定的题目句柄创建 ProblemDetailModel 类的新实例。
         /// </summary>
-        /// <param name="data">题目数据提供器。</param>
+        /// <param name="handle">题目句柄。</param>
         /// <exception cref="ArgumentNullException"/>
-        public void LoadFromProblemDataProvider(ProblemDataProvider data)
+        public static ProblemDetailModel FromProblemHandle(ProblemHandle handle)
         {
-            if (data == null)
-                throw new ArgumentNullException(nameof(data));
+            if (handle == null)
+                throw new ArgumentNullException(nameof(handle));
 
-            ProblemId = data.ProblemId;
-            Title = data.Title;
-            Description = data.Description;
-            InputDescription = data.InputDescription;
-            OutputDescription = data.OutputDescription;
-            InputExample = data.InputExample;
-            OutputExample = data.OutputExample;
-            Hint = data.Hint;
-            Source = data.Source;
-            Author = data.Author;
-            UserGroupName = UsergroupConvert.ConvertToString(data.AuthorizationGroup);
+            ProblemDetailModel model = new ProblemDetailModel();
+            using (ProblemDataProvider data = ProblemDataProvider.Create(handle, true))
+            {
+                model.ProblemId = data.ProblemId;
+                model.Title = data.Title;
+                model.Description = data.Description;
+                model.InputDescription = data.InputDescription;
+                model.OutputDescription = data.OutputDescription;
+                model.InputExample = data.InputExample;
+                model.OutputExample = data.OutputExample;
+                model.Hint = data.Hint;
+                model.Source = data.Source;
+                model.Author = data.Author;
+                model.UserGroupName = UsergroupConvert.ConvertToString(data.AuthorizationGroup);
+            }
+
+            return model;
         }
 
         /// <summary>
-        /// 将当前数据模型对象中的额数据写入给定的题目数据提供器中。
+        /// 将当前对象中的数据写入给定的题目中。
         /// </summary>
-        /// <param name="data">要写入的题目数据提供器。</param>
+        /// <param name="handle">题目句柄。</param>
         /// <exception cref="ArgumentNullException"/>
-        public void SaveToProblemDataProvider(ProblemDataProvider data)
+        public void SaveTo(ProblemHandle handle)
         {
-            if (data == null)
-                throw new ArgumentNullException(nameof(data));
-            
-            data.Title = Title;
-            data.Description = Description;
-            data.InputDescription = InputDescription;
-            data.OutputDescription = OutputDescription;
-            data.InputExample = InputExample;
-            data.OutputExample = OutputExample;
-            data.Hint = Hint;
-            data.Source = Source;
-            data.Author = Author;
-            data.AuthorizationGroup = UsergroupConvert.ConvertFromString(UserGroupName);
+            if (handle == null)
+                throw new ArgumentNullException(nameof(handle));
+
+            using (ProblemDataProvider data = ProblemDataProvider.Create(handle, false))
+            {
+                data.Title = Title;
+                data.Description = Description;
+                data.InputDescription = InputDescription;
+                data.OutputDescription = OutputDescription;
+                data.InputExample = InputExample;
+                data.OutputExample = OutputExample;
+                data.Hint = Hint;
+                data.Source = Source;
+                data.Author = Author;
+                data.AuthorizationGroup = UsergroupConvert.ConvertFromString(UserGroupName);
+            }
         }
     }
 }

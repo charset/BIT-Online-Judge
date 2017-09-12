@@ -2,6 +2,7 @@
 {
     using BITOJ.Common.Cache;
     using BITOJ.Common.Cache.Settings;
+    using BITOJ.Core.Data;
     using BITOJ.Core.Data.Queries;
     using BITOJ.Data;
     using BITOJ.Data.Entities;
@@ -121,6 +122,46 @@
             // 创建句柄并返回。
             ProblemHandle handle = ProblemHandle.FromProblemEntity(entity);
             return handle;
+        }
+
+        /// <summary>
+        /// 在题目库中使用给定的新题目 ID 创建已存在题目的精确副本。
+        /// </summary>
+        /// <param name="newProblemId">要创建的新题目 ID。</param>
+        /// <param name="oldProblemId">已存在的题目 ID。</param>
+        /// <returns>新题目句柄。</returns>
+        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="ProblemNotExistException"/>
+        /// <exception cref="ProblemAlreadyExistException"/>
+        public ProblemHandle CloneProblem(string newProblemId, string oldProblemId)
+        {
+            if (newProblemId == null)
+                throw new ArgumentNullException(nameof(newProblemId));
+            if (oldProblemId == null)
+                throw new ArgumentNullException(nameof(oldProblemId));
+
+            ProblemHandle oldHandle = new ProblemHandle(oldProblemId);
+            ProblemHandle newHandle = CreateProblem(newProblemId);
+
+            using (ProblemDataProvider newData = ProblemDataProvider.Create(newHandle, false))
+            {
+                using (ProblemDataProvider oldData = ProblemDataProvider.Create(oldHandle, true))
+                {
+                    oldData.CopyTo(newData);
+                    
+                    // 维护评测数据集源链接。
+                    if (oldData.TestSuiteOrigin != null)
+                    {
+                        newData.TestSuiteOrigin = oldData.TestSuiteOrigin;
+                    }
+                    else
+                    {
+                        newData.TestSuiteOrigin = oldData.ProblemId;
+                    }
+                }
+            }
+
+            return newHandle;
         }
 
         /// <summary>

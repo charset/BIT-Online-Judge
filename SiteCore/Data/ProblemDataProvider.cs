@@ -122,6 +122,38 @@
         }
 
         /// <summary>
+        /// 获取或设置题目所处的比赛 ID。若题目为主题目库题目，返回 -1。
+        /// </summary>
+        public int ContestId
+        {
+            get => m_disposed
+                ? throw new ObjectDisposedException(GetType().Name)
+                : m_entity.ContestId;
+            set
+            {
+                CheckAccess();
+                m_entity.ContestId = value;
+                m_dirty = true;
+            }
+        }
+
+        /// <summary>
+        /// 获取或设置题目评测数据集的来源题目 ID。若该题目有独立的评测数据集，返回 null。
+        /// </summary>
+        public string TestSuiteOrigin
+        {
+            get => m_disposed
+                ? throw new ObjectDisposedException(GetType().Name)
+                : m_entity.TestSuiteOrigin;
+            set
+            {
+                CheckAccess();
+                m_entity.TestSuiteOrigin = value;
+                m_dirty = true;
+            }
+        }
+
+        /// <summary>
         /// 获取或设置题目的正文描述部分。
         /// </summary>
         /// <exception cref="ObjectDisposedException"/>
@@ -355,6 +387,32 @@
             }
 
             return collection;
+        }
+
+        /// <summary>
+        /// 将当前 ProblemDataProvider 中的数据复制到另一个对象中。
+        /// </summary>
+        /// <param name="data">准备接收数据的 ProblemDataProvider 对象。</param>
+        /// <exception cref="ArgumentNullException"/>
+        public void CopyTo(ProblemDataProvider data)
+        {
+            if (data == null)
+                throw new ArgumentNullException(nameof(data));
+
+            data.Title = Title;
+            data.Author = Author;
+            data.Description = Description;
+            data.InputDescription = InputDescription;
+            data.OutputDescription = OutputDescription;
+            data.InputExample = InputExample;
+            data.OutputExample = OutputExample;
+            data.Source = Source;
+            data.Hint = Hint;
+            data.TimeLimit = TimeLimit;
+            data.MemoryLimit = MemoryLimit;
+            data.IsSpecialJudge = IsSpecialJudge;
+            data.AuthorizationGroup = AuthorizationGroup;
+            data.TestSuiteOrigin = TestSuiteOrigin;
         }
 
         /// <summary>

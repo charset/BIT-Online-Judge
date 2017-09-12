@@ -55,7 +55,7 @@
             }
             else if (string.Compare(value, PrivateString, true) == 0)
             {
-                return ContestAuthorizationMode.Public;
+                return ContestAuthorizationMode.Private;
             }
             else
             {

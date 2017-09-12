@@ -3,6 +3,8 @@
 @model ContestDetailModel
 
 <form method="post">
+    <input type="hidden" name="ContestId" value="@Model.ContestId"/>
+
     <div class="form-group">
         <label class="control-label" for="Title">Title</label>
         <input type="text" class="form-control" id="Title" name="Title" value="@Model.Title" placeholder="Title"/>
@@ -17,7 +19,7 @@
 
     <div class="form-group">
         <label class="control-label" for="Creator">Creator</label>
-        <input type="text" class="form-control" id="Creator" name="Creator" value="@UserSession.GetUsername(Session)" 
+        <input type="text" class="form-control" id="Creator" name="Creator" value="@Model.Creator" 
                placeholder="Creator" readonly/>
 
         @if (!string.IsNullOrEmpty(ViewBag.CreatorErrorMessage))

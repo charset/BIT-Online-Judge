@@ -94,7 +94,7 @@
             if (ModelState.ContainsKey("Id") && ModelState["Id"].Errors.Count > 0)
             {
                 hasError = true;
-                ViewBag.IdErrorMessage = ModelState["Id"].Errors[0].ErrorMessage;
+                ViewBag.ProblemIdErrorMessage = ModelState["Id"].Errors[0].ErrorMessage;
             }
             if (ModelState.ContainsKey("Title") && ModelState["Title"].Errors.Count > 0)
             {
@@ -110,16 +110,13 @@
             string problemId = "BIT" + model.ProblemId;
             if (ProblemArchieveManager.Default.IsProblemExist(problemId))
             {
-                ViewBag.IdErrorMessage = "Problem with the same ID already exist in the archieve.";
+                ViewBag.ProblemIdErrorMessage = "Problem with the same ID already exist in the archieve.";
                 return View(model);
             }
 
             // 在题目库中创建新题目。
             ProblemHandle handle = ProblemArchieveManager.Default.CreateProblem(problemId);
-            using (ProblemDataProvider data = ProblemDataProvider.Create(handle, false))
-            {
-                model.SaveToProblemDataProvider(data);
-            }
+            model.SaveTo(handle);
 
             return Redirect("~/Archieve");
         }
@@ -137,8 +134,6 @@
                 return Redirect("~/Error/ProblemNotExist");
             };
 
-            ProblemDetailModel model = new ProblemDetailModel();
-
             // 查询题目信息。
             ProblemHandle handle = ProblemArchieveManager.Default.GetProblemById(Request.QueryString["id"]);
             if (handle == null)
@@ -147,11 +142,7 @@
                 return Redirect("~/Error/ProblemNotExist");
             }
 
-            using (ProblemDataProvider data = ProblemDataProvider.Create(handle, true))
-            {
-                model.LoadFromProblemDataProvider(data);
-            }
-
+            ProblemDetailModel model = ProblemDetailModel.FromProblemHandle(handle);
             return View(model);
         }
 
@@ -187,10 +178,7 @@
             
             // 写入修改后的数据。
             model.ResetNullStrings();
-            using (ProblemDataProvider data = ProblemDataProvider.Create(handle, false))
-            {
-                model.SaveToProblemDataProvider(data);
-            }
+            model.SaveTo(handle);
 
             return Redirect("~/Archieve");
         }

@@ -8,6 +8,7 @@
     ViewBag.Title = Model.Title;
 
     ViewBag.ProblemListShowCategory = false;
+    ViewBag.ProblemListShowId = false;
     ViewBag.ProblemListEditable = UserSession.IsAuthorized(Session) &&
         string.Compare(UserSession.GetUsername(Session), Model.Creator, false) == 0;
 }
@@ -74,7 +75,8 @@
         @if (string.Compare(UserSession.GetUsername(Session), Model.Creator, false) == 0)
         {
             <div class="btn-group btn-group-vertical" style="display: block;">
-                <a href="javascript:void(0);" class="btn btn-block btn-warning">
+                <a href="@string.Format("/Contest/AddProblem?id={0}", Model.ContestId)" 
+                   class="btn btn-block btn-warning">
                     <span class="glyphicon glyphicon-plus"></span>
                     Add custom problem
                 </a>
@@ -83,10 +85,18 @@
                     <span class="glyphicon glyphicon-plus"></span>
                     Add archieve problem
                 </button>
-                <a href="javascript:void(0);" class="btn btn-block btn-warning">
+                <a href="@string.Format("/Contest/Edit?id={0}", Model.ContestId)" class="btn btn-block btn-warning">
                     <span class="glyphicon glyphicon-pencil"></span>
                     Edit contest
                 </a>
+
+                @if (Model.AuthorizationMode == ContestAuthorizationMode.Private)
+                {
+                    <a href="javascript:void(0);" class="btn btn-block btn-warning">
+                        <span class="glyphicon glyphicon-pencil"></span>
+                        Edit white list
+                    </a>
+                }
             </div>
 
             <div class="modal fade" id="addProblemDialog" tabindex="-1" role="dialog" 
@@ -100,7 +110,7 @@
                             <h4 class="modal-title" id="addProblemDialogLabel">Add archieve problem</h4>
                         </div>
                         <div class="modal-body">
-                            <form>
+                            <form id="addArchieveProblemForm" action="~/Contest/AddArchieveProblem">
                                 <div class="form-group">
                                     <label for="ProblemId" class="control-label">Problem ID</label>
                                     <input type="text" class="form-control" id="ProblemId" name="ProblemId"
@@ -110,7 +120,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">
+                            <button type="button" class="btn btn-primary" id="addArchieveProblemButton">
                                 <span class="glyphicon glyphicon-ok"></span>
                                 Confirm
                             </button>
@@ -119,8 +129,20 @@
                 </div>
             </div>
         }
+
+        <div style="margin-top: 15px;" class="list-group">
+            <a class="list-group-item active" href="javascript:void(0);">Problems</a>
+            <a class="list-group-item" href="javascript:void(0);">Status</a>
+            <a class="list-group-item" href="javascript:void(0);">Ranklist</a>
+        </div>
     </div>
     <div class="col-lg-9">
         @Html.Partial("~/Views/Shared/ProblemList.cshtml", Model.Problems)
     </div>
 </div>
+
+<input type="hidden" id="contestId" value="@Model.ContestId"/>
+
+@section scripts {
+    <script type="text/javascript" src="~/Scripts/contest-add-archieve-problem.js"></script>
+}

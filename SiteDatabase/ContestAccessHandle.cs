@@ -72,8 +72,8 @@
         /// <returns></returns>
         public string[] GetProblems()
         {
-            string[] problems = new string[m_config.Problems.Count];
-            m_config.Problems.CopyTo(problems, 0);
+            string[] problems = new string[Configuration.Problems.Count];
+            Configuration.Problems.CopyTo(problems, 0);
 
             return problems;
         }
@@ -88,7 +88,7 @@
             if (problemId == null)
                 throw new ArgumentNullException(nameof(problemId));
 
-            m_config.Problems.Add(problemId);
+            Configuration.Problems.Add(problemId);
             m_dirty = true;
         }
 
@@ -102,11 +102,11 @@
             if (problemId == null)
                 throw new ArgumentNullException(nameof(problemId));
 
-            foreach (string item in m_config.Problems)
+            foreach (string item in Configuration.Problems)
             {
                 if (string.Compare(item, problemId, true) == 0)
                 {
-                    m_config.Problems.Remove(item);
+                    Configuration.Problems.Remove(item);
                 }
             }
 
