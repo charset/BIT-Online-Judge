@@ -188,8 +188,8 @@
                 model.Description = markdown.Transform(data.Description);
                 model.InputDescription = markdown.Transform(data.InputDescription);
                 model.OutputDescription = markdown.Transform(data.OutputDescription);
-                model.InputExample = data.InputExample;
-                model.OutputExample = data.OutputExample;
+                model.InputExample = markdown.Transform(data.InputExample);
+                model.OutputExample = markdown.Transform(data.OutputExample);
                 model.Hint = markdown.Transform(data.Hint);
                 model.Source = data.Source;
                 model.Author = data.Author;

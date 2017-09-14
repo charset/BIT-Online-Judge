@@ -76,14 +76,14 @@
     <div class="row">
         <div class="col-lg-6">
             <div class="form-group">
-                <label class="control-label" for="InputExample">Input example</label>
-                @Html.TextAreaFor(model => model.InputExample, new { @class = "form-control text-code", placeholder = "Input example", rows = "6" })
+                <label class="control-label" for="InputExample">Input example (Markdown supported)</label>
+                @Html.TextAreaFor(model => model.InputExample, new { @class = "form-control text-code", placeholder = "Input example in Markdown", rows = "6" })
             </div>
         </div>
         <div class="col-lg-6">
             <div class="form-group">
-                <label class="control-label" for="OutputExample">Output example</label>
-                @Html.TextAreaFor(model => model.OutputExample, new { @class = "form-control text-code", placeholder = "Output example", rows = "6" })
+                <label class="control-label" for="OutputExample">Output example (Markdown supported)</label>
+                @Html.TextAreaFor(model => model.OutputExample, new { @class = "form-control text-code", placeholder = "Output example in Markdown", rows = "6" })
             </div>
         </div>
     </div>

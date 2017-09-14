@@ -104,21 +104,21 @@
                 <div class="panel-heading">
                     <h4 class="panel-title">Problem description</h4>
                 </div>
-                <div class="panel-body">@Html.Raw(Model.Description)</div>
+                <div class="panel-body">@MvcHtmlString.Create(Model.Description)</div>
             </div>
 
             <div class="panel panel-info">
                 <div class="panel-heading">
                     <h4 class="panel-title">Input description</h4>
                 </div>
-                <div class="panel-body">@Html.Raw(Model.InputDescription)</div>
+                <div class="panel-body">@MvcHtmlString.Create(Model.InputDescription)</div>
             </div>
 
             <div class="panel panel-info">
                 <div class="panel-heading">
                     <h4 class="panel-title">Output description</h4>
                 </div>
-                <div class="panel-body">@Html.Raw(Model.OutputDescription)</div>
+                <div class="panel-body">@MvcHtmlString.Create(Model.OutputDescription)</div>
             </div>
 
             <div class="row">
@@ -128,7 +128,7 @@
                             <h4 class="panel-title">Input example</h4>
                         </div>
                         <div class="panel-body">
-                            <p class="text-code">@Html.Raw(Model.InputExample)</p>
+                            <div class="text-code">@MvcHtmlString.Create(Model.InputExample)</div>
                         </div>
                     </div>
                 </div>
@@ -138,7 +138,7 @@
                             <h4 class="panel-title">Output example</h4>
                         </div>
                         <div class="panel-body">
-                            <p class="text-code">@Html.Raw(Model.OutputExample)</p>
+                            <div class="text-code">@MvcHtmlString.Create(Model.OutputExample)</div>
                         </div>
                     </div>
                 </div>
@@ -150,7 +150,7 @@
                     <div class="panel-heading">
                         <h4 class="panel-title">Hints</h4>
                     </div>
-                    <div class="panel-body">@Model.Hint</div>
+                    <div class="panel-body">@MvcHtmlString.Create(Model.Hint)</div>
                 </div>
             }
 
