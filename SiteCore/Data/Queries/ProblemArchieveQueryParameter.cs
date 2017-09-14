@@ -46,6 +46,16 @@
         public bool QueryByOrigin { get; set; }
 
         /// <summary>
+        /// 获取或设置要查询的比赛 ID。
+        /// </summary>
+        public int ContestId { get; set; }
+
+        /// <summary>
+        /// 获取或设置一个值，该值指示是否通过题目所在的比赛 ID 进行查询。
+        /// </summary>
+        public bool QueryByContestId { get; set; }
+
+        /// <summary>
         /// 创建 ProblemArchieveQueryParameter 类的新实例。
         /// </summary>
         public ProblemArchieveQueryParameter()
@@ -54,10 +64,12 @@
             Source = string.Empty;
             Author = string.Empty;
             Origin = OJSystem.BIT;
+            ContestId = -1;
             QueryByTitle = false;
             QueryBySource = false;
             QueryByAuthor = false;
             QueryByOrigin = false;
+            QueryByContestId = true;
         }
     }
 }

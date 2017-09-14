@@ -3,6 +3,7 @@
     using BITOJ.Core;
     using BITOJ.Core.Convert;
     using BITOJ.Core.Data;
+    using MarkdownSharp;
     using System;
 
     /// <summary>
@@ -141,52 +142,63 @@
         }
 
         /// <summary>
-        /// 从给定的题目数据提供器加载当前数据模型对象。
-        /// </summary>
-        /// <param name="data">题目数据提供器。</param>
-        public void LoadFromProblemDataProvider(ProblemDataProvider data)
-        {
-            if (data == null)
-                throw new ArgumentNullException(nameof(data));
-
-            ProblemId = data.ProblemId;
-            Title = data.Title;
-            Description = data.Description;
-            InputDescription = data.InputDescription;
-            OutputDescription = data.OutputDescription;
-            InputExample = data.InputExample;
-            OutputExample = data.OutputExample;
-            Hint = data.Hint;
-            Source = data.Source;
-            Author = data.Author;
-            TimeLimit = data.TimeLimit;
-            MemoryLimit = data.MemoryLimit;
-            IsSpecialJudge = data.IsSpecialJudge;
-        }
-
-        /// <summary>
         /// 将当前数据模型对象中的数据存入给定的题目数据提供器。
         /// </summary>
         /// <param name="data">要存入的题目数据提供器。</param>
         /// <exception cref="ArgumentNullException"/>
         /// <exception cref="InvalidOperationException"/>
-        public void SaveToProblemDataProvider(ProblemDataProvider data)
+        public void SaveTo(ProblemHandle handle)
         {
-            if (data == null)
-                throw new ArgumentNullException(nameof(data));
-            
-            data.Title = Title;
-            data.Description = Description;
-            data.InputDescription = InputDescription;
-            data.OutputDescription = OutputDescription;
-            data.InputExample = InputExample;
-            data.OutputExample = OutputExample;
-            data.Hint = Hint;
-            data.Source = Source;
-            data.Author = Author;
-            data.TimeLimit = TimeLimit;
-            data.MemoryLimit = MemoryLimit;
-            data.IsSpecialJudge = IsSpecialJudge;
+            if (handle == null)
+                throw new ArgumentNullException(nameof(handle));
+
+            using (ProblemDataProvider data = ProblemDataProvider.Create(handle, false))
+            {
+                data.Title = Title;
+                data.Description = Description;
+                data.InputDescription = InputDescription;
+                data.OutputDescription = OutputDescription;
+                data.InputExample = InputExample;
+                data.OutputExample = OutputExample;
+                data.Hint = Hint;
+                data.Source = Source;
+                data.Author = Author;
+                data.TimeLimit = TimeLimit;
+                data.MemoryLimit = MemoryLimit;
+                data.IsSpecialJudge = IsSpecialJudge;
+            }
+        }
+
+        /// <summary>
+        /// 从给定的题目句柄创建新的数据模型对象。
+        /// </summary>
+        /// <param name="handle">题目句柄。</param>
+        /// <exception cref="ArgumentNullException"/>
+        public static ProblemDisplayModel FromProblemHandle(ProblemHandle handle)
+        {
+            if (handle == null)
+                throw new ArgumentNullException(nameof(handle));
+
+            ProblemDisplayModel model = new ProblemDisplayModel();
+            Markdown markdown = new Markdown();
+            using (ProblemDataProvider data = ProblemDataProvider.Create(handle, true))
+            {
+                model.ProblemId = data.ProblemId;
+                model.Title = data.Title;
+                model.Description = markdown.Transform(data.Description);
+                model.InputDescription = markdown.Transform(data.InputDescription);
+                model.OutputDescription = markdown.Transform(data.OutputDescription);
+                model.InputExample = data.InputExample;
+                model.OutputExample = data.OutputExample;
+                model.Hint = markdown.Transform(data.Hint);
+                model.Source = data.Source;
+                model.Author = data.Author;
+                model.TimeLimit = data.TimeLimit;
+                model.MemoryLimit = data.MemoryLimit;
+                model.IsSpecialJudge = data.IsSpecialJudge;
+            }
+
+            return model;
         }
     }
 }

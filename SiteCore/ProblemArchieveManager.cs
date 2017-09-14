@@ -217,6 +217,10 @@
             {
                 set = ProblemDataContext.QueryProblemEntitiesByOrigin(set, (NativeOJSystem)query.Origin);
             }
+            if (query.QueryByContestId)
+            {
+                set = ProblemDataContext.QueryProblemEntitiesByContestId(set, query.ContestId);
+            }
 
             // 对数据集进行排序以准备随时执行分页。
             set = set.OrderBy(entity => entity.Id);

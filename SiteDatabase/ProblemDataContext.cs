@@ -105,6 +105,25 @@ namespace BITOJ.Data
         }
 
         /// <summary>
+        /// 使用给定的题目所在比赛 ID 在给定的数据集中查询题目实体对象并返回。
+        /// </summary>
+        /// <param name="dataset">数据集。</param>
+        /// <param name="contestId">题目所在的比赛 ID。</param>
+        /// <returns>一个可查询对象，该对象可查询到所有的符合要求的实体对象。</returns>
+        /// <exception cref="ArgumentNullException"/>
+        public static IQueryable<ProblemEntity> QueryProblemEntitiesByContestId(IQueryable<ProblemEntity> dataset,
+            int contestId)
+        {
+            if (dataset == null)
+                throw new ArgumentNullException(nameof(dataset));
+
+            var entities = from item in dataset
+                           where item.ContestId == contestId
+                           select item;
+            return entities;
+        }
+
+        /// <summary>
         /// 使用给定的名称在给定的数据集中查询题目类别实体对象并返回。
         /// </summary>
         /// <param name="dataset">原始数据集。</param>
@@ -124,7 +143,7 @@ namespace BITOJ.Data
                            select item;
             return entities;
         }
-
+            
         /// <summary>
         /// 将给定的题目实体对象添加至数据集中。
         /// </summary>

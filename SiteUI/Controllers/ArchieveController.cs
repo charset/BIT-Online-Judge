@@ -42,6 +42,8 @@
                 Author = Request.QueryString["author"],
                 QueryByOrigin = true,
                 Origin = OJSystemConvert.ConvertFromString(Request.QueryString["origin"] ?? "BIT"),
+                QueryByContestId = true,
+                ContestId = -1
             };
 
             IPageableQueryResult<ProblemHandle> result = ProblemArchieveManager.Default.QueryProblems(query);
@@ -219,12 +221,7 @@
                     return Redirect("~/Error/ProblemNotExist");
                 }
 
-                ProblemDisplayModel model = new ProblemDisplayModel();
-                using (ProblemDataProvider data = ProblemDataProvider.Create(handle, true))
-                {
-                    model.LoadFromProblemDataProvider(data);
-                }
-
+                ProblemDisplayModel model = ProblemDisplayModel.FromProblemHandle(handle);
                 return View(model);
             }
             else
