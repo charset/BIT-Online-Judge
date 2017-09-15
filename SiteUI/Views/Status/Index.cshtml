@@ -1,0 +1,58 @@
+﻿@using BITOJ.SiteUI.Models
+@model StatusModel
+@{ 
+    ViewBag.Title = "BITOJ - Status";
+}
+
+<div class="jumbotron">
+    <h1>Realtime status</h1>
+    <p class="sup">
+        Realtime verdict status on BITOJ for archieve problems.
+    </p>
+</div>
+
+<div class="row">
+    <div class="col-lg-3">
+        <div class="list-group">
+            <a class="list-group-item active" href="~/Status">
+                <h5 class="list-group-item-heading">All submissions</h5>
+            </a>
+        </div>
+
+        <hr />
+
+        <div class="panel panel-info" id="queryPanel">
+            <div class="text-center panel-heading" id="queryHeading">
+                <h4 class="panel-title">
+                    <a role="button" data-toggle="collapse" data-parent="#queryPanel" href="#queryForm"
+                       aria-expanded="true" aria-controls="queryForm">
+                        <strong>Query submissions</strong>
+                    </a>
+                </h4>
+            </div>
+            <div class="panel-collapse collase in" id="queryForm" aria-labelledby="queryHeading">
+                <div class="panel-body">
+                    <form role="search" action="~/Archieve" method="post">
+                        <div class="form-group">
+                            <label class="control-label" for="username">Username</label>
+                            <input type="text" class="form-control" id="username" name="username"
+                                   value="@Request.QueryString["problemId"]"/>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="problemId">Problem ID</label>
+                            <input type="text" class="form-control" id="problmeId" name="problemId"
+                                   value="@Request.QueryString["problemId"]"/>
+                        </div>
+
+                        <hr />
+
+                        <button type="submit" class="btn btn-info btn-block">Query</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-9">
+        @Html.Partial("~/Views/Shared/SubmissionList.cshtml", Model.Submissions)
+    </div>
+</div>

@@ -72,6 +72,11 @@ namespace BITOJ.Data
                 // 使用题目 ID 进行筛选。
                 temp = temp.Where(entity => entity.ProblemId == data.ProblemId);
             }
+            if (data.UseContestId)
+            {
+                // 使用比赛 ID 进行筛选。
+                temp = temp.Where(entity => entity.ContestId == data.ContestId);
+            }
             if (data.UseTimePeriod)
             {
                 // 使用题目时间区间进行筛选。
@@ -151,6 +156,6 @@ namespace BITOJ.Data
         /// <summary>
         /// 获取或设置提交数据集。
         /// </summary>
-        protected virtual DbSet<SubmissionEntity> Submissions { get; set; }
+        public virtual DbSet<SubmissionEntity> Submissions { get; set; }
     }
 }

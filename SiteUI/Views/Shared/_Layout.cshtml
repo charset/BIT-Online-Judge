@@ -28,35 +28,11 @@
 
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
-
-    <style type="text/css">
-        body {
-            padding-top: 70px;
-        }
-
-        .bgimg {
-            position: fixed;
-            left: -200px;
-            bottom: -100px;
-            width: 450px;
-            z-index: -1;
-
-            /* Rotation transformation. */
-            transform: rotate(15deg);
-            -ms-transform: rotate(15deg);        /* Internet Explorer */
-            -moz-transform: rotate(15deg);       /* Firefox */
-            -webkit-transform: rotate(15deg);   /* Safari 和 Chrome */
-            -o-transform: rotate(15deg);         /* Opera */
-        }
-
-        .text-footer {
-            line-height: 16px;
-        }
-    </style>
+    @RenderSection("Styles", required: false)
 </head>
 <body>
-    <nav class="navbar navbar-default navbar-fixed-top" role="navigation" 
-         style="opacity: 0.95; box-shadow: lightgray 0 0 5px;">
+    <nav class="navbar navbar-default navbar-fixed-top" style="box-shadow: lightgray 0 0 5px;"
+         role="navigation">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navdivResponsive">
@@ -121,7 +97,7 @@
             </div>
         </div>
     </nav>
-    <div class="container body-content content-wrapper">
+    <div class="container body-content">
         <div class="content">
             @RenderBody()
 

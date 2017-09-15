@@ -98,7 +98,7 @@
             SubmissionHandle handle = new SubmissionHandle(requestPack.SubmissionId);
             using (SubmissionDataProvider data = SubmissionDataProvider.Create(handle, false))
             {
-                if (data.VerdictStatus == SubmissionVerdictStatus.Competed)
+                if (data.VerdictStatus == SubmissionVerdictStatus.Completed)
                 {
                     // 当前用户提交已经处于处理完毕状态。不执行任何操作。
                     return NewtonsoftJsonResult(SubmissionUpdateRespondModel.Succeed);
@@ -108,7 +108,7 @@
                 data.ExecutionMemory = requestPack.ExecutionMemory;
                 data.Verdict = (SubmissionVerdict)requestPack.Verdict;
                 data.VerdictMessage = requestPack.VerdictMessage;
-                data.VerdictStatus = SubmissionVerdictStatus.Competed;
+                data.VerdictStatus = SubmissionVerdictStatus.Completed;
             }
 
             return NewtonsoftJsonResult(SubmissionUpdateRespondModel.Succeed);

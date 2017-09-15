@@ -55,6 +55,7 @@
                 model.Problems.Add(ProblemBriefModel.FromProblemHandle(handle));
             }
 
+            ViewBag.ProblemListShowSolutionStatus = UserSession.IsAuthorized(Session);
             return View(model);
         }
 
@@ -202,45 +203,7 @@
             return new ContentResult();
         }
 
-        // GET: Archieve/ShowProblem?id=...
-        public ActionResult ShowProblem(string id = null)
-        {
-            if (id == null)
-            {
-                return Redirect("~/Archieve");
-            }
-
-            ProblemHandle handle = new ProblemHandle(id);
-            if (handle.IsNativeProblem)
-            {
-                // 在数据库中查询题目信息。
-                handle = ProblemArchieveManager.Default.GetProblemById(id);
-                if (handle == null)
-                {
-                    // 题目不存在。
-                    return Redirect("~/Error/ProblemNotExist");
-                }
-
-                ProblemDisplayModel model = ProblemDisplayModel.FromProblemHandle(handle);
-                return View(model);
-            }
-            else
-            {
-                // 解析远程 OJ 题目 URL。
-                IProblemUrlResolver resolver = ProblemUrlResolverFactory.GetUrlResolverFor(handle);
-                if (resolver == null)
-                {
-                    // 没有此题目来源 OJ 的 URL 解析器。
-                    return Redirect("~/Error/OJNotSupported");
-                }
-                else
-                {
-                    return Redirect(resolver.Resolve(handle));
-                }
-            }
-        }
-
-        // GET: Archieve/Environment?id=...
+        // GET: Archieve/Environment?id={ProblemID}
         public ActionResult Environment()
         {
             // 检查用户权限。
@@ -308,6 +271,94 @@
             }
 
             return Redirect(string.Format("~/Archieve/ShowProblem?id={0}", model.ProblemId));
+        }
+
+        // GET: Archieve/TestSet?id={ProblemID}
+        public ActionResult TestSet()
+        {
+            // 执行用户身份验证。
+            if (!UserSession.IsAuthorized(Session))
+            {
+                return Redirect("~/Error/AccessDenied");
+            }
+
+            // 检查查询参数。
+            if (string.IsNullOrEmpty(Request.QueryString["id"]))
+            {
+                return Redirect("~/Archieve");
+            }
+
+            string problemId = Request.QueryString["id"];
+            ProblemHandle problemHandle = ProblemArchieveManager.Default.GetProblemById(problemId);
+            if (problemHandle == null)
+            {
+                // 给定的题目不存在。
+                return Redirect("~/Archieve");
+            }
+
+            using (ProblemDataProvider problemData = ProblemDataProvider.Create(problemHandle, true))
+            {
+                // 执行进一步身份验证。
+                if (problemData.ContestId == -1)
+                {
+                    if (!UserAuthorization.CheckAccessRights(UserGroup.Administrators, UserSession.GetUserGroup(Session)))
+                    {
+                        return Redirect("~/Error/AccessDenied");
+                    }
+                }
+                else
+                {
+                    ContestHandle contestHandle = new ContestHandle(problemData.ContestId);
+                    using (ContestDataProvider contestData = ContestDataProvider.Create(contestHandle, true))
+                    {
+                        if (string.Compare(contestData.Creator, UserSession.GetUsername(Session), false) != 0)
+                        {
+                            return Redirect("~/Error/AccessDenied");
+                        }
+                    }
+                }
+            }
+
+            // TODO: 完成 Archieve/TestSet 控制器逻辑。
+            return View();
+        }
+
+        // GET: Archieve/ShowProblem?id=...
+        public ActionResult ShowProblem(string id = null)
+        {
+            if (id == null)
+            {
+                return Redirect("~/Archieve");
+            }
+
+            ProblemHandle handle = new ProblemHandle(id);
+            if (handle.IsNativeProblem)
+            {
+                // 在数据库中查询题目信息。
+                handle = ProblemArchieveManager.Default.GetProblemById(id);
+                if (handle == null)
+                {
+                    // 题目不存在。
+                    return Redirect("~/Error/ProblemNotExist");
+                }
+
+                ProblemDisplayModel model = ProblemDisplayModel.FromProblemHandle(handle);
+                return View(model);
+            }
+            else
+            {
+                // 解析远程 OJ 题目 URL。
+                IProblemUrlResolver resolver = ProblemUrlResolverFactory.GetUrlResolverFor(handle);
+                if (resolver == null)
+                {
+                    // 没有此题目来源 OJ 的 URL 解析器。
+                    return Redirect("~/Error/OJNotSupported");
+                }
+                else
+                {
+                    return Redirect(resolver.Resolve(handle));
+                }
+            }
         }
     }
 }

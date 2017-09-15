@@ -76,23 +76,23 @@
         {
             <div class="btn-group btn-group-vertical" style="display: block;">
                 <a href="@string.Format("/Contest/AddProblem?id={0}", Model.ContestId)" 
-                   class="btn btn-block btn-warning">
+                   class="btn btn-warning">
                     <span class="glyphicon glyphicon-plus"></span>
                     Add custom problem
                 </a>
-                <button type="button" class="btn btn-block btn-warning" data-toggle="modal" 
+                <button type="button" class="btn btn-warning" data-toggle="modal" 
                         data-target="#addProblemDialog">
                     <span class="glyphicon glyphicon-plus"></span>
                     Add archieve problem
                 </button>
-                <a href="@string.Format("/Contest/Edit?id={0}", Model.ContestId)" class="btn btn-block btn-warning">
+                <a href="@string.Format("/Contest/Edit?id={0}", Model.ContestId)" class="btn btn-warning">
                     <span class="glyphicon glyphicon-pencil"></span>
                     Edit contest
                 </a>
 
                 @if (Model.AuthorizationMode == ContestAuthorizationMode.Private)
                 {
-                    <a href="javascript:void(0);" class="btn btn-block btn-warning">
+                    <a href="javascript:void(0);" class="btn btn-warning">
                         <span class="glyphicon glyphicon-pencil"></span>
                         Edit white list
                     </a>

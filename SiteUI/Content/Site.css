@@ -1,5 +1,5 @@
 ﻿body {
-    padding-top: 50px;
+    padding-top: 65px;
     padding-bottom: 20px;
 }
 
@@ -7,6 +7,20 @@
 .body-content {
     padding-left: 15px;
     padding-right: 15px;
+}
+
+.bgimg {
+    position: fixed;
+    left: -200px;
+    bottom: -100px;
+    width: 450px;
+    z-index: -1;
+    /* Rotation transformation. */
+    transform: rotate(15deg);
+    -ms-transform: rotate(15deg); /* Internet Explorer */
+    -moz-transform: rotate(15deg); /* Firefox */
+    -webkit-transform: rotate(15deg); /* Safari 和 Chrome */
+    -o-transform: rotate(15deg); /* Opera */
 }
 
 /* Override the default bootstrap behavior where horizontal description lists 
@@ -37,7 +51,8 @@
     color: red;
 }
 
-.text-verdict-se {
+.text-verdict-se,
+.text-verdict-unknown {
     color: gray;
 }
 
@@ -77,10 +92,19 @@
     color: red;
 }
 
+.text-footer {
+    line-height: 16px;
+}
+
 /* Supplementary explanaton */
 .sup {
     color: gray;
     line-height: 28px;
+}
+
+a.btn > span.glyphicon,
+button.btn > span.glyphicon {
+    float: left;
 }
 
 .card-box,

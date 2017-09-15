@@ -110,6 +110,19 @@
         }
 
         /// <summary>
+        /// 获取或设置用户提交的比赛 ID。若该提交不是比赛提交，该域为 -1。
+        /// </summary>
+        public int ContestId
+        {
+            get => m_disposed ? throw new ObjectDisposedException(GetType().Name) : m_entity.ContestId;
+            set
+            {
+                CheckAccess();
+                m_entity.ContestId = value;
+            }
+        }
+
+        /// <summary>
         /// 获取或设置用户提交的用户名。
         /// </summary>
         public string Username

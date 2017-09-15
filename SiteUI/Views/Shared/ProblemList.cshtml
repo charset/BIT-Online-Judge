@@ -1,12 +1,18 @@
-﻿@using BITOJ.Core.Authorization
+﻿@using BITOJ.Core
+@using BITOJ.Core.Authorization
 @using BITOJ.SiteUI.Models
 @using System.Text
 @model IEnumerable<ProblemBriefModel>
 
 <div>
-    <table class="table table-striped table-hover">
+    <table class="table table-hover">
         <thead>
             <tr>
+                @if (ViewBag.ProblemListShowSolutionStatus as bool? ?? false)
+                {
+                    <th><span class="glyphicon glyphicon-check"></span></th>
+                }
+
                 @if ((bool?)ViewBag.ProblemListShowId ?? true)
                 {
                     <th>ID</th>
@@ -34,9 +40,25 @@
                         {
                             string problemUrl = string.Format("/Archieve/ShowProblem?id={0}", info.ProblemId);
 
-                            <tr>
-                                @if ((bool?)ViewBag.ProblemListShowId ?? true)
+                            <tr class="@info.GetTableRowClassName()">
+                                @if (ViewBag.ProblemListShowSolutionStatus as bool? ?? false)
                                 {
+                                    if (info.SolutionStatus == ProblemSolutionStatus.Solved)
+                                    {
+                                        <td><span class="glyphicon glyphicon-ok-sign"></span></td>
+                                    }
+                                    else if (info.SolutionStatus == ProblemSolutionStatus.Attempted)
+                                    {
+                                        <td><span class="glyphicon glyphicon-question-sign"></span></td>
+                                    }
+                                    else
+                                    {
+                                        <td></td>
+                                    }
+                                }
+
+                                @if ((bool?)ViewBag.ProblemListShowId ?? true)
+                                    {
                                     <td><a href="@problemUrl">@info.ProblemId</a></td>
                                 }
 
@@ -60,7 +82,9 @@
                                            data-toggle="popover" data-placement="top" data-container="body"
                                            data-trigger="focus" title="Categories"
                                            data-content="@categoryBuilder.ToString()">
-                                            <span class="glyphicon glyphicon-tags"></span>
+                                            <div>
+                                                <span class="glyphicon glyphicon-tags"></span>
+                                            </div>
                                         </a>
                                     </td>
                                 }
@@ -68,28 +92,34 @@
                                 <td>
                                     <div class="btn-group" role="group">
                                         @if ((bool?)ViewBag.ProblemListSubmitable ?? false)
-                                        {
+                                    {
                                             <a type="button" href="javascript:void(0);" class="btn btn-primary btn-sm"
                                                data-toggle="tooltip" data-placement="top" data-container="body"
                                                title="Submit">
-                                                <span class="glyphicon glyphicon-open"></span>
+                                                <div>
+                                                    <span class="glyphicon glyphicon-open"></span>
+                                                </div>
                                             </a>
                                         }
 
                                         @if ((bool?)ViewBag.ProblemListEditable ?? false)
-                                        {
+                                    {
                                             <a type="button"
                                                href="@string.Format("/Archieve/Modify?id={0}", info.ProblemId)"
                                                class="btn btn-warning btn-sm" data-toggle="tooltip"
                                                data-placement="top" data-container="body" title="Edit">
-                                                <span class="glyphicon glyphicon-pencil"></span>
+                                                <div>
+                                                    <span class="glyphicon glyphicon-pencil"></span>
+                                                </div>
                                             </a>
                                         }
 
                                         <a type="button" href="@problemUrl" class="btn btn-default btn-sm"
                                            data-toggle="tooltip" data-placement="top" data-container="body"
                                            title="Open in new tab" target="_blank">
-                                            <span class="glyphicon glyphicon-new-window"></span>
+                                            <div>
+                                                <span class="glyphicon glyphicon-new-window"></span>
+                                            </div>
                                         </a>
                                     </div>
                                 </td>
@@ -97,7 +127,7 @@
                                     @{
                                         string submitText = string.Format("{0} submissions, {1} accpeted.",
                                             info.TotalSubmissions, info.TotalAccepted);
-                                        string ratioText = "NAN";
+                                    string ratioText = "NAN";
                                         if (info.TotalSubmissions > 0)
                                         {
                                             ratioText = string.Format("{0:N2} %",

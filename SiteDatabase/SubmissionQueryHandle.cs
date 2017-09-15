@@ -39,6 +39,11 @@
         public string ProblemId { get; set; }
 
         /// <summary>
+        /// 获取或设置要查询的用户提交的比赛 ID。
+        /// </summary>
+        public int ContestId { get; set; }
+
+        /// <summary>
         /// 获取或设置要查询的用户提交的提交语言或编译系统。
         /// </summary>
         public SubmissionLanguage Language { get; set; }
@@ -79,6 +84,11 @@
         public bool UseProblemId { get; set; }
 
         /// <summary>
+        /// 获取或设置一个值，该值指示是否使用比赛 ID 进行查询。
+        /// </summary>
+        public bool UseContestId { get; set; }
+
+        /// <summary>
         /// 获取或设置一个值，该值指示是否使用提交语言或编译系统进行查询。
         /// </summary>
         public bool UseLanguage { get; set; }
@@ -103,6 +113,7 @@
             EndTime = DateTime.MaxValue;
             Username = string.Empty;
             ProblemId = string.Empty;
+            ContestId = 0;
             Language = SubmissionLanguage.GnuCPlusPlus;
             VerdictStatus = SubmissionVerdictStatus.Pending;
             VerdictResult = SubmissionVerdict.Unknown;
@@ -112,6 +123,7 @@
             UseUsername = false;
             UseTeamId = false;
             UseProblemId = false;
+            UseContestId = false;
             UseLanguage = false;
             UseVerdictStatus = false;
             UseVerdictResult = false;

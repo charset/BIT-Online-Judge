@@ -2,8 +2,10 @@
 {
     using BITOJ.Core;
     using BITOJ.Core.Authorization;
+    using BITOJ.Core.Convert;
     using BITOJ.Core.Data;
     using BITOJ.SiteUI.Models;
+    using System;
     using System.Web.Mvc;
 
     public class ProfileController : Controller
@@ -100,30 +102,6 @@
             return View(model);
         }
 
-        // POST: Profile/CreateTeam
-        [HttpPost]
-        public ActionResult CreateTeam(FormCollection form)
-        {
-            // AJAX 查询，以 JSON 返回结果。
-            // 验证表单参数。
-            if (string.IsNullOrEmpty(form["teamName"]) || string.IsNullOrEmpty(form["leader"]))
-            {
-                return new ContentResult();
-            }
-
-            // 创建新的队伍。
-            TeamHandle handle = UserManager.Default.CreateTeam();
-            using (TeamDataProvider data = TeamDataProvider.Create(handle, false))
-            {
-                data.Name = form["teamName"];
-                data.Leader = form["leader"];
-
-                UserManager.Default.AddUserToTeam(handle, new UserHandle(form["leader"]));
-            }
-
-            return new ContentResult();
-        }
-
         // GET: Profile/ShowTeam
         public ActionResult ShowTeam()
         {
@@ -146,6 +124,76 @@
 
             TeamDetailModel model = TeamDetailModel.FromTeamHandle(handle);
             return View(model);
+        }
+
+        // POST: Profile/ChangeUsergroup
+        [HttpPost]
+        public ActionResult ChangeUsergroup(FormCollection form)
+        {
+            // 检查查询参数。
+            if (string.IsNullOrEmpty(Request.QueryString["username"]) ||
+                string.IsNullOrEmpty(form["usergroup"]))
+            {
+                return Redirect("~/Profile");
+            }
+
+            string username = Request.QueryString["username"];
+            UserHandle handle = UserManager.Default.QueryUserByName(username);
+            if (handle == null)
+            {
+                // 指定的用户不存在。
+                return Redirect("~/Profile");
+            }
+
+            // 检查用户操作权限。
+            if (!UserSession.IsAuthorized(Session) ||
+                !UserAuthorization.CheckAccessRights(UserGroup.Administrators, UserSession.GetUserGroup(Session)) ||
+                string.Compare(username, UserSession.GetUsername(Session), false) == 0)
+            {
+                return Redirect("~/Error/AccessDenied");
+            }
+
+            UserGroup targetGroup;
+            try
+            {
+                targetGroup = UsergroupConvert.ConvertFromString(form["usergroup"]);
+            }
+            catch (ArgumentException)
+            {
+                return Redirect("~/Profile");
+            }
+
+            // 执行操作。
+            using (UserDataProvider data = UserDataProvider.Create(handle, false))
+            {
+                data.UserGroup = targetGroup;
+            }
+
+            return Content(string.Empty);
+        }
+
+        // POST: Profile/CreateTeam
+        [HttpPost]
+        public ActionResult CreateTeam(FormCollection form)
+        {
+            // AJAX 查询，以 JSON 返回结果。
+            // 验证表单参数。
+            if (string.IsNullOrEmpty(form["teamName"]) || string.IsNullOrEmpty(form["leader"]))
+            {
+                return new ContentResult();
+            }
+
+            // 创建新的队伍。
+            TeamHandle handle = UserManager.Default.CreateTeam();
+            using (TeamDataProvider data = TeamDataProvider.Create(handle, false))
+            {
+                data.Name = form["teamName"];
+                data.Leader = form["leader"];
+
+                UserManager.Default.AddUserToTeam(handle, new UserHandle(form["leader"]));
+            }
+
+            return new ContentResult();
         }
 
         // POST: Profile/AddTeamUser

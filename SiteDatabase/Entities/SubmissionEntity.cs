@@ -47,6 +47,11 @@
         public string ProblemId { get; set; }
 
         /// <summary>
+        /// 获取或设置该提交所对应的比赛 ID。
+        /// </summary>
+        public int ContestId { get; set; }
+
+        /// <summary>
         /// 获取或设置该提交所对应的代码文件名。
         /// </summary>
         public string CodeFilename { get; set; }
@@ -93,6 +98,7 @@
             Username = string.Empty;
             TeamId = 0;
             ProblemId = string.Empty;
+            ContestId = -1;
             CodeFilename = string.Empty;
             ExecutionTime = 0;
             ExecutionMemory = 0;

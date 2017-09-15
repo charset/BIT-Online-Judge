@@ -41,6 +41,16 @@
         public bool QueryByTeamId { get; set; }
 
         /// <summary>
+        /// 当 QueryByContestId 为 true 时，获取或设置提交所属的比赛 ID。
+        /// </summary>
+        public int ContestId { get; set; }
+
+        /// <summary>
+        /// 获取或设置一个值，该值指示是否使用比赛 ID 进行查询。
+        /// </summary>
+        public bool QueryByContestId { get; set; }
+
+        /// <summary>
         /// 当 QueryByLanguage 为 true 时，获取或设置要查询的程序设计语言。
         /// </summary>
         public SubmissionLanguage Language { get; set; }
@@ -87,12 +97,14 @@
         /// 从当前对象创建数据库查询句柄对象。
         /// </summary>
         /// <returns>数据库查询句柄。</returns>
-        public SubmissionQueryHandle GetQueryHandle()
+        internal SubmissionQueryHandle GetQueryHandle()
         {
             SubmissionQueryHandle handle = new SubmissionQueryHandle()
             {
                 ProblemId = ProblemId,
                 UseProblemId = QueryByProblemId,
+                ContestId = ContestId,
+                UseContestId = QueryByContestId,
                 Username = Username,
                 UseUsername = QueryByUsername,
                 TeamId = TeamId,

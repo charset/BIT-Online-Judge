@@ -6,6 +6,14 @@
     ViewBag.Title = string.Format("BITOJ - {0} - {1}", Model.ProblemId, Model.Title);
 }
 
+@section styles{
+    <style>
+        .panel-body p {
+            margin: 0;
+        }
+    </style>
+}
+
 <div class="jumbotron">
     <h1>
         @string.Format("{0}", Model.Title)
@@ -19,8 +27,8 @@
 <div class="row">
     <div class="col-lg-3">
         <div class="panel panel-primary">
-            <div class="panel-heading">
-                <h4>Execution environment</h4>
+            <div class="panel-heading text-center">
+                <h4 class="panel-title">Execution environment</h4>
             </div>
             <div class="panel-body">
                 <p>OS kernel: Linux</p>
@@ -63,6 +71,11 @@
                     class="btn btn-warning">
                     <span class="glyphicon glyphicon-flash"></span>
                     Edit exeuction environment
+                </a>
+                <a href="@string.Format("/Archieve/TestSet?id={0}", Model.ProblemId)" role="button"
+                   class="btn btn-warning">
+                    <span class="glyphicon glyphicon-tasks"></span>
+                    Edit test set
                 </a>
                 <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteDialog">
                     <span class="glyphicon glyphicon-remove"></span>

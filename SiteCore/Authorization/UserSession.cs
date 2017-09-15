@@ -23,7 +23,15 @@
             if (session == null)
                 return false;
 
-            return !string.IsNullOrEmpty(session[SessionUsername] as string);
+            string username = session[SessionUsername] as string;
+            if (string.IsNullOrEmpty(username))
+            {
+                return false;
+            }
+            else
+            {
+                return UserManager.Default.IsUserExist(username);
+            }
         }
 
         /// <summary>

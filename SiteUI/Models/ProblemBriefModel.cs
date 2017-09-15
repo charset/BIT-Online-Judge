@@ -41,6 +41,11 @@
         public UserGroup AuthorizationGroup { get; set; }
 
         /// <summary>
+        /// 获取或设置当前题目的解决状态。
+        /// </summary>
+        public ProblemSolutionStatus SolutionStatus { get; set; }
+
+        /// <summary>
         /// 创建 ProblemInfoModel 类的新实例。
         /// </summary>
         public ProblemBriefModel()
@@ -51,6 +56,24 @@
             TotalSubmissions = 0;
             TotalAccepted = 0;
             AuthorizationGroup = UserGroup.Guests;
+            SolutionStatus = ProblemSolutionStatus.None;
+        }
+
+        /// <summary>
+        /// 返回当前数据模型在呈现时应该对 row 元素应用的样式类。
+        /// </summary>
+        /// <returns>当前数据模型在呈现时应该对 row 元素应用的样式类。</returns>
+        public string GetTableRowClassName()
+        {
+            switch (SolutionStatus)
+            {
+                case ProblemSolutionStatus.Attempted:
+                    return "warning";
+                case ProblemSolutionStatus.Solved:
+                    return "success";
+                default:
+                    return string.Empty;
+            }
         }
 
         /// <summary>

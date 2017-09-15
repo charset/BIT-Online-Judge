@@ -1,0 +1,43 @@
+﻿@using BITOJ.Core.Authorization
+@using BITOJ.Core.Convert
+@using BITOJ.SiteUI.Models
+@model ICollection<SubmissionBriefModel>
+
+<div>
+    <table class="table table-condensed table-hover">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Problem</th>
+                <th>Language</th>
+                <th>Verdict</th>
+                <th>Timestamp</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{ 
+                foreach (SubmissionBriefModel item in Model)
+                {
+                    string rowClassName = (string.Compare(item.Username, UserSession.GetUsername(Session), false) == 0
+                        ? "info" : string.Empty);
+
+                    <tr class="@rowClassName">
+                        <td><a href="javascript:void(0);">@item.SubmissionId</a></td>
+                        <td>@item.Username</td>
+                        <td>
+                            <a href="@string.Format("/Archieve/ShowProblem?id={0}", item.ProblemId)">
+                                @item.ProblemTitle
+                            </a>
+                        </td>
+                        <td>@SubmissionLanguageConvert.ConvertToString(item.Language)</td>
+                        <td>
+                            <span class="@item.GetVerdictClassName()">@item.GetVerdictString()</span>
+                        </td>
+                        <td>@item.CreationTime.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

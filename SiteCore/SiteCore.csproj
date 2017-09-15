@@ -70,6 +70,9 @@
     <Compile Include="Convert\ContestStatusConvert.cs" />
     <Compile Include="Convert\OJSystemConvert.cs" />
     <Compile Include="Convert\SexConvert.cs" />
+    <Compile Include="Convert\SubmissionLanguageConvert.cs" />
+    <Compile Include="Convert\SubmissionVerdictConvert.cs" />
+    <Compile Include="Convert\SubmissionVerdictStatusConvert.cs" />
     <Compile Include="Convert\UsergroupConvert.cs" />
     <Compile Include="Data\ContestDataProvider.cs" />
     <Compile Include="Data\ContestNotFoundException.cs" />
@@ -94,6 +97,7 @@
     <Compile Include="Data\ProblemNotExistException.cs" />
     <Compile Include="Data\Queries\ProblemArchieveQueryParameter.cs" />
     <Compile Include="Data\Queries\UserQueryParameter.cs" />
+    <Compile Include="ProblemSolutionStatus.cs" />
     <Compile Include="Resolvers\BzojUrlResolver.cs" />
     <Compile Include="Resolvers\CfUrlResolver.cs" />
     <Compile Include="Resolvers\GymUrlResolver.cs" />

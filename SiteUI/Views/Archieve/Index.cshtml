@@ -48,16 +48,6 @@
             <a class="@navAnchorClasses[0]" href="~/Archieve">
                 <h5 class="list-group-item-heading">All problems</h5>
             </a>
-
-            @if (UserSession.IsAuthorized(Session))
-            {
-                <a class="@navAnchorClasses[1]" href="~/Archieve/Solved">
-                    <h5 class="list-group-item-heading">Solved problems</h5>
-                </a>
-                <a class="@navAnchorClasses[2]" href="~/Archieve/Attempt">
-                    <h5 class="list-group-item-heading">Attempting problems</h5>
-                </a>
-            }
         </div>
 
         <hr />
@@ -67,7 +57,7 @@
                 <h4 class="panel-title">
                     <a role="button" data-toggle="collapse" data-parent="#queryPanel" href="#queryForm"
                        aria-expanded="true" aria-controls="queryForm">
-                        <strong>Query problems</strong>
+                        <strong>Query submissions</strong>
                     </a>
                 </h4>
             </div>
@@ -77,22 +67,22 @@
                         <div class="form-group">
                             <label class="control-label" for="title">Title</label>
                             <input type="text" class="form-control" id="title" name="title"
-                                   value="@Request.QueryString["title"]"/>
+                                   value="@Request.QueryString["title"]" />
                         </div>
                         <div class="form-group">
                             <label class="control-label" for="source">Source</label>
-                            <input type="text" class="form-control" id="source" name="source" 
-                                   value="@Request.QueryString["source"]"/>
+                            <input type="text" class="form-control" id="source" name="source"
+                                   value="@Request.QueryString["source"]" />
                         </div>
                         <div class="form-group">
                             <label class="control-label" for="author">Author</label>
-                            <input type="text" class="form-control" id="author" name="author" 
-                                   value="@Request.QueryString["author"]"/>
+                            <input type="text" class="form-control" id="author" name="author"
+                                   value="@Request.QueryString["author"]" />
                         </div>
                         <div class="form-group">
                             <label class="control-label" for="category">Category</label>
-                            <input type="text" class="form-control" id="category" name="category" 
-                                   value="@Request.QueryString["category"]"/>
+                            <input type="text" class="form-control" id="category" name="category"
+                                   value="@Request.QueryString["category"]" />
                         </div>
 
                         <div class="form-group">

@@ -1,5 +1,6 @@
 ﻿@using BITOJ.Core
 @using BITOJ.Core.Authorization
+@using BITOJ.Core.Convert
 @using BITOJ.SiteUI.Models
 @model UserProfileModel
 @{
@@ -11,6 +12,7 @@
 
     bool owned =
         UserSession.IsAuthorized(Session) && string.Compare(UserSession.GetUsername(Session), Model.Username, false) == 0;
+    bool admin = UserAuthorization.CheckAccessRights(UserGroup.Administrators, UserSession.GetUserGroup(Session));
 }
 
 <div class="@headClass">
@@ -32,6 +34,12 @@
                     <a href="#password" aria-controls="password" role="tab" data-toggle="tab">Password</a>
                 </li>
             }
+            else if (admin)
+            {
+                <li role="presentation" class="active">
+                    <a href="#usergroup" aria-controls="usergroup" role="tab" data-toggle="tab">User group</a>
+                </li>
+            }
 
             <li role="presentation">
                 <a href="#team" aria-controls="team" role="tab" data-toggle="tab">Teams</a>
@@ -45,34 +53,69 @@
             @if (owned)
             {
                 <div role="tabpanel" class="tab-pane active" id="password">
-                    <h3>Change password</h3>
-                    <form class="form-inline" method="post">
-                        <div class="form-group">
-                            <label for="old" class="sr-only">Old password</label>
-                            <input type="password" class="form-control" id="old" name="old" placeholder="Old password" />
-                        </div>
-                        <div class="form-group">
-                            <label for="new" class="sr-only">New password</label>
-                            <input type="password" class="form-control" id="new" name="new" placeholder="New password" />
-                        </div>
-                        <div class="form-group">
-                            <label for="confirm" class="sr-only">Confirm new password</label>
-                            <input type="password" class="form-control" id="confirm" name="confirm" placeholder="Confirm new password" />
-                        </div>
-                        <button type="submit" class="btn btn-warning">Change password</button>
-                    </form>
+                    <div class="row">
+                        <div class="col-lg-8 col-lg-offset-2">
+                            <h3>Change password</h3>
+                            <form class="form-inline" method="post">
+                                <div class="form-group">
+                                    <label for="old" class="sr-only">Old password</label>
+                                    <input type="password" class="form-control" id="old" name="old" placeholder="Old password" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="new" class="sr-only">New password</label>
+                                    <input type="password" class="form-control" id="new" name="new" placeholder="New password" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="confirm" class="sr-only">Confirm new password</label>
+                                    <input type="password" class="form-control" id="confirm" name="confirm" placeholder="Confirm new password" />
+                                </div>
+                                <button type="submit" class="btn btn-warning">Change password</button>
+                            </form>
 
-                    @if (!string.IsNullOrEmpty(ViewBag.PasswordErrorMessage))
-                    {
-                        <div class="alert alert-danger" style="margin-top: 10px;">
-                            <span class="glyphicon glyphicon-remove"></span>
-                            @ViewBag.PasswordErrorMessage
+                            @if (!string.IsNullOrEmpty(ViewBag.PasswordErrorMessage))
+                            {
+                                <div class="alert alert-danger" style="margin-top: 10px;">
+                                    <span class="glyphicon glyphicon-remove"></span>
+                                    @ViewBag.PasswordErrorMessage
+                                </div>
+                            }
                         </div>
-                    }
+                    </div>
+                </div>
+            }
+            else if (admin)
+            {
+                <div role="tabpanel" class="tab-pane active" id="usergroup">
+                    <div class="row">
+                        <div class="col-lg-6 col-lg-offset-3">
+                            <h3>Set user authorization group</h3>
+                            <form class="form-inline" method="post" action="@string.Format("/Profile/ChangeUsergroup?username={0}", Model.Username)"
+                                  id="changeUsergroupForm">
+                                <div class="form-group">
+                                    <label for="usergroup" class="sr-only">User group</label>
+                                    @Html.DropDownList("usergroup", new SelectListItem[]
+                                    {
+                                        new SelectListItem()
+                                        { Text = "Administrator", Value = UsergroupConvert.ConvertToString(UserGroup.Administrators), Selected = (Model.UserGroup == UserGroup.Administrators) },
+                                        new SelectListItem()
+                                        { Text = "Insider", Value = UsergroupConvert.ConvertToString(UserGroup.Insiders), Selected = (Model.UserGroup == UserGroup.Insiders) },
+                                        new SelectListItem()
+                                        { Text = "Standard", Value = UsergroupConvert.ConvertToString(UserGroup.Standard), Selected = (Model.UserGroup == UserGroup.Standard) },
+                                        new SelectListItem()
+                                        { Text = "Guest", Value = UsergroupConvert.ConvertToString(UserGroup.Guests), Selected = (Model.UserGroup == UserGroup.Guests) }
+                                    }, new { @class = "form-control" })
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <span class="glyphicon glyphicon-ok"></span>
+                                    Confirm
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             }
 
-            <div role="tabpanel" class="@string.Format("tab-pane{0}", !owned ? " active" : string.Empty)" id="team">
+            <div role="tabpanel" class="@string.Format("tab-pane{0}", !owned && !admin ? " active" : string.Empty)" id="team">
                 @if (owned)
                 {
                     <div class="row">
@@ -158,4 +201,5 @@
 
 @section scripts {
     <script type="text/javascript" src="~/Scripts/create-team.js"></script>
+    <script type="text/javascript" src="~/Scripts/change-usergroup.js"></script>
 }

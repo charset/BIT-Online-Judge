@@ -28,6 +28,6 @@
         /// <summary>
         /// 用户提交判题过程已结束。
         /// </summary>
-        Competed = 4,
+        Completed = 4,
     }
 }
