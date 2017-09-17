@@ -158,6 +158,7 @@
     <Compile Include="Controllers\ArchieveController.cs" />
     <Compile Include="Controllers\ContestController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
+    <Compile Include="Controllers\Extensions\JsonDotNet.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InternalController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
@@ -166,6 +167,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Ajax\SubmissionVerdictRequestModel.cs" />
     <Compile Include="Models\ContestCatalog.cs" />
     <Compile Include="Models\ContestBriefModel.cs" />
     <Compile Include="Models\ContestDetailModel.cs" />
@@ -181,6 +183,7 @@
     <Compile Include="Models\SiteCatalog.cs" />
     <Compile Include="Models\StatusModel.cs" />
     <Compile Include="Models\SubmissionBriefModel.cs" />
+    <Compile Include="Models\SubmissionDetailModel.cs" />
     <Compile Include="Models\SubmissionFetchRequestModel.cs" />
     <Compile Include="Models\SubmissionFetchResponseModel.cs" />
     <Compile Include="Models\SubmissionUpdateRequestModel.cs" />
@@ -230,8 +233,8 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\modify-team.js" />
-    <Content Include="Scripts\paged-result.js" />
     <Content Include="Scripts\prism.js" />
+    <Content Include="Scripts\query-submission-status.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Web.config" />
@@ -273,6 +276,7 @@
     <Content Include="Views\Contest\AddProblem.cshtml" />
     <Content Include="Views\Shared\SubmissionList.cshtml" />
     <Content Include="Views\Status\Index.cshtml" />
+    <Content Include="Views\Status\ShowSubmission.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

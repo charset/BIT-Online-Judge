@@ -6,9 +6,9 @@
     using System;
 
     /// <summary>
-    /// 为用户提交简要信息提供数据模型。
+    /// 为用户提交详细数据提供数据模型。
     /// </summary>
-    public class SubmissionBriefModel
+    public class SubmissionDetailModel
     {
         /// <summary>
         /// 获取或设置提交 ID。
@@ -16,19 +16,14 @@
         public int SubmissionId { get; set; }
 
         /// <summary>
-        /// 获取或设置用户名。
-        /// </summary>
-        public string Username { get; set; }
-
-        /// <summary>
         /// 获取或设置题目 ID。
         /// </summary>
         public string ProblemId { get; set; }
 
         /// <summary>
-        /// 获取或设置队伍 ID。
+        /// 获取或设置比赛 ID。
         /// </summary>
-        public int TeamId { get; set; }
+        public int ContestId { get; set; }
 
         /// <summary>
         /// 获取或设置题目标题。
@@ -36,17 +31,37 @@
         public string ProblemTitle { get; set; }
 
         /// <summary>
-        /// 获取或设置用户提交程序的运行时间，以毫秒为单位。
+        /// 获取或设置提交用户名。
+        /// </summary>
+        public string Username { get; set; }
+
+        /// <summary>
+        /// 获取或设置提交队伍 ID。
+        /// </summary>
+        public int TeamId { get; set; }
+
+        /// <summary>
+        /// 获取或设置创建时间。
+        /// </summary>
+        public DateTime CreationTime { get; set; }
+
+        /// <summary>
+        /// 获取或设置源代码。
+        /// </summary>
+        public string Code { get; set; }
+
+        /// <summary>
+        /// 获取或设置用户提交的运行时间，以毫秒为单位。
         /// </summary>
         public int ExecutionTime { get; set; }
 
         /// <summary>
-        /// 获取或设置用户提交程序的运行峰值内存，以 KB 为单位。
+        /// 获取或设置用户提交的运行峰值内存，以 KB 为单位。
         /// </summary>
         public int ExecutionMemory { get; set; }
 
         /// <summary>
-        /// 获取或设置用户提交的程序设计语言与运行环境。
+        /// 获取或设置用户提交的编程语言。
         /// </summary>
         public SubmissionLanguage Language { get; set; }
 
@@ -61,23 +76,29 @@
         public SubmissionVerdict Verdict { get; set; }
 
         /// <summary>
-        /// 获取或设置用户提交的创建时间。
+        /// 获取或设置用户提交的评测消息。
         /// </summary>
-        public DateTime CreationTime { get; set; }
+        public string VerdictMessage { get; set; }
 
         /// <summary>
-        /// 创建 SubmissionBriefModel 类的新实例。
+        /// 创建 SubmissionDetailModel 类的新实例。
         /// </summary>
-        public SubmissionBriefModel()
+        public SubmissionDetailModel()
         {
             SubmissionId = 0;
-            Username = string.Empty;
             ProblemId = string.Empty;
+            ContestId = 0;
             ProblemTitle = string.Empty;
+            Username = string.Empty;
+            TeamId = 0;
+            CreationTime = new DateTime();
+            Code = string.Empty;
+            ExecutionTime = 0;
+            ExecutionMemory = 0;
             Language = SubmissionLanguage.GnuC;
             VerdictStatus = SubmissionVerdictStatus.Pending;
-            Verdict = SubmissionVerdict.Accepted;
-            CreationTime = new DateTime();
+            Verdict = SubmissionVerdict.Unknown;
+            VerdictMessage = string.Empty;
         }
 
         /// <summary>
@@ -161,29 +182,37 @@
         }
 
         /// <summary>
-        /// 从给定的用户提交句柄创建 SubmissionHandle 类的新实例。
+        /// 从给定的用户提交句柄创建 SubmissionDetailModel 类的新实例。
         /// </summary>
         /// <param name="handle">用户提交句柄。</param>
-        /// <returns>从给定用户提交句柄创建的 SubmissionHandle 类的新实例。</returns>
+        /// <returns>从给定的句柄创建的 SubmissionDetailModel 类的新实例。</returns>
         /// <exception cref="ArgumentNullException"/>
-        public static SubmissionBriefModel FromSubmissionHandle(SubmissionHandle handle)
+        public static SubmissionDetailModel FromSubmissionHandle(SubmissionHandle handle)
         {
             if (handle == null)
                 throw new ArgumentNullException(nameof(handle));
 
-            SubmissionBriefModel model = new SubmissionBriefModel();
-            using (SubmissionDataProvider data = SubmissionDataProvider.Create(handle, true))
+            SubmissionDetailModel model = new SubmissionDetailModel();
+            using (SubmissionDataProvider submissionData = SubmissionDataProvider.Create(handle, true))
             {
-                model.SubmissionId = data.SubmissionId;
-                model.ProblemId = data.ProblemId;
-                model.Username = data.Username;
-                model.TeamId = data.TeamId;
-                model.ExecutionTime = data.ExecutionTime;
-                model.ExecutionMemory = data.ExecutionMemory;
-                model.Language = data.Language;
-                model.VerdictStatus = data.VerdictStatus;
-                model.Verdict = data.Verdict;
-                model.CreationTime = data.CreationTimeStamp;
+                model.SubmissionId = submissionData.SubmissionId;
+                model.ProblemId = submissionData.ProblemId;
+                model.ContestId = submissionData.ContestId;
+                model.Username = submissionData.Username;
+                model.TeamId = submissionData.TeamId;
+                model.CreationTime = submissionData.CreationTimeStamp;
+                model.Language = submissionData.Language;
+                model.ExecutionTime = submissionData.ExecutionTime;
+                model.ExecutionMemory = submissionData.ExecutionMemory;
+                model.VerdictStatus = submissionData.VerdictStatus;
+                model.Verdict = submissionData.Verdict;
+                model.VerdictMessage = submissionData.VerdictMessage;
+                
+                using (ProblemDataProvider problemData = 
+                    ProblemDataProvider.Create(new ProblemHandle(submissionData.ProblemId), true))
+                {
+                    model.ProblemTitle = problemData.Title;
+                }
             }
 
             return model;

@@ -4,6 +4,7 @@
 @model ArchieveModel
 
 @{ 
+    ViewBag.Title = "BITOJ - Archieve";
     ViewBag.ProblemListSubmitable = UserSession.IsAuthorized(Session);
     ViewBag.ProblemListEditable = UserSession.IsAuthorized(Session) &&
         UserAuthorization.CheckAccessRights(UserGroup.Administrators, UserSession.GetUserGroup(Session));
@@ -57,7 +58,7 @@
                 <h4 class="panel-title">
                     <a role="button" data-toggle="collapse" data-parent="#queryPanel" href="#queryForm"
                        aria-expanded="true" aria-controls="queryForm">
-                        <strong>Query submissions</strong>
+                        <strong>Query problems</strong>
                     </a>
                 </h4>
             </div>
@@ -87,17 +88,18 @@
 
                         <div class="form-group">
                             <label class="control-label" for="origin">Origin</label>
-                            <select class="form-control" id="origin" name="origin">
-                                <option value="BIT">BIT</option>
-                                <option value="BZOJ">BZOJ</option>
-                                <option value="CF">CodeForces</option>
-                                <option value="GYM">CodeForces Gym</option>
-                                <option value="HDU">HDU</option>
-                                <option value="POJ">POJ</option>
-                                <option value="UVa">UVa</option>
-                                <option value="LA">UVa Live Archive</option>
-                                <option value="ZOJ">ZOJ</option>
-                            </select>
+                            @Html.DropDownList("origin", new SelectListItem[]
+                            {
+                                new SelectListItem() { Text = "BIT", Value = "BIT", Selected = (string.Compare("BIT", Request.QueryString["origin"], true) == 0 || string.IsNullOrEmpty(Request.QueryString["origin"])) },
+                                new SelectListItem() { Text = "BZOJ", Value = "BZOJ", Selected = (string.Compare("BZOJ", Request.QueryString["origin"], true) == 0) },
+                                new SelectListItem() { Text = "CodeForces", Value = "CF", Selected = (string.Compare("CF", Request.QueryString["origin"], true) == 0) },
+                                new SelectListItem() { Text = "CodeForces Gym", Value = "GYM", Selected = (string.Compare("GYM", Request.QueryString["origin"], true) == 0) },
+                                new SelectListItem() { Text = "HDU", Value = "HDU", Selected = (string.Compare("HDU", Request.QueryString["origin"], true) == 0) },
+                                new SelectListItem() { Text = "POJ", Value = "POJ", Selected = (string.Compare("POJ", Request.QueryString["origin"], true) == 0) },
+                                new SelectListItem() { Text = "UVa", Value = "UVa", Selected = (string.Compare("UVa", Request.QueryString["origin"], true) == 0) },
+                                new SelectListItem() { Text = "UVa Live Archieve", Value = "LA", Selected = (string.Compare("LA", Request.QueryString["origin"], true) == 0) },
+                                new SelectListItem() { Text = "ZOJ", Value = "ZOJ", Selected = (string.Compare("ZOJ", Request.QueryString["origin"], true) == 0) },
+                            }, new { @class = "form-control" })
                         </div>
 
                         <hr />

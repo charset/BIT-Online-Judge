@@ -32,11 +32,11 @@
             </div>
             <div class="panel-collapse collase in" id="queryForm" aria-labelledby="queryHeading">
                 <div class="panel-body">
-                    <form role="search" action="~/Archieve" method="post">
+                    <form role="search" method="post">
                         <div class="form-group">
                             <label class="control-label" for="username">Username</label>
                             <input type="text" class="form-control" id="username" name="username"
-                                   value="@Request.QueryString["problemId"]"/>
+                                   value="@Request.QueryString["username"]"/>
                         </div>
                         <div class="form-group">
                             <label class="control-label" for="problemId">Problem ID</label>

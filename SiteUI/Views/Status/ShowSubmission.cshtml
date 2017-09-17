@@ -1,0 +1,84 @@
+﻿@using BITOJ.Core.Convert
+@using BITOJ.SiteUI.Models
+@model SubmissionDetailModel
+@{ 
+    ViewBag.Title = "BITOJ - Submission #" + Model.ContestId.ToString();
+}
+
+@section styles {
+    <link href="~/Content/prism.css" rel="stylesheet"/>
+    <style>
+        .line-numbers-rows {
+            margin-left: -3.8em;
+        }
+    </style>
+}
+
+<div class="jumbotron">
+    <h1>Submission #@Model.SubmissionId <small>by @Model.Username</small></h1>
+    <p class="sup" id="submissionMessage">@Model.VerdictMessage</p>
+    
+    <div class="progress progress-striped active" id="submissionProgress">
+        <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+             aria-valuenow="100" style="width: 100%;"></div>
+    </div>
+</div>
+
+<div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Problem</th>
+                <th>Language</th>
+                <th>Verdict</th>
+                <th>Exe. Time</th>
+                <th>Exe. Mem.</th>
+                <th>Timestamp</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="@Model.GetRowClassName()" id="submissionRow">
+                <td>@Model.SubmissionId</td>
+                <td>
+                    <a href="@string.Format("/Profile/ShowUser?username={0}", Model.Username)">
+                        @Model.Username
+                    </a>
+                </td>
+                <td>
+                    <a href="@string.Format("/Archieve/ShowProblem?id={0}", Model.ProblemId)">
+                        @Model.ProblemTitle
+                    </a>
+                </td>
+                <td>
+                    @SubmissionLanguageConvert.ConvertToString(Model.Language)
+                </td>
+                <td>
+                    <span class="@Model.GetVerdictClassName()" id="submissionVerdict">
+                        @Model.GetVerdictString()
+                    </span>
+                </td>
+                <td id="submissionExeTime">@Model.ExecutionTime ms</td>
+                <td id="submissionExeMem">@Model.ExecutionMemory KB</td>
+                <td>@Model.CreationTime.ToString("yyyy-MM-dd HH:mm:ss")</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="well">
+    <pre>
+        <code class="language-cpp line-numbers">
+            @Model.Code
+        </code>
+    </pre>
+</div>
+
+<input class="hidden" id="submissionQuery" value="@string.Format("/Status/QueryStatus?id={0}", Model.SubmissionId)"/>
+
+
+@section scripts {
+    <script src="~/Scripts/prism.js"></script>
+    <script src="~/Scripts/query-submission-status.js"></script>
+}

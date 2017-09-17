@@ -12,6 +12,8 @@
                 <th>Problem</th>
                 <th>Language</th>
                 <th>Verdict</th>
+                <th>Exe. Time</th>
+                <th>Exe. Mem.</th>
                 <th>Timestamp</th>
             </tr>
         </thead>
@@ -19,12 +21,17 @@
             @{ 
                 foreach (SubmissionBriefModel item in Model)
                 {
-                    string rowClassName = (string.Compare(item.Username, UserSession.GetUsername(Session), false) == 0
-                        ? "info" : string.Empty);
-
-                    <tr class="@rowClassName">
-                        <td><a href="javascript:void(0);">@item.SubmissionId</a></td>
-                        <td>@item.Username</td>
+                    <tr class="@item.GetRowClassName()">
+                        <td>
+                            <a href="@string.Format("/Status/ShowSubmission?id={0}", item.SubmissionId)">
+                                @item.SubmissionId
+                            </a>
+                        </td>
+                        <td>
+                            <a href="@string.Format("/Profile/ShowUser?username={0}", item.Username)">
+                                @item.Username
+                            </a>
+                        </td>
                         <td>
                             <a href="@string.Format("/Archieve/ShowProblem?id={0}", item.ProblemId)">
                                 @item.ProblemTitle
@@ -34,6 +41,8 @@
                         <td>
                             <span class="@item.GetVerdictClassName()">@item.GetVerdictString()</span>
                         </td>
+                        <td>@item.ExecutionTime ms</td>
+                        <td>@item.ExecutionMemory KB</td>
                         <td>@item.CreationTime.ToString("yyyy-MM-dd HH:mm:ss")</td>
                     </tr>
                 }
