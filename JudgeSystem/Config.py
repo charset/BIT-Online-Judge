@@ -40,6 +40,7 @@ LANGSET = {
 }
 
 REQUEST_URL = "http://127.0.0.1:5000"
+UPDATE_URL = "http://127.0.0.1:5000"
 OJ_JUDGE_PATH = "home/"
 OJ_DATA_PATH = "data/"
 OJ_ERR_FILE = "error.txt"
@@ -56,3 +57,6 @@ OJ_COMPILE_FSIZE = 32 * STD_MB # file size /byte
 OJ_FSIZE_LIMIT = 32 * 1024 #output file size /KB
 
 OJ_THREAD = 4
+
+def getpassword():
+    return 0
