@@ -223,7 +223,7 @@ class Runer(threading.Thread):
         global workQueue
         global updateQueue
         global threadNumber
-        if workQueue.qsize == 0:
+        if workQueue.qsize() == 0:
             threadNumber -= 1
             return
         work = workQueue.get()
@@ -252,7 +252,7 @@ class Client(object):
             print "jsondata = ",
             print data
         jsondata = json.loads(data)
-        if jsondata["runid"] != -1:
+        if int(jsondata["runid"]) != -1:
             workQueue.put(Judge(jsondata))
             return 1
         return 0
@@ -261,7 +261,8 @@ class Client(object):
         '''
         update judge info to client server
         '''
-        while updateQueue.qsize > 0:
+        print updateQueue.qsize()
+        while updateQueue.qsize() > 0:
             update = updateQueue.get()
             jsondata = json.dumps({
                 "runid" : update.runid,
@@ -271,6 +272,7 @@ class Client(object):
                 "errinfo" : update.errinfo,
                 "password" : Config.getpassword()
             })
+            update.printstatus()
         return
 
     def work(self):
@@ -279,16 +281,18 @@ class Client(object):
         '''
         global threadNumber
 
-        while self.getsubmit():
-            pass
+	while True:
+	    while self.getsubmit():
+	        pass
 
-        while threadNumber < Config.OJ_THREAD:
-            runer = Runer()
-            threadNumber += 1
-            runer.start()
+	    for i in range(Config.OJ_THREAD - threadNumber):
+	        runer = Runer()
+	        threadNumber += 1
+	        runer.start()
 
-        self.update()
-        time.sleep(1)
+   	    self.update()
+	    time.sleep(1)
+            print "round End"
 
 if __name__ == "__main__":
     client = Client()
