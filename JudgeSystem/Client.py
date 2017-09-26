@@ -57,7 +57,7 @@ class Judge(object):
 
     def compile(self):
         '''compile and try to exec'''
-        judgepath = Config.OJ_JUDGE_PATH + "/" + self.runid
+        judgepath = Config.OJ_PATH_ROOT + Config.OJ_JUDGE_PATH + "/" + self.runid
 
         source = open(judgepath + "/main." + Config.LANGSET[self.lang], "w")
         source.write(self.code)
@@ -90,8 +90,8 @@ class Judge(object):
         '''
         execute data named dataname and monitor runtime error
         '''
-        judgepath = Config.OJ_JUDGE_PATH + self.runid + "/"
-        os.chdir(judgepath)
+        judgepath = Config.OJ_PATH_ROOT + Config.OJ_JUDGE_PATH + self.runid + "/"
+
         if Config.DEBUG:
             print "execute : ",
             print " dataname = " + dataname,
@@ -105,10 +105,11 @@ class Judge(object):
         pid = os.fork()
         if pid == 0:
             #print os.getcwd()
-
+            
             #os.chroot(".")
             #os.seteuid(Config.USER_JUDGE)
             #os.nice(100)
+            os.chdir(judgepath)
 
             resource.setrlimit(resource.RLIMIT_AS, (Config.STD_KB * self.mlimit, Config.STD_KB * self.mlimit))
             resource.setrlimit(resource.RLIMIT_CPU, (math.ceil(self.tlimit/1000.0) , math.ceil(self.tlimit/1000.0)))
@@ -149,15 +150,15 @@ class Judge(object):
         '''
         compare user's output and update judge status
         '''
-        judgepath = Config.OJ_JUDGE_PATH + "/" + self.runid
-        os.chdir(judgepath)
+        judgepath = Config.OJ_PATH_ROOT + Config.OJ_JUDGE_PATH + "/" + self.runid
+        #os.chdir(judgepath)
         if Config.DEBUG:
             print "compare : datapath = ",
             print os.getcwd()
 
-        inputfile = dataname + ".in"
-        useroutfile = Config.OJ_OUTPUT_FILE
-        stdoutfile = dataname + ".out"
+        inputfile = judgepath + dataname + ".in"
+        useroutfile = judgepath + Config.OJ_OUTPUT_FILE
+        stdoutfile = judgepath + dataname + ".out"
         
         if self.spj:
             pass
@@ -180,7 +181,7 @@ class Judge(object):
         run this method while judge information has already prepared
         use judge info and problem data to get solution and update response
         '''
-        judgepath = Config.OJ_JUDGE_PATH + str(self.runid) + "/"
+        judgepath = Config.OJ_PATH_ROOT + Config.OJ_JUDGE_PATH + str(self.runid) + "/"
         if os.path.exists(judgepath):
             shutil.rmtree(judgepath)
         os.makedirs(judgepath)
@@ -200,16 +201,13 @@ class Judge(object):
             print " datalist : ",
             print datalist
         for dataname in datalist:
-            os.chdir(Config.OJ_PATH_ROOT)
             self.execute(dataname + ".in")
             if self.status != Config.OJ_AC and self.status != Config.OJ_PE:
                 break
-            os.chdir(Config.OJ_PATH_ROOT)
             self.compare(dataname)
             if self.status != Config.OJ_AC and self.status != Config.OJ_PE:
                 break
 
-        os.chdir(Config.OJ_PATH_ROOT)
         #shutil.rmtree(judgepath)
         self.isEnd = 1
         return
@@ -252,7 +250,7 @@ class Client(object):
             print "jsondata = ",
             print data
         jsondata = json.loads(data)
-        if jsondata["runid"] != -1:
+        if int(jsondata["runid"]) != -1:
             workQueue.put(Judge(jsondata))
             return 1
         return 0

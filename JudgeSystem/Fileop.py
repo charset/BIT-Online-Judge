@@ -43,9 +43,9 @@ def getdatalist(proid, judgepath):
     }
 
     '''
-    datapath = Config.OJ_DATA_PATH + str(proid) + "/"
+    datapath = Config.OJ_PATH_ROOT + Config.OJ_DATA_PATH + str(proid) + "/"
     copyfiles(datapath, judgepath)
-    shutil.copy(Config.OJ_DATA_PATH+"run", judgepath)
+    shutil.copy(Config.OJ_PATH_ROOT + Config.OJ_DATA_PATH + "run", judgepath)
     datalist = []
 
     filelist = os.listdir(judgepath)
