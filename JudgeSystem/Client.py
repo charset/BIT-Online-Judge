@@ -76,7 +76,7 @@ class Judge(object):
             resource.setrlimit(resource.RLIMIT_CPU, (Config.OJ_COMPILE_TIME, Config.OJ_COMPILE_TIME))
             resource.setrlimit(resource.RLIMIT_FSIZE, (Config.OJ_COMPILE_FSIZE, Config.OJ_COMPILE_FSIZE))
 
-            Compile.compile(self.lang)
+            Compile.comp(self.lang)
             exit(0)
         else:
             res = os.waitpid(pid, 0)[1]
@@ -95,7 +95,7 @@ class Judge(object):
         if Config.DEBUG:
             print "execute : ",
             print " dataname = " + dataname,
-            print " exepath = " + os.getcwd()
+            print " exepath = " + judgepath
 
         inputfile = dataname
         outputfile = Config.OJ_OUTPUT_FILE
@@ -150,11 +150,11 @@ class Judge(object):
         '''
         compare user's output and update judge status
         '''
-        judgepath = Config.OJ_PATH_ROOT + Config.OJ_JUDGE_PATH + "/" + self.runid
+        judgepath = Config.OJ_PATH_ROOT + Config.OJ_JUDGE_PATH  + self.runid + "/"
         #os.chdir(judgepath)
         if Config.DEBUG:
             print "compare : datapath = ",
-            print os.getcwd()
+            print judgepath
 
         inputfile = judgepath + dataname + ".in"
         useroutfile = judgepath + Config.OJ_OUTPUT_FILE
@@ -208,7 +208,7 @@ class Judge(object):
             if self.status != Config.OJ_AC and self.status != Config.OJ_PE:
                 break
 
-        #shutil.rmtree(judgepath)
+        shutil.rmtree(judgepath)
         self.isEnd = 1
         return
 
@@ -259,7 +259,7 @@ class Client(object):
         '''
         update judge info to client server
         '''
-        while updateQueue.qsize > 0:
+        while updateQueue.qsize() > 0:
             update = updateQueue.get()
             jsondata = json.dumps({
                 "runid" : update.runid,
@@ -269,6 +269,7 @@ class Client(object):
                 "errinfo" : update.errinfo,
                 "password" : Config.getpassword()
             })
+            update.printstatus()
         return
 
     def work(self):
@@ -276,17 +277,17 @@ class Client(object):
         work
         '''
         global threadNumber
+        while True:
+            while self.getsubmit():
+                pass
 
-        while self.getsubmit():
-            pass
+            while threadNumber < Config.OJ_THREAD:
+                runer = Runer()
+                threadNumber += 1
+                runer.start()
 
-        while threadNumber < Config.OJ_THREAD:
-            runer = Runer()
-            threadNumber += 1
-            runer.start()
-
-        self.update()
-        time.sleep(1)
+            self.update()
+            time.sleep(1)
 
 if __name__ == "__main__":
     client = Client()

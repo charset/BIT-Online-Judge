@@ -17,3 +17,4 @@ def comp(lang):
         os.execvp(CP_C[0], CP_C)
     if Config.LANGSET[lang] == "cc":
         os.execvp(CP_CC[0], CP_CC)
+
