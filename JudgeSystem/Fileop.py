@@ -3,21 +3,26 @@ methods of file opration in judge
 '''
 import os
 import shutil
-import filecmp
 import Config
 
-def walkdir(dir,topdown=True):
-    fileList = []
-    for root, dirs, files in os.walk(dir, topdown):
+def walkdir(path, topdown=True):
+    '''
+    Gets all the child filenames under the path
+    '''
+    filelist = []
+    for root, dirs, files in os.walk(path, topdown):
         for name in files:
-            fileList.append(os.path.join(root,name))
-    return fileList
+            filelist.append(os.path.join(root, name))
+    return filelist
 
-def copyfiles(dirSrc, dirDst):
-    files = walkdir(dirSrc)
-    for f in files:
-        os.path.join(dirDst, f.split('/')[-1] )
-        shutil.copy2(f, os.path.join(dirDst, f.split('/')[-1] ))
+def copyfiles(dirsrc, dirdst):
+    '''
+    Copy all the files under Src to Dst
+    '''
+    files = walkdir(dirsrc)
+    for curfile in files:
+        os.path.join(dirdst, curfile.split('/')[-1])
+        shutil.copy2(curfile, os.path.join(dirdst, curfile.split('/')[-1]))
 
 def getdatalist(proid, judgepath):
     '''
@@ -38,9 +43,9 @@ def getdatalist(proid, judgepath):
     }
 
     '''
-    datapath = Config.OJ_DATA_PATH + str(proid) + "/"
+    datapath = Config.OJ_PATH_ROOT + Config.OJ_DATA_PATH + str(proid) + "/"
     copyfiles(datapath, judgepath)
-    shutil.copy(Config.OJ_DATA_PATH+"run", judgepath)
+    shutil.copy(Config.OJ_PATH_ROOT + Config.OJ_DATA_PATH + "run", judgepath)
     datalist = []
 
     filelist = os.listdir(judgepath)
@@ -65,19 +70,38 @@ def compare(file1, file2):
     '''
     generate answer according to user's outfile and standard outfile
     '''
-    file1 = open(file1, "r").read()
-    file2 = open(file2, "r").read()
+    try:
+        file1 = open(file1, "r").read()
+        file2 = open(file2, "r").read()
+    except:
+        return Config.OJ_RE
+
     if file1 == file2:
         return Config.OJ_AC
 
     cmp1 = ""
     cmp2 = ""
+
+    space = 0
     for i in file1:
         if i != ' ' and i != '\n' and i != '\t':
+            if space == 0:
+                cmp1 += " "
             cmp1 += i
+            space = 1
+        else:
+            space = 0
+
+    space = 0
     for i in file2:
         if i != ' ' and i != '\n' and i != '\t':
+            if space == 0:
+                cmp2 += " "
             cmp2 += i
+            space = 1
+        else:
+            space = 0
+
     if cmp1 == cmp2:
         return Config.OJ_PE
 
