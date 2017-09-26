@@ -24,6 +24,7 @@ import Compile
 
 workQueue = Queue()
 updateQueue = Queue()
+threadNumber = 0
 
 class Judge(object):
     '''
@@ -221,9 +222,14 @@ class Runer(threading.Thread):
     def run(self):
         global workQueue
         global updateQueue
+        global threadNumber
+        if workQueue.qsize == 0:
+            threadNumber -= 1
+            return
         work = workQueue.get()
         work.judge()
         updateQueue.put(work)
+        threadNumber -= 1
         return
         
 
@@ -271,8 +277,16 @@ class Client(object):
         '''
         work
         '''
+        global threadNumber
+
         while self.getsubmit():
             pass
+
+        while threadNumber < Config.OJ_THREAD:
+            runer = Runer()
+            threadNumber += 1
+            runer.start()
+
         self.update()
         time.sleep(1)
 
