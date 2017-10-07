@@ -38,6 +38,16 @@
         public bool QueryByStatus { get; set; }
 
         /// <summary>
+        /// 获取或设置分页查询参数。
+        /// </summary>
+        public PageQueryParameter PageQuery { get; set; }
+
+        /// <summary>
+        /// 获取或设置一个值，该值指示是否启用分页查询。
+        /// </summary>
+        public bool EnablePagedQuery { get; set; }
+
+        /// <summary>
         /// 创建 ContestQueryParameter 类的新实例。
         /// </summary>
         public ContestQueryParameter()
@@ -48,6 +58,8 @@
             QueryByCreator = false;
             Status = ContestStatus.Pending;
             QueryByStatus = false;
+            PageQuery = new PageQueryParameter();
+            EnablePagedQuery = false;
         }
     }
 }

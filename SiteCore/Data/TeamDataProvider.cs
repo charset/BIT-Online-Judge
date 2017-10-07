@@ -1,5 +1,7 @@
 ﻿namespace BITOJ.Core.Data
 {
+    using BITOJ.Core.Context;
+    using BITOJ.Data;
     using BITOJ.Data.Entities;
     using System;
 
@@ -22,13 +24,18 @@
                 throw new ArgumentNullException(nameof(handle));
 
             // 从数据库中查询队伍数据。
-            TeamProfileEntity entity = UserManager.Default.DataContext.QueryTeamProfileEntity(handle.TeamId);
+            UserDataContext context = new UserDataContextFactory().CreateContext();
+            TeamProfileEntity entity = context.QueryTeamProfileEntity(handle.TeamId);
             if (entity == null)
+            {
+                context.Dispose();
                 throw new TeamNotFoundException(handle);
+            }
 
-            return new TeamDataProvider(entity, isReadonly);
+            return new TeamDataProvider(context, entity, isReadonly);
         }
 
+        private UserDataContext m_context;
         private TeamProfileEntity m_entity;
         private bool m_isReadOnly;
         private bool m_disposed;
@@ -36,11 +43,13 @@
         /// <summary>
         /// 使用给定的队伍信息实体对象
         /// </summary>
+        /// <param name="context">数据上下文对象。</param>
         /// <param name="entity">队伍信息实体对象。</param>
         /// <param name="isReadOnly">一个值，该值指示当前对象是否为只读。</param>
         /// <exception cref="ArgumentNullException"/>
-        private TeamDataProvider(TeamProfileEntity entity, bool isReadOnly)
+        private TeamDataProvider(UserDataContext context, TeamProfileEntity entity, bool isReadOnly)
         {
+            m_context = context ?? throw new ArgumentNullException(nameof(context));
             m_entity = entity ?? throw new ArgumentNullException(nameof(entity));
             m_isReadOnly = isReadOnly;
             m_disposed = false;
@@ -123,7 +132,7 @@
         {
             if (!m_disposed && !m_isReadOnly)
             {
-                UserManager.Default.DataContext.SaveChanges();
+                m_context.SaveChanges();
             }
         }
 
@@ -135,6 +144,7 @@
             if (!m_disposed)
             {
                 Save();
+                m_context.Dispose();
                 m_disposed = true;
             }
         }

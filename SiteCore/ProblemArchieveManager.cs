@@ -2,11 +2,14 @@
 {
     using BITOJ.Common.Cache;
     using BITOJ.Common.Cache.Settings;
+    using BITOJ.Core.Context;
     using BITOJ.Core.Data;
     using BITOJ.Core.Data.Queries;
     using BITOJ.Data;
     using BITOJ.Data.Entities;
     using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.IO;
     using System.Linq;
     using NativeOJSystem = BITOJ.Data.Entities.OJSystem;
@@ -62,20 +65,18 @@
             }
         }
 
-        private ProblemDataContext m_context;       // 数据上下文
+        private ProblemDataContextFactory m_factory;
 
         /// <summary>
         /// 初始化 ProblemArchieveManager 类的新实例。
         /// </summary>
         private ProblemArchieveManager()
         {
-            m_context = new ProblemDataContext();
+            m_factory = new ProblemDataContextFactory();
         }
 
         ~ProblemArchieveManager()
         {
-            m_context.SaveChanges();
-            m_context.Dispose();
         }
 
         /// <summary>
@@ -89,8 +90,11 @@
             if (problemId == null)
                 throw new ArgumentNullException(nameof(problemId));
 
-            ProblemEntity entity = DataContext.GetProblemEntityById(problemId);
-            return entity != null;
+            return m_factory.WithContext(context =>
+            {
+                ProblemEntity entity = context.GetProblemEntityById(problemId);
+                return entity != null;
+            });
         }
 
         /// <summary>
@@ -117,7 +121,11 @@
             };
 
             // 将题目实体对象添加至底层数据库中。
-            m_context.AddProblemEntity(entity);
+            m_factory.WithContext(context =>
+            {
+                context.AddProblemEntity(entity);
+                context.SaveChanges();
+            });
 
             // 创建句柄并返回。
             ProblemHandle handle = ProblemHandle.FromProblemEntity(entity);
@@ -169,36 +177,29 @@
         /// </summary>
         /// <param name="id">题目 ID。</param>
         /// <returns>具有给定题目 ID 的题目句柄对象。若主题库中不存在这样的题目，返回 null。</returns>
+        /// <exception cref="ArgumentNullException"/>
         public ProblemHandle GetProblemById(string id)
         {
-            ProblemEntity entity = m_context.GetProblemEntityById(id);
-            if (entity == null)
-            {
-                return null;
-            }
+            if (id == null)
+                throw new ArgumentNullException(nameof(id));
 
-            return ProblemHandle.FromProblemEntity(entity);
+            return m_factory.WithContext(context =>
+            {
+                ProblemEntity entity = context.GetProblemEntityById(id);
+                if (entity == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    return ProblemHandle.FromProblemEntity(entity);
+                }
+            });
         }
 
-        /// <summary>
-        /// 使用指定的查询对象查询题目句柄。
-        /// </summary>
-        /// <param name="query">为查询提供参数。</param>
-        /// <returns>一个包含了所有的查询结果的查询结果对象。</returns>
-        /// <exception cref="ArgumentNullException"/>
-        /// <exception cref="ArgumentOutOfRangeException"/>
-        public IPageableQueryResult<ProblemHandle> QueryProblems(ProblemArchieveQueryParameter query)
+        private static IQueryable<ProblemEntity> DoQuery(ProblemDataContext context, ProblemArchieveQueryParameter query)
         {
-            if (query == null)
-                throw new ArgumentNullException(nameof(query));
-            if (query.QueryByTitle && query.Title == null)
-                throw new ArgumentNullException(nameof(query.Title));
-            if (query.QueryBySource && query.Source == null)
-                throw new ArgumentNullException(nameof(query.Source));
-            if (query.QueryByAuthor && query.Author == null)
-                throw new ArgumentNullException(nameof(query.Author));
-            
-            IQueryable<ProblemEntity> set = m_context.GetAllProblemEntities();
+            IQueryable<ProblemEntity> set = context.GetAllProblemEntities();
 
             // 根据查询参数执行相应的查询，动态维护查询基础数据集。
             if (query.QueryByTitle)
@@ -222,12 +223,71 @@
                 set = ProblemDataContext.QueryProblemEntitiesByContestId(set, query.ContestId);
             }
 
-            // 对数据集进行排序以准备随时执行分页。
-            set = set.OrderBy(entity => entity.Id);
+            return set;
+        }
 
-            PageableQueryResult<ProblemEntity> originResult = new PageableQueryResult<ProblemEntity>(set);
-            return new MappedQueryResult<ProblemEntity, ProblemHandle>(originResult,
-                entity => ProblemHandle.FromProblemEntity(entity));
+        /// <summary>
+        /// 使用指定的查询对象查询题目句柄。
+        /// </summary>
+        /// <param name="query">为查询提供参数。</param>
+        /// <returns>一个包含了所有的查询结果的查询结果对象。</returns>
+        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="ArgumentOutOfRangeException"/>
+        public ReadOnlyCollection<ProblemHandle> QueryProblems(ProblemArchieveQueryParameter query)
+        {
+            if (query == null)
+                throw new ArgumentNullException(nameof(query));
+            if (query.QueryByTitle && query.Title == null)
+                throw new ArgumentNullException(nameof(query.Title));
+            if (query.QueryBySource && query.Source == null)
+                throw new ArgumentNullException(nameof(query.Source));
+            if (query.QueryByAuthor && query.Author == null)
+                throw new ArgumentNullException(nameof(query.Author));
+            
+            return m_factory.WithContext(context =>
+            {
+                IQueryable<ProblemEntity> set = DoQuery(context, query);
+
+                // 对数据集进行排序以准备随时执行分页。
+                set = set.OrderBy(entity => entity.Id);
+
+                if (query.EnablePageQuery)
+                {
+                    set = set.Page(query.PageQuery);
+                }
+
+                List<ProblemHandle> handles = new List<ProblemHandle>();
+                foreach (ProblemEntity ent in set)
+                {
+                    handles.Add(ProblemHandle.FromProblemEntity(ent));
+                }
+
+                return new ReadOnlyCollection<ProblemHandle>(handles);
+            });
+        }
+
+        /// <summary>
+        /// 使用指定的查询对象计算满足条件的数据条目能填充多少页面。
+        /// </summary>
+        /// <param name="query">查询参数。</param>
+        /// <returns>满足查询条件的数据条目能填充的页面数量。</returns>
+        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="ArgumentException"/>
+        /// <exception cref="ArgumentOutOfRangeException"/>
+        public int QueryPages(ProblemArchieveQueryParameter query)
+        {
+            if (query == null)
+                throw new ArgumentNullException(nameof(query));
+            if (!query.EnablePageQuery)
+                throw new ArgumentException("给定的查询参数未启用分页。");
+            if (query.PageQuery.ItemsPerPage <= 0)
+                throw new ArgumentOutOfRangeException(nameof(query.PageQuery.ItemsPerPage));
+
+            return m_factory.WithContext(context =>
+            {
+                IQueryable<ProblemEntity> set = DoQuery(context, query);
+                return set.GetPages(query.PageQuery.ItemsPerPage);
+            });
         }
 
         /// <summary>
@@ -240,22 +300,17 @@
             if (problemId == null)
                 throw new ArgumentNullException(nameof(problemId));
 
-            ProblemEntity entity = DataContext.GetProblemEntityById(problemId);
-            if (entity != null)
+            m_factory.WithContext(context =>
             {
-                // 删除本地文件系统文件。
-                Directory.Delete(entity.ProblemDirectory, true);
-                // 从数据库中移除。
-                DataContext.RemoveProblemEntity(entity);
-            }
-        }
-
-        /// <summary>
-        /// 获取底层数据上下文对象。
-        /// </summary>
-        internal ProblemDataContext DataContext
-        {
-            get { return m_context; }
+                ProblemEntity entity = context.GetProblemEntityById(problemId);
+                if (entity != null)
+                {
+                    // 删除本地文件系统文件。
+                    Directory.Delete(entity.ProblemDirectory, true);
+                    // 从数据库中移除。
+                    context.RemoveProblemEntity(entity);
+                }
+            });
         }
     }
 }

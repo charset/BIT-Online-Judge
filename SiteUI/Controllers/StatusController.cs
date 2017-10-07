@@ -1,6 +1,8 @@
 ﻿namespace BITOJ.SiteUI.Controllers
 {
     using BITOJ.Core;
+    using BITOJ.Core.Authorization;
+    using BITOJ.Core.Data;
     using BITOJ.Core.Data.Queries;
     using BITOJ.SiteUI.Controllers.Extensions;
     using BITOJ.SiteUI.Models;
@@ -15,57 +17,7 @@
         // GET: /Status?username={Username}&problemId={ProblemID}
         public ActionResult Index()
         {
-            // 检查查询参数。
-            SubmissionQueryParameter query = new SubmissionQueryParameter()
-            {
-                ContestId = -1,
-                QueryByContestId = true,
-                OrderByDescending = true,
-            };
-            if (!string.IsNullOrEmpty(Request.QueryString["username"]))
-            {
-                query.QueryByUsername = true;
-                query.Username = Request.QueryString["username"];
-            }
-            if (!string.IsNullOrEmpty(Request.QueryString["problemId"]))
-            {
-                query.QueryByProblemId = true;
-                query.ProblemId = Request.QueryString["problemId"];
-            }
-
-            StatusModel model = new StatusModel();
-            int page = 1;
-            if (!string.IsNullOrEmpty(Request.QueryString["page"]))
-            {
-                int.TryParse(Request.QueryString["page"], out page);
-            }
-
-            // 执行查询。
-            IPageableQueryResult<SubmissionHandle> result = SubmissionManager.Default.QuerySubmissions(query);
-            model.TotalPages = result.GetTotalPages(ItemsPerPage);
-
-            foreach (SubmissionHandle item in result.Page(page, ItemsPerPage))
-            {
-                model.Submissions.Add(SubmissionBriefModel.FromSubmissionHandle(item));
-            }
-
-            /* Test code start */
-            model.Submissions.Add(new SubmissionBriefModel()
-            {
-                SubmissionId = 19980325,
-                Username = "Lancern",
-                ProblemId = "BIT1000",
-                ProblemTitle = "bibibibi and his demonstratable interval tree",
-                ExecutionTime = 100,
-                ExecutionMemory = 40,
-                Language = SubmissionLanguage.GnuCPlusPlus11,
-                VerdictStatus = SubmissionVerdictStatus.Completed,
-                Verdict = SubmissionVerdict.MemoryLimitExceeded,
-                CreationTime = System.DateTime.Now
-            });
-            /* Test code end */
-
-            return View(model);
+            return View();
         }
 
         // POST: /Status
@@ -105,18 +57,35 @@
                 return Redirect("~/Status");
             }
 
-            SubmissionHandle handle = SubmissionManager.Default.QuerySubmissionById(submissionId);
-            if (handle == null)
+            SubmissionHandle submissionHandle = SubmissionManager.Default.QuerySubmissionById(submissionId);
+            if (submissionHandle == null)
             {
                 // 给定的用户提交不存在。
                 return Redirect("~/Status");
             }
 
-            SubmissionDetailModel model = SubmissionDetailModel.FromSubmissionHandle(handle);
+            // 验证操作权限。
+            using (SubmissionDataProvider submissionData = SubmissionDataProvider.Create(submissionHandle, true))
+            {
+                if (submissionData.ContestId != -1)
+                {
+                    ContestHandle contestHandle = new ContestHandle(submissionData.ContestId);
+                    using (ContestDataProvider contestData = ContestDataProvider.Create(contestHandle, true))
+                    {   
+                        if (contestData.Status != ContestStatus.Ended &&
+                            string.Compare(submissionData.Username, UserSession.GetUsername(Session)) != 0)
+                        {
+                            return Redirect(Request.UrlReferrer.ToString());
+                        }
+                    }
+                }
+            }
+
+            SubmissionDetailModel model = SubmissionDetailModel.FromSubmissionHandle(submissionHandle);
             return View(model);
         }
 
-        // POST: Status/QueryStatus?id={SubmissionID}
+        // AJAX POST: Status/QueryStatus?id={SubmissionID}
         [HttpPost]
         public ActionResult QueryStatus()
         {

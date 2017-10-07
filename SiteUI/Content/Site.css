@@ -34,6 +34,10 @@
     max-width: 280px;
 }
 
+.jumbotron > h1 > small {
+    margin-left: 15px;
+}
+
 .text-code {
     font-family: Consolas, 'Courier New', monospace;
 }

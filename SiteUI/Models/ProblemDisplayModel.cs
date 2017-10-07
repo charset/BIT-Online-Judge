@@ -4,6 +4,7 @@
     using BITOJ.Core.Convert;
     using BITOJ.Core.Data;
     using MarkdownSharp;
+    using Newtonsoft.Json;
     using System;
 
     /// <summary>
@@ -14,71 +15,85 @@
         /// <summary>
         /// 获取或设置题目 ID。
         /// </summary>
+        [JsonProperty("problemId")]
         public string ProblemId { get; set; }
 
         /// <summary>
         /// 获取或设置题目标题。
         /// </summary>
+        [JsonProperty("title")]
         public string Title { get; set; }
 
         /// <summary>
         /// 获取或设置题目描述。
         /// </summary>
+        [JsonProperty("description")]
         public string Description { get; set; }
 
         /// <summary>
         /// 获取或设置输入描述。
         /// </summary>
+        [JsonProperty("inputDescription")]
         public string InputDescription { get; set; }
 
         /// <summary>
         /// 获取或设置输出描述。
         /// </summary>
+        [JsonProperty("outputDescription")]
         public string OutputDescription { get; set; }
 
         /// <summary>
         /// 获取或设置输入样例。
         /// </summary>
+        [JsonProperty("inputExample")]
         public string InputExample { get; set; }
 
         /// <summary>
         /// 获取或设置输出样例。
         /// </summary>
+        [JsonProperty("outputExample")]
         public string OutputExample { get; set; }
 
         /// <summary>
         /// 获取或设置题目提示。
         /// </summary>
+        [JsonProperty("hint")]
         public string Hint { get; set; }
 
         /// <summary>
         /// 获取或设置题目来源。
         /// </summary>
+        [JsonProperty("source")]
         public string Source { get; set; }
 
         /// <summary>
         /// 获取或设置题目作者。
         /// </summary>
+        [JsonProperty("author")]
         public string Author { get; set; }
 
         /// <summary>
         /// 获取或设置题目的时间限制，以毫秒为单位。
         /// </summary>
+        [JsonProperty("timeLimit")]
         public int TimeLimit { get; set; }
 
         /// <summary>
         /// 获取或设置题目的内存限制，以 KB 为单位。
         /// </summary>
+        [JsonProperty("memoryLimit")]
         public int MemoryLimit { get; set; }
 
         /// <summary>
         /// 获取或设置一个值，该值指示当前题目的判题过程是否需要用户提供的 Judge 程序。
         /// </summary>
+        [JsonProperty("specialJudge")]
         public bool IsSpecialJudge { get; set; }
 
         /// <summary>
         /// 获取或设置访问题目所需的最低权限。
         /// </summary>
+        [JsonProperty("usergroup")]
         public string UserGroupName { get; set; }
 
         /// <summary>

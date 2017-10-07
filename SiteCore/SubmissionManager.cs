@@ -2,12 +2,14 @@
 {
     using BITOJ.Common.Cache;
     using BITOJ.Common.Cache.Settings;
+    using BITOJ.Core.Context;
     using BITOJ.Core.Data.Queries;
     using BITOJ.Data;
     using BITOJ.Data.Entities;
     using DatabaseVerdictStatus = BITOJ.Data.Entities.SubmissionVerdictStatus;
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.Linq;
 
     /// <summary>
@@ -62,20 +64,18 @@
             }
         }
 
-        private SubmissionDataContext m_context;
+        private SubmissionDataContextFactory m_factory;
 
         /// <summary>
         /// 创建 SubmissionManager 类的新实例。
         /// </summary>
         private SubmissionManager()
         {
-            m_context = new SubmissionDataContext();
+            m_factory = new SubmissionDataContextFactory();
         }
 
         ~SubmissionManager()
         {
-            m_context.SaveChanges();
-            m_context.Dispose();
         }
 
         /// <summary>
@@ -85,7 +85,7 @@
         public SubmissionHandle CreateSubmission()
         {
             SubmissionEntity entity = new SubmissionEntity();
-            entity = m_context.AddSubmissionEntity(entity);
+            m_factory.WithContext(context => entity = context.AddSubmissionEntity(entity));
 
             return new SubmissionHandle(entity.Id);
         }
@@ -97,7 +97,8 @@
         /// <returns>查询到的提交句柄。若给定的提交 ID 不存在，返回 null。</returns>
         public SubmissionHandle QuerySubmissionById(int submissionId)
         {
-            SubmissionEntity entity = m_context.QuerySubmissionEntityById(submissionId);
+            SubmissionEntity entity 
+                = m_factory.WithContext(context => context.QuerySubmissionEntityById(submissionId));
             if (entity == null)
             {
                 return null;
@@ -112,7 +113,7 @@
         /// <param name="query">查询参数。</param>
         /// <returns>一个包含了所有的查询结果的结果对象。</returns>
         /// <exception cref="ArgumentNullException"/>
-        public IPageableQueryResult<SubmissionHandle> QuerySubmissions(SubmissionQueryParameter query)
+        public ReadOnlyCollection<SubmissionHandle> QuerySubmissions(SubmissionQueryParameter query)
         {
             if (query == null)
                 throw new ArgumentNullException(nameof(query));
@@ -121,21 +122,33 @@
             if (query.QueryByUsername && query.Username == null)
                 throw new ArgumentNullException(nameof(query.Username));
 
-            var set = m_context.QuerySubmissionEntities(query.GetQueryHandle());
-            
-            // 将所有实体对象按照创建时间排序以准备随时分页并显示。
-            if (query.OrderByDescending)
+            return m_factory.WithContext(context =>
             {
-                set = set.OrderByDescending(item => item.CreationTimestamp);
-            }
-            else
-            {
-                set = set.OrderBy(item => item.CreationTimestamp);
-            }
+                IQueryable<SubmissionEntity> set = context.QuerySubmissionEntities(query.GetQueryHandle());
 
-            PageableQueryResult<SubmissionEntity> originResult = new PageableQueryResult<SubmissionEntity>(set);
-            return new MappedQueryResult<SubmissionEntity, SubmissionHandle>(originResult,
-                entity => SubmissionHandle.FromSubmissionEntity(entity));
+                // 将所有实体对象按照创建时间排序以准备随时分页并显示。
+                if (query.OrderByDescending)
+                {
+                    set = set.OrderByDescending(item => item.CreationTimestamp);
+                }
+                else
+                {
+                    set = set.OrderBy(item => item.CreationTimestamp);
+                }
+
+                if (query.EnablePageQuery)
+                {
+                    set = set.Page(query.PageQuery);
+                }
+
+                List<SubmissionHandle> handles = new List<SubmissionHandle>();
+                foreach (SubmissionEntity ent in set)
+                {
+                    handles.Add(SubmissionHandle.FromSubmissionEntity(ent));
+                }
+
+                return new ReadOnlyCollection<SubmissionHandle>(handles);
+            });
         }
 
         /// <summary>
@@ -150,8 +163,8 @@
                 UseVerdictStatus = true
             };
 
-            IList<SubmissionEntity> set = m_context.QuerySubmissionEntities(query)
-                .OrderBy(entity => entity.CreationTimestamp).Take(1).ToList();
+            IList<SubmissionEntity> set = m_factory.WithContext(context => context.QuerySubmissionEntities(query)
+                .OrderBy(entity => entity.CreationTimestamp).Take(1).ToList());
 
             if (set.Count == 0)
             {
@@ -170,13 +183,9 @@
         /// <returns>一个值，该值指示给定的用户提交是否存在。</returns>
         public bool IsSubmissionExist(int submissionId)
         {
-            SubmissionEntity entity = m_context.QuerySubmissionEntityById(submissionId);
+            SubmissionEntity entity 
+                = m_factory.WithContext(context => context.QuerySubmissionEntityById(submissionId));
             return entity != null;
         }
-
-        /// <summary>
-        /// 获取底层数据上下文对象。
-        /// </summary>
-        internal SubmissionDataContext Context { get; }
     }
 }

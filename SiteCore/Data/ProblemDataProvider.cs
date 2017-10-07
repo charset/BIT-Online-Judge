@@ -1,5 +1,6 @@
 ﻿namespace BITOJ.Core.Data
 {
+    using BITOJ.Core.Context;
     using BITOJ.Data;
     using BITOJ.Data.Entities;
     using System;
@@ -29,20 +30,26 @@
                 throw new InvalidProblemException(handle, "给定的题目句柄不是 BITOJ 本地题目。");
 
             // 从底层数据库中查询题目实体对象。
-            ProblemEntity entity = ProblemArchieveManager.Default.DataContext.GetProblemEntityById(handle.ProblemId);
+            ProblemDataContext context = new ProblemDataContextFactory().CreateContext();
+            ProblemEntity entity = context.GetProblemEntityById(handle.ProblemId);
             if (entity == null)
+            {
+                context.Dispose();
                 throw new ProblemNotExistException(handle);
+            }
 
             // 创建底层题目数据访问器对象。
             ProblemAccessHandle entryHandle = new ProblemAccessHandle(entity);
             return new ProblemDataProvider()
             {
+                m_context = context,
                 m_entity = entity,
                 m_accessHandle = entryHandle,
                 m_readonly = isReadonly
             };
         }
 
+        private ProblemDataContext m_context;
         private ProblemEntity m_entity;
         private ProblemAccessHandle m_accessHandle;
         private bool m_readonly;
@@ -423,7 +430,8 @@
             if (!m_disposed && !m_readonly && m_dirty)
             {
                 // 更新数据库上下文。
-                ProblemArchieveManager.Default.DataContext.SaveChanges();
+                m_context.SaveChanges();
+                m_accessHandle.Save();
                 m_dirty = false;
             }
         }
@@ -438,9 +446,9 @@
                 if (!m_readonly)
                 {
                     Save();
-                    m_accessHandle.Save();      // 将挂起的更改写入底层文件系统中。
                 }
 
+                m_context.Dispose();
                 m_accessHandle.Dispose();
                 m_disposed = true;
             }

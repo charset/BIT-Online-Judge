@@ -1,5 +1,6 @@
 ﻿namespace BITOJ.SiteUI.Controllers.Extensions
 {
+    using BITOJ.SiteUI.Models.Json;
     using Newtonsoft.Json;
     using System.Web.Mvc;
 
@@ -18,7 +19,7 @@
         {
             return new ContentResult()
             {
-                Content = JsonConvert.SerializeObject(obj)
+                Content = JsonConvert.SerializeObject(obj, new DateTimeConverter())
             };
         }
     }

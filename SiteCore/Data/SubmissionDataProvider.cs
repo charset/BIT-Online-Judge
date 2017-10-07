@@ -1,6 +1,8 @@
 ﻿namespace BITOJ.Core.Data
 {
     using BITOJ.Core;
+    using BITOJ.Core.Context;
+    using BITOJ.Data;
     using BITOJ.Data.Entities;
 
     using CoreSubmissionLanguage = SubmissionLanguage;
@@ -31,13 +33,18 @@
             if (handle == null)
                 throw new ArgumentNullException(nameof(handle));
 
-            SubmissionEntity entity = SubmissionManager.Default.Context.QuerySubmissionEntityById(handle.SubmissionId);
+            SubmissionDataContext context = new SubmissionDataContextFactory().CreateContext();
+            SubmissionEntity entity = context.QuerySubmissionEntityById(handle.SubmissionId);
             if (entity == null)
+            {
+                context.Dispose();
                 throw new SubmissionNotExistException(handle);
+            }
 
-            return new SubmissionDataProvider(entity, isReadonly);
+            return new SubmissionDataProvider(context, entity, isReadonly);
         }
 
+        private SubmissionDataContext m_context;
         private SubmissionEntity m_entity;
         private string m_code;
         private bool m_readonly;
@@ -47,11 +54,13 @@
         /// <summary>
         /// 使用给定的用户提交实体对象以及一个指示当前对象是否为只读对象的值创建 SubmissionDataProvider 类的新实例。
         /// </summary>
+        /// <param name="context">数据上下文对象。</param>
         /// <param name="entity">用户提交实体对象。</param>
         /// <param name="isReadonly">一个值，该值指示当前对象是否为只读对象。</param>
         /// <exception cref="ArgumentNullException"/>
-        private SubmissionDataProvider(SubmissionEntity entity, bool isReadonly)
+        private SubmissionDataProvider(SubmissionDataContext context, SubmissionEntity entity, bool isReadonly)
         {
+            m_context = context ?? throw new ArgumentNullException(nameof(context));
             m_entity = entity ?? throw new ArgumentNullException(nameof(entity));
             m_code = null;
             m_readonly = isReadonly;
@@ -303,7 +312,7 @@
         {
             if (!m_disposed && !m_readonly)
             {
-                SubmissionManager.Default.Context.SaveChanges();
+                m_context.SaveChanges();
 
                 if (m_dirty)
                 {
@@ -321,6 +330,7 @@
             if (!m_disposed)
             {
                 Save();
+                m_context.Dispose();
                 m_disposed = true;
             }
         }

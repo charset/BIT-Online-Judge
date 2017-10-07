@@ -33,6 +33,15 @@
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
 
+            if (!ContestManager.Default.IsContestExist(contest.ContestId))
+            {
+                return ContestAuthorizationState.AuthorizationFailed;
+            }
+            if (!UserManager.Default.IsUserExist(user.Username))
+            {
+                return ContestAuthorizationState.AuthorizationFailed;
+            }
+
             using (ContestDataProvider data = ContestDataProvider.Create(contest, true))
             {
                 if (string.Compare(data.Creator, user.Username, false) == 0)
@@ -69,6 +78,56 @@
                 else        // data.AuthorizationMode == ContestAuthorizationMode.Private
                 {
                     return ContestAuthorizationState.AuthorizationFailed;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 获取给定用户对给定比赛的数据访问权限。
+        /// </summary>
+        /// <param name="contest">比赛句柄。</param>
+        /// <param name="user">用户句柄。</param>
+        /// <returns>给定用户对给定比赛的数据访问权限。</returns>
+        /// <exception cref="ArgumentNullException"/>
+        public static DataAccess GetAccess(ContestHandle contest, UserHandle user)
+        {
+            if (contest == null)
+                throw new ArgumentNullException(nameof(contest));
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
+
+            if (!ContestManager.Default.IsContestExist(contest.ContestId))
+            {
+                return DataAccess.None;
+            }
+            if (!UserManager.Default.IsUserExist(user.Username))
+            {
+                return DataAccess.None;
+            }
+
+            if (GetAuthorizationState(contest, user) != ContestAuthorizationState.Authorized)
+            {
+                return DataAccess.None;
+            }
+            else
+            {
+                if (UserAuthorization.GetUserGroup(user) == UserGroup.Administrators)
+                {
+                    return DataAccess.ReadWrite;
+                }
+                else
+                {
+                    using (ContestDataProvider data = ContestDataProvider.Create(contest, true))
+                    {
+                        if (string.Compare(data.Creator, user.Username, false) == 0)
+                        {
+                            return DataAccess.ReadWrite;
+                        }
+                        else
+                        {
+                            return DataAccess.Read;
+                        }
+                    }
                 }
             }
         }

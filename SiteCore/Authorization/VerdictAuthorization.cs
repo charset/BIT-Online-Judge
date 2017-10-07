@@ -58,7 +58,7 @@
                 days++;
             }
 
-            return BitConverter.GetBytes(days);
+            return Encoding.UTF8.GetBytes(days.ToString());
         }
 
         /// <summary>

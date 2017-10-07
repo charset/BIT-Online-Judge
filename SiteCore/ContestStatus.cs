@@ -8,16 +8,16 @@
         /// <summary>
         /// 比赛正在等待开始。
         /// </summary>
-        Pending,
+        Pending = 0,
 
         /// <summary>
         /// 比赛正在进行。
         /// </summary>
-        Running,
+        Running = 1,
 
         /// <summary>
         /// 比赛已经结束。
         /// </summary>
-        Ended
+        Ended = 2
     }
 }

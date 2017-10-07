@@ -16,57 +16,7 @@
         // GET: Archieve
         public ActionResult Index()
         {
-            int page = 1;
-            if (!string.IsNullOrEmpty(Request.QueryString["page"]))
-            {
-                if (!int.TryParse(Request.QueryString["page"], out page))
-                {
-                    page = 1;
-                }
-            }
-
-            // 在数据库中查询符合查询条件的题目。
-            ArchieveModel model = new ArchieveModel()
-            {
-                Catalog = ArchieveCatalog.Local,
-                CurrentPage = page,
-            };
-
-            ProblemArchieveQueryParameter query = new ProblemArchieveQueryParameter()
-            {
-                QueryByTitle = !string.IsNullOrEmpty(Request.QueryString["title"]),
-                Title = Request.QueryString["title"],
-                QueryBySource = !string.IsNullOrEmpty(Request.QueryString["source"]),
-                Source = Request.QueryString["source"],
-                QueryByAuthor = !string.IsNullOrEmpty(Request.QueryString["author"]),
-                Author = Request.QueryString["author"],
-                QueryByOrigin = true,
-                Origin = OJSystemConvert.ConvertFromString(Request.QueryString["origin"] ?? "BIT"),
-                QueryByContestId = true,
-                ContestId = -1
-            };
-
-            IPageableQueryResult<ProblemHandle> result = ProblemArchieveManager.Default.QueryProblems(query);
-            model.Pages = result.GetTotalPages(ItemsPerPage);
-
-            // 执行分页。
-            foreach (ProblemHandle handle in result.Page(page, ItemsPerPage))
-            {
-                model.Problems.Add(ProblemBriefModel.FromProblemHandle(handle));
-            }
-
-            ViewBag.ProblemListShowSolutionStatus = UserSession.IsAuthorized(Session);
-            return View(model);
-        }
-
-        // POST: Archieve
-        [HttpPost]
-        public ActionResult Index(FormCollection form)
-        {
-            string url = string.Format("/Archieve?title={0}&source={1}&author={2}&category={3}&origin={4}",
-                form["title"] ?? string.Empty, form["source"] ?? string.Empty, form["author"] ?? string.Empty,
-                form["category"] ?? string.Empty, form["origin"] ?? "BIT");
-            return Redirect(url);
+            return View();
         }
 
         // GET: Archieve/Add
@@ -334,16 +284,7 @@
             ProblemHandle handle = new ProblemHandle(id);
             if (handle.IsNativeProblem)
             {
-                // 在数据库中查询题目信息。
-                handle = ProblemArchieveManager.Default.GetProblemById(id);
-                if (handle == null)
-                {
-                    // 题目不存在。
-                    return Redirect("~/Error/ProblemNotExist");
-                }
-
-                ProblemDisplayModel model = ProblemDisplayModel.FromProblemHandle(handle);
-                return View(model);
+                return View();
             }
             else
             {

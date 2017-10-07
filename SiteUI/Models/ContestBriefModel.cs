@@ -2,6 +2,7 @@
 {
     using BITOJ.Core;
     using BITOJ.Core.Data;
+    using Newtonsoft.Json;
     using System;
     using System.Text;
 
@@ -10,46 +11,55 @@
         /// <summary>
         /// 获取或设置比赛ID。
         /// </summary>
+        [JsonProperty("id")]
         public int ContestId { get; set; }
 
         /// <summary>
         /// 获取或设置比赛标题。
         /// </summary>
+        [JsonProperty("title")]
         public string Title { get; set; }
 
         /// <summary>
         /// 获取或设置比赛的举办者。
         /// </summary>
+        [JsonProperty("creator")]
         public string Creator { get; set; }
 
         /// <summary>
         /// 获取或设置比赛起始时间。
         /// </summary>
+        [JsonProperty("startTime")]
         public DateTime StartTime { get; set; }
 
         /// <summary>
         /// 获取或设置比赛终止时间
         /// </summary>
+        [JsonProperty("endTime")]
         public DateTime EndTime { get; set; }
 
         /// <summary>
         /// 获取或设置比赛的身份验证模式。
         /// </summary>
+        [JsonProperty("authMode")]
         public ContestAuthorizationMode AuthorizationMode { get; set; }
 
         /// <summary>
         /// 获取或设置比赛的参与模式。
         /// </summary>
+        [JsonProperty("partMode")]
         public ContestParticipationMode ParticipationMode { get; set; }
 
         /// <summary>
         /// 获取或设置比赛的当前执行状态。
         /// </summary>
+        [JsonProperty("status")]
         public ContestStatus Status { get; set; }
 
         /// <summary>
         /// 创建 ContestBriefMode 类的新实例。
         /// </summary>
+        [JsonConstructor]
         public ContestBriefModel()
         {
             ContestId = 0;
@@ -60,45 +70,6 @@
             ParticipationMode = ContestParticipationMode.Both;
             Status = ContestStatus.Pending;
             Creator = string.Empty;
-        }
-
-        /// <summary>
-        /// 获取比赛时长的字符串表示。
-        /// </summary>
-        /// <returns>比赛时长的字符串表示。</returns>
-        private string GetDurationString()
-        {
-            double minutes = (EndTime - StartTime).TotalMinutes;
-            if (minutes >= 2 * 24 * 60)
-            {
-                // 大于两天的时长，按照天为单位进行格式化
-                return string.Format("{0:N1} day(s)", minutes / (24 * 60));
-            }
-            else if (minutes >= 60)
-            {
-                // 大于一个小时并且小于两天，按照小时为单位进行格式化
-                return string.Format("{0:N1} hour(s)", minutes / 60D);
-            }
-            else
-            {
-                // 少于一个小时。按照分钟为单位进行格式化。
-                return string.Format("{0:N0} minute(s)", minutes);
-            }
-        }
-
-        /// <summary>
-        /// 获取比赛日历的 HTML 表示。
-        /// </summary>
-        /// <returns>比赛日历的 HTML 表示。</returns>
-        public string GetCalendarHtml()
-        {
-            StringBuilder builder = new StringBuilder();
-
-            builder.AppendFormat("<p>Start time: {0:yyyy-MM-dd HH:mm:ss}</p>", StartTime);
-            builder.AppendFormat("<p>End time: {0:yyyy-MM-dd HH:mm:ss}</p>", EndTime);
-            builder.AppendFormat("<p>Duration: {0}</p>", GetDurationString());
-
-            return builder.ToString();
         }
 
         /// <summary>

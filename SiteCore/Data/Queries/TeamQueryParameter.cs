@@ -26,6 +26,16 @@
         public bool QueryByLeader { get; set; }
 
         /// <summary>
+        /// 获取或设置分页查询参数。
+        /// </summary>
+        public PageQueryParameter PageQuery { get; set; }
+
+        /// <summary>
+        /// 获取或设置一个值，该值指示是否应启用分页查询。
+        /// </summary>
+        public bool EnablePageQuery { get; set; }
+
+        /// <summary>
         /// 创建 TeamQueryParameter 类的新实例。
         /// </summary>
         public TeamQueryParameter()
@@ -34,6 +44,8 @@
             QueryByName = false;
             Leader = string.Empty;
             QueryByLeader = false;
+            PageQuery = new PageQueryParameter();
+            EnablePageQuery = false;
         }
     }
 }

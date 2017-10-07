@@ -1,6 +1,7 @@
 ﻿namespace BITOJ.Core.Data
 {
     using BITOJ.Core;
+    using BITOJ.Core.Context;
     using BITOJ.Data;
     using BITOJ.Data.Entities;
     using System;
@@ -30,13 +31,18 @@
             if (handle == null)
                 throw new ArgumentNullException(nameof(handle));
 
-            ContestEntity entity = ContestManager.Default.Context.QueryContestById(handle.ContestId);
+            ContestDataContext context = new ContestDataContextFactory().CreateContext();
+            ContestEntity entity = context.QueryContestById(handle.ContestId);
             if (entity == null)
+            {
+                context.Dispose();
                 throw new ContestNotFoundException(handle);
+            }
 
-            return new ContestDataProvider(entity, isReadonly);
+            return new ContestDataProvider(context, entity, isReadonly);
         }
 
+        private ContestDataContext m_context;
         private ContestEntity m_entity;
         private ContestAccessHandle m_access;
         private bool m_readonly;
@@ -46,11 +52,13 @@
         /// <summary>
         /// 使用给定的比赛实体对象创建 ContestDataProvider 类的新实例。
         /// </summary>
+        /// <param name="context">数据上下文对象。</param>
         /// <param name="entity">比赛实体对象。</param>
         /// <param name="isReadonly">一个值，该值指示当前对象是否为只读对象。</param>
         /// <exception cref="ArgumentNullException"/>
-        private ContestDataProvider(ContestEntity entity, bool isReadonly)
+        private ContestDataProvider(ContestDataContext context, ContestEntity entity, bool isReadonly)
         {
+            m_context = context ?? throw new ArgumentNullException(nameof(context));
             m_entity = entity ?? throw new ArgumentNullException(nameof(entity));
             m_access = new ContestAccessHandle(entity);
             m_readonly = isReadonly;
@@ -403,7 +411,7 @@
         {
             if (!m_disposed && !m_readonly)
             {
-                ContestManager.Default.Context.SaveChanges();
+                m_context.SaveChanges();
                 if (m_dirty)
                 {
                     m_access.Save();
@@ -420,6 +428,7 @@
             if (!m_disposed)
             {
                 Save();
+                m_context.Dispose();
                 m_access.Dispose();
 
                 m_disposed = true;

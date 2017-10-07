@@ -1,10 +1,13 @@
 ﻿namespace BITOJ.Core
 {
+    using BITOJ.Core.Context;
     using BITOJ.Core.Data;
     using BITOJ.Core.Data.Queries;
     using BITOJ.Data;
     using BITOJ.Data.Entities;
     using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.Linq;
     using NativeUserGroup = BITOJ.Data.Entities.UserGroup;
     using NativeUserSex = BITOJ.Data.Entities.UserSex;
@@ -44,20 +47,18 @@
             ms_lock = new object();
         }
 
-        private UserDataContext m_context;
+        private UserDataContextFactory m_factory;
 
         /// <summary>
         /// 初始化 UserManager 类的新实例。
         /// </summary>
         private UserManager()
         {
-            m_context = new UserDataContext();
+            m_factory = new UserDataContextFactory();
         }
 
         ~UserManager()
         {
-            m_context.SaveChanges();
-            m_context.Dispose();
         }
 
         /// <summary>
@@ -79,7 +80,11 @@
                 Username = username,
             };
             // 将实体数据对象添加到数据库中。
-            m_context.AddUserProfileEntity(entity);
+            m_factory.WithContext(context =>
+            {
+                context.AddUserProfileEntity(entity);
+                context.SaveChanges();
+            });
 
             return new UserHandle(username);
         }
@@ -91,7 +96,11 @@
         public TeamHandle CreateTeam()
         {
             TeamProfileEntity entity = new TeamProfileEntity();
-            entity = m_context.AddTeamProfileEntity(entity);
+            m_factory.WithContext(context =>
+            {
+                entity = context.AddTeamProfileEntity(entity);
+                context.SaveChanges();
+            });
 
             return TeamHandle.FromTeamEntity(entity);
         }
@@ -107,7 +116,7 @@
             if (username == null)
                 throw new ArgumentNullException(nameof(username));
 
-            UserProfileEntity entity = m_context.QueryUserProfileEntity(username);
+            UserProfileEntity entity = m_factory.WithContext(context => context.QueryUserProfileEntity(username));
             if (entity == null)
             {
                 return null;
@@ -123,7 +132,7 @@
         /// <returns>查找到的队伍的队伍句柄。若未找到这样的队伍，返回 null。</returns>
         public TeamHandle QueryTeamById(int teamId)
         {
-            TeamProfileEntity entity = DataContext.QueryTeamProfileEntity(teamId);
+            TeamProfileEntity entity = m_factory.WithContext(context => context.QueryTeamProfileEntity(teamId));
             if (entity == null)
             {
                 return null;
@@ -138,7 +147,7 @@
         /// <param name="query">查询参数。</param>
         /// <returns>一个包含了所有满足查询条件的用户句柄的查询结果对象。</returns>
         /// <exception cref="ArgumentNullException"/>
-        public IPageableQueryResult<UserHandle> QueryUsers(UserQueryParameter query)
+        public ReadOnlyCollection<UserHandle> QueryUsers(UserQueryParameter query)
         {
             if (query == null)
                 throw new ArgumentNullException(nameof(query));
@@ -149,31 +158,43 @@
             if (!hasQuery)
             {
                 // 没有查询参数。返回空列表。
-                return new PageableQueryResult<UserHandle>();
+                return new ReadOnlyCollection<UserHandle>(new List<UserHandle>());
             }
             else
             {
-                IQueryable<UserProfileEntity> profiles = m_context.GetAllUserProfiles();
-                if (query.QueryByOrganization)
+                return m_factory.WithContext(context =>
                 {
-                    profiles = UserDataContext.QueryUserProfileEntitiesByOrganization(profiles, query.Organization);
-                }
-                if (query.QueryBySex)
-                {
-                    profiles = UserDataContext.QueryUserProfileEntitiesBySex(profiles, (NativeUserSex)query.Sex);
-                }
-                if (query.QueryByUsergroup)
-                {
-                    profiles = UserDataContext.QueryUserProfileEntitiesByUsergroup(profiles,
-                        (NativeUserGroup)query.UserGroup);
-                }
+                    IQueryable<UserProfileEntity> profiles = context.GetAllUserProfiles();
+                    if (query.QueryByOrganization)
+                    {
+                        profiles = UserDataContext.QueryUserProfileEntitiesByOrganization(profiles, query.Organization);
+                    }
+                    if (query.QueryBySex)
+                    {
+                        profiles = UserDataContext.QueryUserProfileEntitiesBySex(profiles, (NativeUserSex)query.Sex);
+                    }
+                    if (query.QueryByUsergroup)
+                    {
+                        profiles = UserDataContext.QueryUserProfileEntitiesByUsergroup(profiles,
+                            (NativeUserGroup)query.UserGroup);
+                    }
 
-                // 对查询结果进行排序以准备随时分页。
-                profiles.OrderBy(item => item.Username);
+                    // 对查询结果进行排序以准备随时分页。
+                    profiles.OrderBy(item => item.Username);
 
-                PageableQueryResult<UserProfileEntity> originResult = new PageableQueryResult<UserProfileEntity>(profiles);
-                return new MappedQueryResult<UserProfileEntity, UserHandle>(originResult,
-                    entity => UserHandle.FromUserProfileEntity(entity));
+                    if (query.EnablePageQuery)
+                    {
+                        profiles = profiles.Page(query.PageQuery);
+                    }
+
+                    List<UserHandle> handles = new List<UserHandle>();
+                    foreach (UserProfileEntity ent in profiles)
+                    {
+                        handles.Add(UserHandle.FromUserProfileEntity(ent));
+                    }
+
+                    return new ReadOnlyCollection<UserHandle>(handles);
+                });
             }
         }
 
@@ -183,7 +204,7 @@
         /// <param name="query">查询参数。</param>
         /// <returns>查询到的队伍句柄结果对象。</returns>
         /// <exception cref="ArgumentNullException"/>
-        public IPageableQueryResult<TeamHandle> QueryTeams(TeamQueryParameter query)
+        public ReadOnlyCollection<TeamHandle> QueryTeams(TeamQueryParameter query)
         {
             if (query == null)
                 throw new ArgumentNullException(nameof(query));
@@ -192,19 +213,34 @@
             if (query.QueryByLeader && query.Leader == null)
                 throw new ArgumentNullException(nameof(query.Leader));
 
-            IQueryable<TeamProfileEntity> set = m_context.GetAllTeamProfiles();
-            if (query.QueryByName)
+            return m_factory.WithContext(context =>
             {
-                set = UserDataContext.QueryTeamProfileEntityByName(set, query.Name);
-            }
-            if (query.QueryByLeader)
-            {
-                set = UserDataContext.QueryTeamProfileEntityByLeader(set, query.Leader);
-            }
+                IQueryable<TeamProfileEntity> set =  context.GetAllTeamProfiles();
+                if (query.QueryByName)
+                {
+                    set = UserDataContext.QueryTeamProfileEntityByName(set, query.Name);
+                }
+                if (query.QueryByLeader)
+                {
+                    set = UserDataContext.QueryTeamProfileEntityByLeader(set, query.Leader);
+                }
 
-            PageableQueryResult<TeamProfileEntity> originResult = new PageableQueryResult<TeamProfileEntity>(set);
-            return new MappedQueryResult<TeamProfileEntity, TeamHandle>(originResult,
-                entity => TeamHandle.FromTeamEntity(entity));
+                // 对查询结果进行排序以准备分页。
+                set = set.OrderBy(ent => ent.Id);
+
+                if (query.EnablePageQuery)
+                {
+                    set = set.Page(query.PageQuery);
+                }
+
+                List<TeamHandle> handles = new List<TeamHandle>();
+                foreach (TeamProfileEntity ent in set)
+                {
+                    handles.Add(TeamHandle.FromTeamEntity(ent));
+                }
+
+                return new ReadOnlyCollection<TeamHandle>(handles);
+            });
         }
 
         /// <summary>
@@ -222,16 +258,19 @@
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
 
-            TeamProfileEntity teamEntity = m_context.QueryTeamProfileEntity(team.TeamId);
-            if (teamEntity == null)
-                throw new TeamNotFoundException(team);
+            m_factory.WithContext(context =>
+            {
+                TeamProfileEntity teamEntity = context.QueryTeamProfileEntity(team.TeamId);
+                if (teamEntity == null)
+                    throw new TeamNotFoundException(team);
 
-            UserProfileEntity userEntity = m_context.QueryUserProfileEntity(user.Username);
-            if (userEntity == null)
-                throw new UserNotFoundException(user);
+                UserProfileEntity userEntity = context.QueryUserProfileEntity(user.Username);
+                if (userEntity == null)
+                    throw new UserNotFoundException(user);
 
-            teamEntity.Members.Add(userEntity);
-            m_context.SaveChanges();
+                teamEntity.Members.Add(userEntity);
+                context.SaveChanges();
+            });
         }
 
         /// <summary>
@@ -249,24 +288,27 @@
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
 
-            TeamProfileEntity teamEntity = m_context.QueryTeamProfileEntity(team.TeamId);
-            if (teamEntity == null)
-                throw new TeamNotFoundException(team);
-
-            UserProfileEntity userEntity = m_context.QueryUserProfileEntity(user.Username);
-            if (userEntity == null)
-                throw new UserNotFoundException(user);
-            
-            foreach (UserProfileEntity teamUser in teamEntity.Members)
+            m_factory.WithContext(context =>
             {
-                if (string.Compare(teamUser.Username, userEntity.Username, false) == 0)
-                {
-                    teamEntity.Members.Remove(teamUser);
-                    break;
-                }
-            }
+                TeamProfileEntity teamEntity = context.QueryTeamProfileEntity(team.TeamId);
+                if (teamEntity == null)
+                    throw new TeamNotFoundException(team);
 
-            m_context.SaveChanges();
+                UserProfileEntity userEntity = context.QueryUserProfileEntity(user.Username);
+                if (userEntity == null)
+                    throw new UserNotFoundException(user);
+
+                foreach (UserProfileEntity teamUser in teamEntity.Members)
+                {
+                    if (string.Compare(teamUser.Username, userEntity.Username, false) == 0)
+                    {
+                        teamEntity.Members.Remove(teamUser);
+                        break;
+                    }
+                }
+
+                context.SaveChanges();
+            });
         }
 
         /// <summary>
@@ -279,13 +321,17 @@
             if (team == null)
                 throw new ArgumentNullException(nameof(team));
 
-            TeamProfileEntity entity = m_context.QueryTeamProfileEntity(team.TeamId);
-            if (entity == null)
+            m_factory.WithContext(context =>
             {
-                return;
-            }
+                TeamProfileEntity entity = context.QueryTeamProfileEntity(team.TeamId);
+                if (entity == null)
+                {
+                    return;
+                }
 
-            m_context.RemoveTeamProfileEntity(entity);
+                context.RemoveTeamProfileEntity(entity);
+                context.SaveChanges();
+            });
         }
 
         /// <summary>
@@ -299,7 +345,7 @@
             if (username == null)
                 throw new ArgumentNullException(nameof(username));
 
-            UserProfileEntity entity = DataContext.QueryUserProfileEntity(username);
+            UserProfileEntity entity = m_factory.WithContext(context => context.QueryUserProfileEntity(username));
             return entity != null;
         }
 
@@ -309,15 +355,7 @@
         /// <returns></returns>
         public bool IsTeamExist(TeamHandle handle)
         {
-            return DataContext.QueryTeamProfileEntity(handle.TeamId) != null;
-        }
-
-        /// <summary>
-        /// 获取数据上下文对象。
-        /// </summary>
-        internal UserDataContext DataContext
-        {
-            get { return m_context; }
+            return m_factory.WithContext(context => context.QueryTeamProfileEntity(handle.TeamId) != null);
         }
     }
 }

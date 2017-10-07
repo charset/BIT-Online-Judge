@@ -56,6 +56,16 @@
         public bool QueryByContestId { get; set; }
 
         /// <summary>
+        /// 获取或设置分页查询参数。
+        /// </summary>
+        public PageQueryParameter PageQuery { get; set; }
+
+        /// <summary>
+        /// 获取或设置一个值，该值指示是否启用分页查询。
+        /// </summary>
+        public bool EnablePageQuery { get; set; }
+
+        /// <summary>
         /// 创建 ProblemArchieveQueryParameter 类的新实例。
         /// </summary>
         public ProblemArchieveQueryParameter()
@@ -65,11 +75,13 @@
             Author = string.Empty;
             Origin = OJSystem.BIT;
             ContestId = -1;
+            PageQuery = new PageQueryParameter();
             QueryByTitle = false;
             QueryBySource = false;
             QueryByAuthor = false;
             QueryByOrigin = false;
             QueryByContestId = true;
+            EnablePageQuery = false;
         }
     }
 }

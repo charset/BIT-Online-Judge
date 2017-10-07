@@ -1,6 +1,8 @@
 ﻿namespace BITOJ.Core.Data
 {
     using BITOJ.Core;
+    using BITOJ.Core.Context;
+    using BITOJ.Data;
     using BITOJ.Data.Entities;
     using System;
     using CoreUserGroup = UserGroup;
@@ -27,13 +29,18 @@
                 throw new ArgumentNullException(nameof(handle));
 
             // 在用户数据库中查询对应的用户实体对象。
-            UserProfileEntity entity = UserManager.Default.DataContext.QueryUserProfileEntity(handle.Username);
+            UserDataContext context = new UserDataContextFactory().CreateContext();
+            UserProfileEntity entity = context.QueryUserProfileEntity(handle.Username);
             if (entity == null)
+            {
+                context.Dispose();
                 throw new UserNotFoundException(handle);
+            }
 
-            return new UserDataProvider(entity, isReadOnly);
+            return new UserDataProvider(context, entity, isReadOnly);
         }
 
+        private UserDataContext m_context;
         private UserProfileEntity m_entity;             // 用户数据实体对象。
         private bool m_readonly;
         private bool m_disposed;
@@ -41,11 +48,13 @@
         /// <summary>
         /// 初始化 UserDataProvider 类的新实例。
         /// </summary>
+        /// <param name="context">数据上下文对象。</param>
         /// <param name="entity">用户数据实体对象。</param>
         /// <param name="isReadOnly">一个值，该值指示当前对象是否为只读。</param>
         /// <exception cref="ArgumentNullException"/>
-        private UserDataProvider(UserProfileEntity entity, bool isReadOnly)
+        private UserDataProvider(UserDataContext context, UserProfileEntity entity, bool isReadOnly)
         {
+            m_context = context ?? throw new ArgumentNullException(nameof(context));
             m_entity = entity ?? throw new ArgumentNullException(nameof(entity));
             m_readonly = isReadOnly;
             m_disposed = false;
@@ -196,8 +205,9 @@
         {
             if (!m_readonly)
             {
-                UserManager.Default.DataContext.SaveChanges();
+                m_context.SaveChanges();
             }
+            m_context.Dispose();
             m_disposed = true;
         }
     }

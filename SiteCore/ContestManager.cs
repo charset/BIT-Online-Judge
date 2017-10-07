@@ -2,10 +2,13 @@
 {
     using BITOJ.Common.Cache;
     using BITOJ.Common.Cache.Settings;
+    using BITOJ.Core.Context;
     using BITOJ.Core.Data.Queries;
     using BITOJ.Data;
     using BITOJ.Data.Entities;
     using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.IO;
     using System.Linq;
 
@@ -62,20 +65,18 @@
             }
         }
 
-        private ContestDataContext m_context;
+        private ContestDataContextFactory m_factory;
 
         /// <summary>
         /// 创建 ContestManager 类的新实例。
         /// </summary>
         private ContestManager()
         {
-            m_context = new ContestDataContext();
+            m_factory = new ContestDataContextFactory();
         }
 
         ~ContestManager()
         {
-            m_context.SaveChanges();
-            m_context.Dispose();
         }
 
         /// <summary>
@@ -85,14 +86,17 @@
         public ContestHandle CreateContest()
         {
             // 创建新的比赛实体对象。
-            ContestEntity entity = new ContestEntity();
-            entity = m_context.AddContest(entity);
+            return m_factory.WithContext(context =>
+            {
+                ContestEntity entity = new ContestEntity();
+                entity = context.AddContest(entity);
 
-            // 为新创建的比赛分配配置文件。
-            entity.ContestConfigurationFile = string.Concat(ContestDirectory, "\\", entity.Id);
-            m_context.SaveChanges();
+                // 为新创建的比赛分配配置文件。
+                entity.ContestConfigurationFile = string.Concat(ContestDirectory, "\\", entity.Id);
+                context.SaveChanges();
 
-            return ContestHandle.FromContestEntity(entity);
+                return ContestHandle.FromContestEntity(entity);
+            });
         }
 
         /// <summary>
@@ -102,32 +106,24 @@
         /// <returns>从给定的比赛 ID 创建的 ContestHandle 类对象。若数据库中不存在这样的比赛实体对象，返回 null。</returns>
         public ContestHandle QueryContestById(int contestId)
         {
-            ContestEntity entity = m_context.QueryContestById(contestId);
-            if (entity == null)
+            return m_factory.WithContext(context =>
             {
-                return null;
-            }
-
-            return ContestHandle.FromContestEntity(entity);
+                ContestEntity entity = context.QueryContestById(contestId);
+                if (entity == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    return ContestHandle.FromContestEntity(entity);
+                }
+            });
         }
 
-        /// <summary>
-        /// 使用给定的查询参数查询比赛句柄。
-        /// </summary>
-        /// <param name="query">封装查询参数的对象。</param>
-        /// <returns>一个查询结果对象，其中包含了所有查询到的比赛句柄。</returns>
-        /// <exception cref="ArgumentNullException"/>
-        /// <exception cref="ArgumentException"/>
-        public IPageableQueryResult<ContestHandle> QueryContests(ContestQueryParameter query)
+        private static IQueryable<ContestEntity> DoQuery(ContestDataContext context, ContestQueryParameter query)
         {
-            if (query == null)
-                throw new ArgumentNullException(nameof(query));
-            if (query.QueryByTitle && query.Title == null)
-                throw new ArgumentNullException(nameof(query.Title));
-            if (query.QueryByCreator && query.Creator == null)
-                throw new ArgumentNullException(nameof(query.Creator));
+            IQueryable<ContestEntity> set = context.QueryAllContests();
 
-            IQueryable<ContestEntity> set = m_context.QueryAllContests();
             if (query.QueryByTitle)
             {
                 set = ContestDataContext.QueryContestsByTitle(set, query.Title);
@@ -154,12 +150,70 @@
                 }
             }
 
-            // 对数据实体对象进行排序以准备随时执行分页操作并显示。
-            set = set.OrderByDescending(entity => entity.CreationTime);
+            return set;
+        }
 
-            PageableQueryResult<ContestEntity> originResult = new PageableQueryResult<ContestEntity>(set);
-            return new MappedQueryResult<ContestEntity, ContestHandle>(originResult,
-                entity => ContestHandle.FromContestEntity(entity));
+        /// <summary>
+        /// 使用给定的查询参数查询比赛句柄。
+        /// </summary>
+        /// <param name="query">封装查询参数的对象。</param>
+        /// <returns>一个查询结果对象，其中包含了所有查询到的比赛句柄。</returns>
+        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="ArgumentException"/>
+        public ReadOnlyCollection<ContestHandle> QueryContests(ContestQueryParameter query)
+        {
+            if (query == null)
+                throw new ArgumentNullException(nameof(query));
+            if (query.QueryByTitle && query.Title == null)
+                throw new ArgumentNullException(nameof(query.Title));
+            if (query.QueryByCreator && query.Creator == null)
+                throw new ArgumentNullException(nameof(query.Creator));
+
+            return m_factory.WithContext(context =>
+            {
+                IQueryable<ContestEntity> set = DoQuery(context, query);
+
+                // 对数据实体对象进行排序以准备执行分页操作。
+                set = set.OrderByDescending(entity => entity.CreationTime);
+
+                if (query.EnablePagedQuery)
+                {
+                    // 执行分页。
+                    set = set.Page(query.PageQuery);
+                }
+
+                List<ContestHandle> handles = new List<ContestHandle>();
+                foreach (ContestEntity ent in set)
+                {
+                    handles.Add(ContestHandle.FromContestEntity(ent));
+                }
+
+                return new ReadOnlyCollection<ContestHandle>(handles);
+            });
+        }
+
+        /// <summary>
+        /// 使用指定的查询参数计算满足条件的数据条目一共能填充多少页面。
+        /// </summary>
+        /// <param name="query">查询参数。</param>
+        /// <returns>满足条件的数据条目能填充多少页面。</returns>
+        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="ArgumentException"/>
+        /// <exception cref="ArgumentOutOfRangeException"/>
+        public int QueryPages(ContestQueryParameter query)
+        {
+            if (query == null)
+                throw new ArgumentNullException(nameof(query));
+            if (!query.EnablePagedQuery)
+                throw new ArgumentException("给定的查询参数未启用分页。");
+            if (query.PageQuery.ItemsPerPage <= 0)
+                throw new ArgumentOutOfRangeException(nameof(query.PageQuery.ItemsPerPage));
+
+            return m_factory.WithContext(context =>
+            {
+                IQueryable<ContestEntity> set = DoQuery(context, query);
+                return set.GetPages(query.PageQuery.ItemsPerPage);
+            });
         }
 
         /// <summary>
@@ -168,14 +222,19 @@
         /// <param name="contestId">比赛 ID。</param>
         public void RemoveContest(int contestId)
         {
-            ContestEntity entity = m_context.QueryContestById(contestId);
-            if (entity != null)
+            m_factory.WithContext(context =>
             {
-                m_context.RemoveContest(entity);
+                ContestEntity entity = context.QueryContestById(contestId);
+                if (entity != null)
+                {
+                    // 删除本地配置文件。
+                    File.Delete(entity.ContestConfigurationFile);
 
-                // 删除本地配置文件。
-                File.Delete(entity.ContestConfigurationFile);
-            }
+                    // 从数据上下文中删除数据实体对象。
+                    context.RemoveContest(entity);
+                    context.SaveChanges();
+                }
+            });
         }
 
         /// <summary>
@@ -185,18 +244,7 @@
         /// <returns>一个值，该值指示给定比赛 ID 所代表的比赛是否存在。</returns>
         public bool IsContestExist(int contestId)
         {
-            return m_context.Contests.Find(contestId) != null;
-        }
-
-        /// <summary>
-        /// 获取数据上下文对象。
-        /// </summary>
-        internal ContestDataContext Context
-        {
-            get
-            {
-                return m_context;
-            }
+            return m_factory.WithContext(context => context.Contests.Find(contestId) != null);
         }
     }
 }

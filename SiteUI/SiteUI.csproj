@@ -163,6 +163,7 @@
     <Compile Include="Controllers\InternalController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\ProfileController.cs" />
+    <Compile Include="Controllers\QueryController.cs" />
     <Compile Include="Controllers\StatusController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -173,13 +174,14 @@
     <Compile Include="Models\ContestDetailModel.cs" />
     <Compile Include="Models\ContestDisplayModel.cs" />
     <Compile Include="Models\ContestModel.cs" />
-    <Compile Include="Models\Extensions\StyleSheetExtension.cs" />
+    <Compile Include="Models\Json\DateTimeConverter.cs" />
     <Compile Include="Models\ProblemDetailModel.cs" />
     <Compile Include="Models\ProblemDisplayModel.cs" />
     <Compile Include="Models\ArchieveCatalog.cs" />
     <Compile Include="Models\ArchieveModel.cs" />
     <Compile Include="Models\ProblemBriefModel.cs" />
     <Compile Include="Models\ProblemEnvironmentModel.cs" />
+    <Compile Include="Models\QueryModel.cs" />
     <Compile Include="Models\SiteCatalog.cs" />
     <Compile Include="Models\StatusModel.cs" />
     <Compile Include="Models\SubmissionBriefModel.cs" />
@@ -213,6 +215,8 @@
     <Content Include="Resources\Female_logo.png" />
     <Content Include="Resources\Male_logo.png" />
     <Content Include="Resources\Team_logo.png" />
+    <Content Include="Scripts\Archieve\index.js" />
+    <Content Include="Scripts\Archieve\show-problem.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">
@@ -222,8 +226,8 @@
     <Content Include="Scripts\change-usergroup.js" />
     <Content Include="Scripts\contest-add-archieve-problem.js" />
     <Content Include="Scripts\contest-detail-editor.js" />
+    <Content Include="Scripts\Contests\index.js" />
     <Content Include="Scripts\create-team.js" />
-    <Content Include="Scripts\delete-problem.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -233,7 +237,9 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\modify-team.js" />
+    <Content Include="Scripts\page-nav.js" />
     <Content Include="Scripts\prism.js" />
+    <Content Include="Scripts\query-common.js" />
     <Content Include="Scripts\query-submission-status.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
@@ -280,6 +286,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Query\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

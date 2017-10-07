@@ -3,6 +3,7 @@
     using BITOJ.Core;
     using BITOJ.Core.Authorization;
     using BITOJ.Core.Data;
+    using BITOJ.SiteUI.Controllers.Extensions;
     using BITOJ.SiteUI.Models;
     using Newtonsoft.Json;
     using System;
@@ -11,14 +12,6 @@
 
     public class InternalController : Controller
     {
-        private ContentResult NewtonsoftJsonResult(object model)
-        {
-            return new ContentResult()
-            {
-                Content = JsonConvert.SerializeObject(model)
-            };
-        }
-
         // GET: /Internal/FetchSubmissions
         public ActionResult FetchSubmissions()
         {
@@ -31,7 +24,7 @@
                 }
                 catch
                 {
-                    return NewtonsoftJsonResult(SubmissionFetchResponseModel.Empty);
+                    return this.NewtonsoftJson(SubmissionFetchResponseModel.Empty);
                 }
             }
             
@@ -40,13 +33,13 @@
                 !VerdictAuthorization.CheckAuthorization(VerdictAuthorization.GetHashBytes(requestPack.Password)))
             {
                 // 客户端身份验证失败。
-                return NewtonsoftJsonResult(SubmissionFetchResponseModel.Empty);
+                return this.NewtonsoftJson(SubmissionFetchResponseModel.Empty);
             }
 
             SubmissionHandle submission = SubmissionManager.Default.GetPendingListFront();
             if (submission == null)
             {
-                return NewtonsoftJsonResult(SubmissionFetchResponseModel.Empty);
+                return this.NewtonsoftJson(SubmissionFetchResponseModel.Empty);
             }
             else
             {
@@ -60,7 +53,7 @@
                     data.VerdictTimeStamp = DateTime.Now;
                 }
 
-                return NewtonsoftJsonResult(responsePack);
+                return this.NewtonsoftJson(responsePack);
             }
         }
 
@@ -77,7 +70,7 @@
                 }
                 catch
                 {
-                    return NewtonsoftJsonResult(SubmissionUpdateRespondModel.Failed);
+                    return this.NewtonsoftJson(SubmissionUpdateRespondModel.Failed);
                 }
             }
 
@@ -86,13 +79,13 @@
                 !VerdictAuthorization.CheckAuthorization(VerdictAuthorization.GetHashBytes(requestPack.Password)))
             {
                 // 身份验证失败。
-                return NewtonsoftJsonResult(SubmissionUpdateRespondModel.Failed);
+                return this.NewtonsoftJson(SubmissionUpdateRespondModel.Failed);
             }
 
             // 执行更新操作。
             if (!SubmissionManager.Default.IsSubmissionExist(requestPack.SubmissionId))
             {
-                return NewtonsoftJsonResult(SubmissionUpdateRespondModel.Failed);
+                return this.NewtonsoftJson(SubmissionUpdateRespondModel.Failed);
             }
 
             SubmissionHandle handle = new SubmissionHandle(requestPack.SubmissionId);
@@ -101,7 +94,7 @@
                 if (data.VerdictStatus == SubmissionVerdictStatus.Completed)
                 {
                     // 当前用户提交已经处于处理完毕状态。不执行任何操作。
-                    return NewtonsoftJsonResult(SubmissionUpdateRespondModel.Succeed);
+                    return this.NewtonsoftJson(SubmissionUpdateRespondModel.Succeed);
                 }
 
                 data.ExecutionTime = requestPack.ExecutionTime;
@@ -111,7 +104,7 @@
                 data.VerdictStatus = SubmissionVerdictStatus.Completed;
             }
 
-            return NewtonsoftJsonResult(SubmissionUpdateRespondModel.Succeed);
+            return this.NewtonsoftJson(SubmissionUpdateRespondModel.Succeed);
         }
     }
 }

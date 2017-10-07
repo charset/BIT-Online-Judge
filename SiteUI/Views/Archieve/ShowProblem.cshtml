@@ -1,9 +1,7 @@
-﻿@using BITOJ.SiteUI.Models
-@using BITOJ.Core
+﻿@using BITOJ.Core
 @using BITOJ.Core.Authorization
-@model ProblemDisplayModel
 @{ 
-    ViewBag.Title = string.Format("BITOJ - {0} - {1}", Model.ProblemId, Model.Title);
+    ViewBag.Title = "BITOJ - Show problem";
 }
 
 @section styles{
@@ -16,11 +14,8 @@
 
 <div class="jumbotron">
     <h1>
-        @string.Format("{0}", Model.Title)
-        @if (!string.IsNullOrEmpty(Model.Author))
-        {
-            <small>by @Model.Author</small>
-        }
+        Loading...
+        <small>Loading...</small>
     </h1>
 </div>
 
@@ -31,17 +26,10 @@
                 <h4 class="panel-title">Execution environment</h4>
             </div>
             <div class="panel-body">
-                <p>OS kernel: Linux</p>
-                <p>@string.Format("Time limit: {0} millisec.", Model.TimeLimit)</p>
-                <p>@string.Format("Memory limit: {0} kilobytes", Model.MemoryLimit)</p>
-                @if (Model.IsSpecialJudge)
-                {
-                    <p>Use special judge: yes</p>
-                }
-                else
-                {
-                    <p>Use special judge: no</p>
-                }
+                <p>OS: Linux</p>
+                <p>Time constraint: <strong><span id="timeLimit">Loading...</span> millsec.</strong></p>
+                <p>Memory constraint: <strong><span id="memoryLimit">Loading...</span> KiB.</strong></p>
+                <p>Special judge: <span id="specialJudge">Loading...</span></p>
             </div>
         </div>
 
@@ -63,16 +51,17 @@
         @if (UserAuthorization.CheckAccessRights(UserGroup.Administrators, UserSession.GetUserGroup(Session)))
         {
             <div class="btn-group-vertical" style="display: block; margin-top: 10px;">
-                <a href="@string.Format("/Archieve/Modify?id={0}", Model.ProblemId)" role="button" class="btn btn-warning">
+                <a href="@string.Format("/Archieve/Modify?id={0}", Request.QueryString["id"])" role="button" 
+                   class="btn btn-warning">
                     <span class="glyphicon glyphicon-pencil"></span>
                     Edit problem
                 </a>
-                <a href="@string.Format("/Archieve/Environment?id={0}", Model.ProblemId)" role="button"
-                    class="btn btn-warning">
+                <a href="@string.Format("/Archieve/Environment?id={0}", Request.QueryString["id"])" role="button" 
+                   class="btn btn-warning">
                     <span class="glyphicon glyphicon-flash"></span>
                     Edit exeuction environment
                 </a>
-                <a href="@string.Format("/Archieve/TestSet?id={0}", Model.ProblemId)" role="button"
+                <a href="javascript:alert('Not supported yet.');" role="button" 
                    class="btn btn-warning">
                     <span class="glyphicon glyphicon-tasks"></span>
                     Edit test set
@@ -93,11 +82,11 @@
                         </div>
                         <div class="modal-body">
                             <h4 class="text-danger">
-                                The operation you are performing are sensitive and needs your confirmation.
+                                The operation you are performing is sensitive and needs your confirmation.
                             </h4>
-                            <p>Are you sure you want to delete the following problem?</p>
+                            <p>Are you sure that you want to delete the following problem?</p>
                             <ul>
-                                <li><strong>@Model.ProblemId</strong>: @Model.Title</li>
+                                <li><strong id="problemId">Loading...</strong>: <span id="title">Loading...</span></li>
                             </ul>
                         </div>
                         <div class="modal-footer">
@@ -113,85 +102,91 @@
     </div>
 
     <div class="col-lg-9">
-            <div class="panel panel-info">
-                <div class="panel-heading">
-                    <h4 class="panel-title">Problem description</h4>
-                </div>
-                <div class="panel-body">@MvcHtmlString.Create(Model.Description)</div>
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h4 class="panel-title">Problem description</h4>
             </div>
-
-            <div class="panel panel-info">
-                <div class="panel-heading">
-                    <h4 class="panel-title">Input description</h4>
-                </div>
-                <div class="panel-body">@MvcHtmlString.Create(Model.InputDescription)</div>
+            <div class="panel-body" id="description">
+                Loading...
             </div>
+        </div>
 
-            <div class="panel panel-info">
-                <div class="panel-heading">
-                    <h4 class="panel-title">Output description</h4>
-                </div>
-                <div class="panel-body">@MvcHtmlString.Create(Model.OutputDescription)</div>
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h4 class="panel-title">Input description</h4>
             </div>
-
-            <div class="row">
-                <div class="col-lg-6">
-                    <div class="panel panel-info">
-                        <div class="panel-heading">
-                            <h4 class="panel-title">Input example</h4>
-                        </div>
-                        <div class="panel-body">
-                            <div class="text-code">@MvcHtmlString.Create(Model.InputExample)</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="panel panel-info">
-                        <div class="panel-heading">
-                            <h4 class="panel-title">Output example</h4>
-                        </div>
-                        <div class="panel-body">
-                            <div class="text-code">@MvcHtmlString.Create(Model.OutputExample)</div>
-                        </div>
-                    </div>
-                </div>
+            <div class="panel-body" id="inputDescription">
+                 Loading...
             </div>
+        </div>
 
-            @if (!string.IsNullOrEmpty(Model.Hint))
-            {
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h4 class="panel-title">Output description</h4>
+            </div>
+            <div class="panel-body" id="outputDescription">
+                Loading...
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6">
                 <div class="panel panel-info">
                     <div class="panel-heading">
-                        <h4 class="panel-title">Hints</h4>
+                        <h4 class="panel-title">Input example</h4>
                     </div>
-                    <div class="panel-body">@MvcHtmlString.Create(Model.Hint)</div>
+                    <div class="panel-body">
+                        <div class="text-code" id="inputExample">
+                            Loading...
+                        </div>
+                    </div>
                 </div>
-            }
-
-            @if (!string.IsNullOrEmpty(Model.Source))
-            {
+            </div>
+            <div class="col-lg-6">
                 <div class="panel panel-info">
                     <div class="panel-heading">
-                        <h4 class="panel-title">Source</h4>
+                        <h4 class="panel-title">Output example</h4>
                     </div>
-                    <div class="panel-body">@Model.Source</div>
-                </div>
-            }
-
-            @if (!string.IsNullOrEmpty(Model.Author))
-            {
-                <div class="panel panel-info">
-                    <div class="panel-heading">
-                        <h4 class="panel-title">Author</h4>
+                    <div class="panel-body">
+                        <div class="text-code" id="outputExample">
+                            Loading...
+                        </div>
                     </div>
-                    <div class="panel-body">@Model.Author</div>
                 </div>
-            }
-        </di>
+            </div>
+        </div>
+        
+        <div class="panel panel-info" id="hintBox">
+            <div class="panel-heading">
+                <h4 class="panel-title">Hints</h4>
+            </div>
+            <div class="panel-body" id="hint">
+                Loading...
+            </div>
+        </div>
+            
+        <div class="panel panel-info" id="sourceBox">
+            <div class="panel-heading">
+                <h4 class="panel-title">Source</h4>
+            </div>
+            <div class="panel-body" id="source">
+                Loading...
+            </div>
+        </div>
+        
+        <div class="panel panel-info" id="authorBox">
+            <div class="panel-heading">
+                <h4 class="panel-title">Author</h4>
+            </div>
+            <div class="panel-body" id="author">
+                Loading...
+            </div>
+        </div>
     </div>
 </div>
 
-<input type="hidden" id="problemIdField" value="@Model.ProblemId"/>
+<input type="hidden" id="problemIdFeed" value="@Request.QueryString["id"]"/>
 
 @section scripts {
-    <script type="text/javascript" src="~/Scripts/delete-problem.js"></script>
+    <script type="text/javascript" src="~/Scripts/Archieve/show-problem.js"></script>
 }
