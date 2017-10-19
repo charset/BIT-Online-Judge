@@ -1,6 +1,7 @@
 ﻿@using BITOJ.Core
 @using BITOJ.Core.Authorization
 @using BITOJ.Core.Convert
+@using BITOJ.SiteUI.Models;
 
 @{ 
     UserSession.RenewSession(Session);
@@ -25,6 +26,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title</title>
+    <link rel="shortcut icon" href="~/Resources/favicon_rgba.ico" type="image/x-icon"/>
 
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
@@ -47,11 +49,24 @@
             </div>
             <div class="navbar-collapse collapse" id="navdivResponsive">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Archieve", "Index", "Archieve")</li>
-                    <li>@Html.ActionLink("Contests", "Index", "Contest")</li>
-                    <li>@Html.ActionLink("Status", "Index", "Status")</li>
-                    <li>@Html.ActionLink("Users", "Index", "Profile")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
+                    @{ 
+                        string[] navListItemClassNames = new string[5];
+                        for (int i = 0; i < 5; ++i)
+                        {
+                            navListItemClassNames[i] = string.Empty;
+                        }
+
+                        if (ViewBag.SiteCatalog != null)
+                        {
+                            navListItemClassNames[(int)(SiteCatalog)ViewBag.SiteCatalog] = "active";
+                        }
+                    }
+
+                    <li class="@navListItemClassNames[0]"><a href="~/Archieve">Archieve</a></li>
+                    <li class="@navListItemClassNames[1]"><a href="~/Contest">Contests</a></li>
+                    <li class="@navListItemClassNames[2]"><a href="~/Status">Status</a></li>
+                    <li class="@navListItemClassNames[3]"><a href="~/Profile">Users</a></li>
+                    <li class="@navListItemClassNames[4]"><a href="~/Home/About">About</a></li>
                 </ul>
                 <form class="navbar-form navbar-left" role="search" action="~/Archieve/ShowProblem">
                     <div class="form-group">

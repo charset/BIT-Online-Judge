@@ -22,15 +22,42 @@ function getContestStatusName(status) {
         return '';
 }
 
+function getContestAuthTypeName(authType) {
+    if (authType === 0)
+        return 'Private';
+    else if (authType === 1)
+        return 'Protected';
+    else
+        return 'Public';
+}
+
+function getContestAuthTypeClassName(authType) {
+    if (authType === 0)
+        return 'label label-danger';
+    else if (authType === 1)
+        return 'label label-warning';
+    else
+        return 'label label-success';
+}
+
 function getContestRowHtml(contest) {
     var contestHtml = '<tr>';
 
     contestHtml += '<td>';
     contestHtml += '<a href="/Contest/Show?id=' + contest.id + '"><strong>' + contest.title + '</strong><a/>';
+    contestHtml += '<span class="' + getContestAuthTypeClassName(contest.authMode) + '" style="margin-left:10px;">'
+        + getContestAuthTypeName(contest.authMode) + '</span>';
     contestHtml += '</td>';
 
     contestHtml += '<td>';
     contestHtml += '<span class="' + getContestStatusClassName(contest.status) + '">' + getContestStatusName(contest.status) + '</span>';
+    contestHtml += '</td>';
+
+    contestHtml += '<td>';
+    if ((contest.partMode & 1) !== 0)
+        contestHtml += '<span class="label label-primary" style="margin-right:5px;">I</span>';
+    if ((contest.partMode & 2) !== 0)
+        contestHtml += '<span class="label label-primary" style="margin-right:5px;">T</span>';
     contestHtml += '</td>';
 
     contestHtml += '<td>' + contest.creator + '</td>';

@@ -1,11 +1,13 @@
 ﻿@using BITOJ.Core
 @using BITOJ.Core.Authorization
+@using BITOJ.SiteUI.Models;
 
 @{ 
     ViewBag.Title = "BITOJ - Archieve";
     ViewBag.ProblemListSubmitable = UserSession.IsAuthorized(Session);
     ViewBag.ProblemListEditable = UserSession.IsAuthorized(Session) &&
         UserAuthorization.CheckAccessRights(UserGroup.Administrators, UserSession.GetUserGroup(Session));
+    ViewBag.SiteCatalog = SiteCatalog.Archieve;
 }
 
 <div class="jumbotron">

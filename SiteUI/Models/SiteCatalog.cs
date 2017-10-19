@@ -3,31 +3,31 @@
     /// <summary>
     /// 编码 BITOJ 目录信息。
     /// </summary>
-    public enum SiteCatalog
+    public enum SiteCatalog : int
     {
-        /// <summary>
-        /// 表示 Instruction 页面。
-        /// </summary>
-        Instruction,
-
         /// <summary>
         /// 表示 Archieve 页面。
         /// </summary>
-        Archieve,
+        Archieve = 0,
 
         /// <summary>
         /// 表示 Contest 页面。
         /// </summary>
-        Contest,
+        Contest = 1,
 
         /// <summary>
         /// 表示 Status 页面。
         /// </summary>
-        Status,
+        Status = 2,
+
+        /// <summary>
+        /// 表示 Users 页面。
+        /// </summary>
+        Users = 3,
 
         /// <summary>
         /// 表示 About 页面。
         /// </summary>
-        About,
+        About = 4,
     }
 }

@@ -16,40 +16,46 @@
         /// <param name="userHandle">用户句柄。若当前会话尚未活动登录用户，传入 null。</param>
         /// <returns>一个值，该值只是给定身份权限的用户能否访问给定的题目。</returns>
         /// <exception cref="ArgumentNullException"/>
-        public static DataAccess Check(ProblemHandle problemHandle, UserHandle userHandle)
+        public static DataAccess GetUserAccess(ProblemHandle problemHandle, UserHandle userHandle)
         {
             if (problemHandle == null)
                 throw new ArgumentNullException(nameof(problemHandle));
 
-            if (!ProblemArchieveManager.Default.IsProblemExist(problemHandle.ProblemId))
+            /*
+             * 检查顺序如下：
+             * 1. 用户为管理员；
+             * 2. 题目为比赛题目；
+             * 3. 用户用户组权限低于题目要求的最低用户组权限。
+             * 
+             */
+            
+            // 检查用户是否为管理员身份。
+            if (userHandle != null && UserAuthorization.CheckAccessRights(UserGroup.Administrators, 
+                UserAuthorization.GetUserGroup(userHandle)))
             {
-                return DataAccess.None;
+                return DataAccess.ReadWrite;
             }
 
             using (ProblemDataProvider problemData = ProblemDataProvider.Create(problemHandle, true))
             {
                 if (problemData.ContestId != -1)
                 {
-                    // 比赛题目
+                    // 比赛题目。
                     if (userHandle == null)
                     {
                         return DataAccess.None;
                     }
 
                     ContestHandle contestHandle = ContestManager.Default.QueryContestById(problemData.ContestId);
-                    return ContestAuthorization.GetAccess(contestHandle, userHandle);
+                    return ContestAuthorization.GetUserAccess(contestHandle, userHandle);
                 }
                 else
                 {
                     // 主题目库题目
-                    UserGroup usergroup = userHandle == null 
-                        ? UserGroup.Guests 
-                        : UserAuthorization.GetUserGroup(userHandle);
-                    if (UserAuthorization.CheckAccessRights(UserGroup.Administrators, usergroup))
-                    {
-                        return DataAccess.ReadWrite;
-                    }
-                    else if (UserAuthorization.CheckAccessRights(problemData.AuthorizationGroup, usergroup))
+                    UserGroup usergroup = (userHandle == null) 
+                        ? UserGroup.Guests : UserAuthorization.GetUserGroup(userHandle);
+
+                    if (UserAuthorization.CheckAccessRights(problemData.AuthorizationGroup, usergroup))
                     {
                         return DataAccess.Read;
                     }

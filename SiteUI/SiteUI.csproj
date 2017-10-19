@@ -212,6 +212,8 @@
     <Content Include="Resources\BIT_Logo_trans_filter.png" />
     <Content Include="Resources\BIT_Logo_trans_padding.png" />
     <Content Include="Resources\BIT_Logo_trans.png" />
+    <Content Include="Resources\favicon_16.ico" />
+    <Content Include="Resources\favicon_rgba.ico" />
     <Content Include="Resources\Female_logo.png" />
     <Content Include="Resources\Male_logo.png" />
     <Content Include="Resources\Team_logo.png" />

@@ -3,11 +3,9 @@
     using BITOJ.Core;
     using BITOJ.Core.Authorization;
     using BITOJ.Core.Data;
-    using BITOJ.Core.Data.Queries;
     using BITOJ.SiteUI.Models;
     using BITOJ.SiteUI.Models.Validation;
     using System;
-    using System.Text;
     using System.Web.Mvc;
 
     public class ContestController : Controller
@@ -64,8 +62,8 @@
         public ActionResult Add()
         {
             // 执行用户身份验证。
-            if (!UserSession.IsAuthorized(Session) || !UserAuthorization.CheckAccessRights(UserGroup.Insiders,
-                UserSession.GetUserGroup(Session)))
+            if (!UserSession.IsAuthorized(Session) || 
+                !UserAuthorization.CheckAccessRights(UserGroup.Insiders, UserSession.GetUserGroup(Session)))
             {
                 return Redirect("~/Error/AccessDenied");
             }

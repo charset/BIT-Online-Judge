@@ -1,23 +1,37 @@
 ﻿namespace BITOJ.Core.Authorization
 {
     /// <summary>
-    /// 表示比赛身份验证状态。
+    /// 封装表示比赛的授权状态。
     /// </summary>
-    public enum ContestAuthorizationState
+    public sealed class ContestAuthorizationState
     {
         /// <summary>
-        /// 已经通过身份验证。
+        /// 获取或设置比赛的注册状态。
         /// </summary>
-        Authorized,
+        public ContestRegisterState RegisterState { get; set; }
 
         /// <summary>
-        /// 未通过身份验证，但可进行身份验证。
+        /// 当 RegisterState 为 TeamRegistered 时，获取或设置注册的队伍 ID。
         /// </summary>
-        AuthorizationRequired,
+        public int TeamId { get; set; }
 
         /// <summary>
-        /// 未通过身份验证，且无法进行身份验证。
+        /// 创建 ContestAuthorizationState 类的新实例。
         /// </summary>
-        AuthorizationFailed
+        public ContestAuthorizationState()
+        {
+            RegisterState = ContestRegisterState.NotRegistered;
+            TeamId = 0;
+        }
+
+        /// <summary>
+        /// 使用给定的注册状态创建 ContestAuthorizationState 类的新实例。
+        /// </summary>
+        /// <param name="state">注册状态。</param>
+        public ContestAuthorizationState(ContestRegisterState state)
+        {
+            RegisterState = state;
+            TeamId = 0;
+        }
     }
 }

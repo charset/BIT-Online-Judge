@@ -1,5 +1,6 @@
 ﻿namespace BITOJ.Core
 {
+    using BITOJ.Core.Data;
     using BITOJ.Data.Entities;
     using System;
 
@@ -20,6 +21,39 @@
         public TeamHandle(int id)
         {
             TeamId = id;
+        }
+
+        /// <summary>
+        /// 获取队伍中的成员。
+        /// </summary>
+        /// <returns>一个数组，其中包含队伍中的成员用户句柄。</returns>
+        public UserHandle[] GetMembers()
+        {
+            using (TeamDataProvider teamData = TeamDataProvider.Create(this, true))
+            {
+                return teamData.GetMembers();
+            }
+        }
+
+        /// <summary>
+        /// 确定给定的用户是否在当前的队伍中。
+        /// </summary>
+        /// <param name="user">用户句柄。</param>
+        /// <returns>一个值，该值指示给定的用户是否在当前队伍中。</returns>
+        public bool IsUserIn(UserHandle user)
+        {
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
+
+            foreach (UserHandle handle in GetMembers())
+            {
+                if (user == handle)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         /// <summary>

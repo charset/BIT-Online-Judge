@@ -1,7 +1,9 @@
 ﻿@using BITOJ.Core
 @using BITOJ.Core.Authorization
+@using BITOJ.SiteUI.Models;
 @{
     ViewBag.Title = "BITOJ - Contests";
+    ViewBag.SiteCatalog = SiteCatalog.Contest;
 }
 
 <div class="jumbotron">
@@ -75,12 +77,14 @@
                 <tr>
                     <th>Title</th>
                     <th>Status</th>
+                    <th>Part.</th>
                     <th>Creator</th>
                     <th>Start time</th>
                 </tr>
             </thead>
             <tbody id="contestListBody">
                 <tr class="active" style="color: gray;">
+                    <td>Loading...</td>
                     <td>Loading...</td>
                     <td>Loading...</td>
                     <td>Loading...</td>
