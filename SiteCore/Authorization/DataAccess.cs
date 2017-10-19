@@ -6,22 +6,22 @@
     /// 表示数据访问权限。
     /// </summary>
     [Flags]
-    public enum DataAccess
+    public enum DataAccess : int
     {
         /// <summary>
         /// 无数据访问权限。
         /// </summary>
-        None,
+        None = 0x00000000,
 
         /// <summary>
         /// 只读访问。
         /// </summary>
-        Read,
+        Read = 0x00000001,
 
         /// <summary>
         /// 只写访问。
         /// </summary>
-        Write,
+        Write = 0x00000002,
         
         /// <summary>
         /// 可读可写访问。

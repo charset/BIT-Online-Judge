@@ -51,12 +51,35 @@
         /// </summary>
         /// <param name="session">当前会话上下文。</param>
         /// <returns>存在于当前会话中的用户名。若当前会话没有注册任何一个活动用户，返回 null。</returns>
+        /// <exception cref="ArgumentNullException"/>
         public static string GetUsername(HttpSessionStateBase session)
         {
             if (session == null)
                 return null;
 
             return session[SessionUsername] as string;
+        }
+
+        /// <summary>
+        /// 从给定的 Session 中抽取当前会话活动用户句柄。
+        /// </summary>
+        /// <param name="session">当前会话上下文。</param>
+        /// <returns>存在于当前会话中的用户句柄。若当前会话中没有注册任何一个活动用户，返回 null。</returns>
+        /// <exception cref="ArgumentNullException"/>
+        public static UserHandle GetUserHandle(HttpSessionStateBase session)
+        {
+            if (session == null)
+                throw new ArgumentNullException(nameof(session));
+
+            string username = GetUsername(session);
+            if (username == null)
+            {
+                return null;
+            }
+            else
+            {
+                return new UserHandle(username);
+            }
         }
 
         /// <summary>

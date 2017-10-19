@@ -3,6 +3,7 @@
     using BITOJ.Core;
     using BITOJ.Core.Authorization;
     using BITOJ.Core.Convert;
+    using BITOJ.Core.Data;
     using BITOJ.Core.Data.Queries;
     using BITOJ.SiteUI.Controllers.Extensions;
     using BITOJ.SiteUI.Models;
@@ -184,7 +185,7 @@
             UserHandle userHandle = UserSession.IsAuthorized(Session)
                 ? new UserHandle(UserSession.GetUsername(Session))
                 : null;
-            if (!ProblemAuthorization.Check(problemHandle, userHandle).HasFlag(DataAccess.Read))
+            if (!ProblemAuthorization.GetUserAccess(problemHandle, userHandle).HasFlag(DataAccess.Read))
             {
                 return QueryResult(3, "Access denied.");
             }
@@ -232,6 +233,100 @@
             }
 
             return QueryResult(contests);
+        }
+
+        // GET: /Query/ContestDetail?id={ContestID}
+        [HttpGet]
+        public ActionResult ContestDetail()
+        {
+            string contestIdString = Request.QueryString["id"];
+            if (string.IsNullOrEmpty(contestIdString))
+            {
+                return QueryResult(1, "Contest ID required.");
+            }
+
+            int contestId;
+            if (!int.TryParse(contestIdString, out contestId))
+            {
+                return QueryResult(2, "Invalid contest ID.");
+            }
+
+            // 检查用户权限。
+            ContestHandle contest = new ContestHandle(contestId);
+            if (ContestAuthorization.GetUserAccess(contest, UserSession.GetUserHandle(Session)) == DataAccess.None)
+            {
+                return QueryResult(3, "Access denied.");
+            }
+
+            return QueryResult(ContestDisplayModel.FromContestHandle(contest));
+        }
+
+        // GET: /Query/ContestRegisterIdentity?id={ContestID}
+        [HttpGet]
+        public ActionResult ContestRegisterIdentity()
+        {
+            string contestIdString = Request.QueryString["id"];
+            if (string.IsNullOrEmpty(contestIdString))
+            {
+                return QueryResult(1, "Contest ID is required.");
+            }
+
+            int contestId;
+            if (!int.TryParse(contestIdString, out contestId))
+            {
+                return QueryResult(2, "Invalid contest ID.");
+            }
+
+            ContestHandle contest = new ContestHandle(contestId);
+            UserHandle user = UserSession.GetUserHandle(Session);
+            if (user == null)
+            {
+                // 当前会话中不存在任何活动的登录用户。
+                return QueryResult(3, "User session not exist.");
+            }
+
+            ContestAuthorizationState authState = ContestAuthorization.GetUserAuthorizationState(contest, user);
+            if (authState.RegisterState == ContestRegisterState.NotRegistered ||
+                authState.RegisterState == ContestRegisterState.PasswordRequired)
+            {
+                return QueryResult(string.Empty);
+            }
+            else
+            {
+                if (authState.RegisterState == ContestRegisterState.IndividualRegistered)
+                {
+                    return QueryResult(user.Username);
+                }
+                else
+                {
+                    TeamHandle registeredTeam = new TeamHandle(authState.TeamId);
+                    using (TeamDataProvider teamData = TeamDataProvider.Create(registeredTeam, true))
+                    {
+                        return QueryResult(teamData.Name);
+                    }
+                }
+            }
+        }
+
+        // GET: /Query/ContestAccess?id={ContestID}
+        [HttpGet]
+        public ActionResult ContestAccess()
+        {
+            string contestIdString = Request.QueryString["id"];
+            if (string.IsNullOrEmpty(contestIdString))
+            {
+                return QueryResult(1, "Contest ID is required.");
+            }
+
+            int contestId;
+            if (!int.TryParse(contestIdString, out contestId))
+            {
+                return QueryResult(2, "Invalid contest ID.");
+            }
+
+            ContestHandle contest = new ContestHandle(contestId);
+            UserHandle user = UserSession.GetUserHandle(Session);
+            return QueryResult(ContestAuthorization.GetUserAccess(contest, user));
         }
     }
 }

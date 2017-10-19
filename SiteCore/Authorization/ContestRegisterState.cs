@@ -18,11 +18,11 @@
         /// <summary>
         /// 以个人名义注册。
         /// </summary>
-        IndividualRegistered = 1,
+        IndividualRegistered = 2,
 
         /// <summary>
         /// 以队伍名义注册。
         /// </summary>
-        TeamRegistered = 2
+        TeamRegistered = 3
     }
 }

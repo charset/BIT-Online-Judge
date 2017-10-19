@@ -226,9 +226,9 @@
     </Content>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\change-usergroup.js" />
-    <Content Include="Scripts\contest-add-archieve-problem.js" />
     <Content Include="Scripts\contest-detail-editor.js" />
     <Content Include="Scripts\Contests\index.js" />
+    <Content Include="Scripts\Contests\show.js" />
     <Content Include="Scripts\create-team.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />

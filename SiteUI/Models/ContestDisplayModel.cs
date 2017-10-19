@@ -2,6 +2,7 @@
 {
     using BITOJ.Core;
     using BITOJ.Core.Data;
+    using Newtonsoft.Json;
     using System;
 
     /// <summary>
@@ -12,51 +13,61 @@
         /// <summary>
         /// 获取或设置比赛 ID。
         /// </summary>
+        [JsonProperty("id")]
         public int ContestId { get; set; }
 
         /// <summary>
         /// 获取或设置比赛标题。
         /// </summary>
+        [JsonProperty("title")]
         public string Title { get; set; }
 
         /// <summary>
         /// 获取或设置比赛创建者。
         /// </summary>
+        [JsonProperty("creator")]
         public string Creator { get; set; }
 
         /// <summary>
         /// 获取或设置比赛开始时间。
         /// </summary>
+        [JsonProperty("startTime")]
         public DateTime StartTime { get; set; }
 
         /// <summary>
         /// 获取或设置比赛结束时间。
         /// </summary>
+        [JsonProperty("endTime")]
         public DateTime EndTime { get; set; }
 
         /// <summary>
         /// 获取或设置比赛状态。
         /// </summary>
+        [JsonProperty("status")]
         public ContestStatus Status { get; set; }
 
         /// <summary>
         /// 获取或设置比赛的参与模式。
         /// </summary>
+        [JsonProperty("partMode")]
         public ContestParticipationMode ParticipationMode { get; set; }
 
         /// <summary>
         /// 获取或设置比赛的身份验证模式。
         /// </summary>
+        [JsonProperty("autoMode")]
         public ContestAuthorizationMode AuthorizationMode { get; set; }
 
         /// <summary>
         /// 获取或设置比赛中包含的所有题目。
         /// </summary>
+        [JsonProperty("problems")]
         public ProblemBriefModel[] Problems { get; set; }
 
         /// <summary>
         /// 创建 ContestDisplayModel 的新实例。
         /// </summary>
+        [JsonConstructor]
         public ContestDisplayModel()
         {
             ContestId = 0;
@@ -68,30 +79,6 @@
             ParticipationMode = ContestParticipationMode.Both;
             AuthorizationMode = ContestAuthorizationMode.Private;
             Problems = new ProblemBriefModel[0];
-        }
-
-        /// <summary>
-        /// 获取当前比赛的进度百分比。
-        /// </summary>
-        /// <returns>当前比赛的进度百分比。</returns>
-        public int GetRunningPercentage()
-        {
-            switch (Status)
-            {
-                case ContestStatus.Pending:
-                    return 0;
-
-                case ContestStatus.Running:
-                    double totalSeconds = (EndTime - StartTime).TotalSeconds;
-                    double elapsedSeconds = (DateTime.Now - StartTime).TotalSeconds;
-                    return (int)(elapsedSeconds / totalSeconds * 100D);
-
-                case ContestStatus.Ended:
-                    return 100;
-
-                default:
-                    return 0;
-            }
         }
 
         /// <summary>

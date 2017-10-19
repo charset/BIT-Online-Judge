@@ -127,17 +127,18 @@
 
             ContestHandle contest = new ContestHandle(id);
             UserHandle user = new UserHandle(UserSession.GetUsername(Session));
-            ContestAuthorizationState state = ContestAuthorization.GetAuthorizationState(contest, user);
+            ContestAuthorizationState state = ContestAuthorization.GetUserAuthorizationState(contest, user);
             
-            switch (state)
+            switch (state.RegisterState)
             {
-                case ContestAuthorizationState.Authorized:
+                case ContestRegisterState.IndividualRegistered:
+                case ContestRegisterState.TeamRegistered:
                     return Redirect($"~/Contest/Show?id={id}");
 
-                case ContestAuthorizationState.AuthorizationRequired:
+                case ContestRegisterState.PasswordRequired:
                     return View();
 
-                case ContestAuthorizationState.AuthorizationFailed:
+                case ContestRegisterState.NotRegistered:
                 default:
                     ViewBag.Failed = true;
                     return View();
@@ -158,20 +159,22 @@
             {
                 return Redirect("~/Contest");
             }
+            ViewBag.ContestId = id;
 
             // 检查用户权限。
             ContestHandle contest = new ContestHandle(id);
-            UserHandle user = new UserHandle(UserSession.GetUsername(Session));
+            UserHandle user = UserSession.GetUserHandle(Session);
 
-            switch (ContestAuthorization.GetAuthorizationState(contest, user))
+            switch (ContestAuthorization.GetUserAuthorizationState(contest, user).RegisterState)
             {
-                case ContestAuthorizationState.Authorized:
-                    return View(ContestDisplayModel.FromContestHandle(contest));
+                case ContestRegisterState.IndividualRegistered:
+                case ContestRegisterState.TeamRegistered:
+                    return View();
 
-                case ContestAuthorizationState.AuthorizationRequired:
+                case ContestRegisterState.PasswordRequired:
                     return Redirect($"~/Contest/Verify?id={id}");
 
-                case ContestAuthorizationState.AuthorizationFailed:
+                case ContestRegisterState.NotRegistered:
                 default:
                     return Redirect("~/Contest");
             }

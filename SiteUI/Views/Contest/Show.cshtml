@@ -1,105 +1,87 @@
-﻿@using BITOJ.Core
-@using BITOJ.Core.Authorization
-@using BITOJ.Core.Convert
-@using BITOJ.SiteUI.Models
-@using BITOJ.SiteUI.Models.Extensions
-@model ContestDisplayModel
+﻿
 @{ 
-    ViewBag.Title = Model.Title;
+    ViewBag.Title = "BITOJ - Loading contest...";
+}
 
-    ViewBag.ProblemListShowCategory = false;
-    ViewBag.ProblemListShowId = false;
-    ViewBag.ProblemListEditable = UserSession.IsAuthorized(Session) &&
-        string.Compare(UserSession.GetUsername(Session), Model.Creator, false) == 0;
+@section Styles {
+    <style>
+        .jumbotron p,
+        tr > td > p {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+    </style>
 }
 
 <div class="jumbotron">
-    <h1>@Model.Title  <small>by @Model.Creator</small></h1>
+    <h1>
+        <span id="contestTitle">Loading...</span> 
+        <small><span id="contestCreator" hidden>by Loading...</span></small>
+    </h1>
 
     <hr />
 
     <div class="row">
         <div class="col-lg-4 text-left">
             <p>Start time:</p>
-            <p>@Model.StartTime.ToString("yyyy-MM-dd HH:mm:ss")</p>
+            <p id="contestStartTime">Loading...</p>
         </div>
         <div class="col-lg-4 text-center">
             <p>
-                <span class="@StyleSheetExtension.GetContestAuthorizationModeClass(Model.AuthorizationMode)">
-                    @ContestAuthorizationModeConvert.ConvertToString(Model.AuthorizationMode)
-                </span>
+                <span id="contestAuthMode">Loading...</span>
                 ,
-                <span class="@StyleSheetExtension.GetContestStatusClass(Model.Status)">
-                    @ContestStatusConvert.ConvertToString(Model.Status)
-                </span>
+                <span id="contestStatus">Loading...</span>
             </p>
-            <p>@ContestParticipationModeConvert.ConvertToString(Model.ParticipationMode)</p>
+            <p id="contestPartMode">Loading...</p>
         </div>
         <div class="col-lg-4 text-right">
             <p>End time:</p>
-            <p>@Model.EndTime.ToString("yyyy-MM-dd HH:mm:ss")</p>
+            <p id="contestEndTime">Loading...</p>
         </div>
     </div>
 
-    <div class="@("progress progress-striped" + (Model.Status == ContestStatus.Running ? " active" : string.Empty))">
+    <div class="progress progress-striped active" id="contestProgress" style="margin-top: 10px;">
         <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" 
-             aria-valuenow="@Model.GetRunningPercentage()" 
-             style="@string.Format("width: {0}%;", Model.GetRunningPercentage())"></div>
+             aria-valuenow="100" style="width: 100%;"></div>
     </div>
 
-    @if (Model.Status != ContestStatus.Ended)
-    {
-        <div class="text-center">
-            @{ 
-                TimeSpan countdown;
-                if (Model.Status == ContestStatus.Pending)
-                {
-                    countdown = Model.StartTime - DateTime.Now;
-                }
-                else        // Model.Status == ContestStatus.Running
-                {
-                    countdown = Model.EndTime - DateTime.Now;
-                }
-
-                <p>
-                    Countdown:
-                    @(countdown.Days) d. @(countdown.Hours) hr. @(countdown.Minutes) min. @(countdown.Seconds) sec.
-                </p>
-            }
+    <div class="row">
+        <div class="col-lg-6">
+            Registered as:
+            <span id="contestRegId">Loading...</span>
         </div>
-    }
+        <div class="col-lg-6 text-right">
+            Countdown:
+            <span id="contestCountdown">Loading...</span>
+        </div>
+    </div>
 </div>
 
 <div class="row">
     <div class="col-lg-3">
-        @if (string.Compare(UserSession.GetUsername(Session), Model.Creator, false) == 0)
-        {
+        <div id="contestWriteRegion" hidden>
             <div class="btn-group btn-group-vertical" style="display: block;">
-                <a href="@string.Format("/Contest/AddProblem?id={0}", Model.ContestId)" 
+                <a href="@string.Format("/Contest/AddProblem?id={0}", ViewBag.ContestId)"
                    class="btn btn-warning">
                     <span class="glyphicon glyphicon-plus"></span>
                     Add custom problem
                 </a>
-                <button type="button" class="btn btn-warning" data-toggle="modal" 
+                <button type="button" class="btn btn-warning" data-toggle="modal"
                         data-target="#addProblemDialog">
                     <span class="glyphicon glyphicon-plus"></span>
                     Add archieve problem
                 </button>
-                <a href="@string.Format("/Contest/Edit?id={0}", Model.ContestId)" class="btn btn-warning">
+                <a href="@string.Format("/Contest/Edit?id={0}", ViewBag.ContestId)" class="btn btn-warning">
                     <span class="glyphicon glyphicon-pencil"></span>
                     Edit contest
                 </a>
-
-                @if (Model.AuthorizationMode == ContestAuthorizationMode.Private)
-                {
-                    <a href="javascript:void(0);" class="btn btn-warning">
-                        <span class="glyphicon glyphicon-pencil"></span>
-                        Edit white list
-                    </a>
-                }
+                <a href="javascript:void(0);" class="btn btn-warning">
+                    <span class="glyphicon glyphicon-pencil"></span>
+                    Edit register list
+                </a>
             </div>
 
-            <div class="modal fade" id="addProblemDialog" tabindex="-1" role="dialog" 
+            <div class="modal fade" id="addProblemDialog" tabindex="-1" role="dialog"
                  aria-labelledby="addProblemDialogLabel">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -114,7 +96,7 @@
                                 <div class="form-group">
                                     <label for="ProblemId" class="control-label">Problem ID</label>
                                     <input type="text" class="form-control" id="ProblemId" name="ProblemId"
-                                           placeholder="Enter Problem ID"/>
+                                           placeholder="Enter Problem ID" />
                                 </div>
                             </form>
                         </div>
@@ -128,21 +110,47 @@
                     </div>
                 </div>
             </div>
-        }
+        </div>
 
         <div style="margin-top: 15px;" class="list-group">
             <a class="list-group-item active" href="javascript:void(0);">Problems</a>
-            <a class="list-group-item" href="javascript:void(0);">Status</a>
+            <a class="list-group-item" href="javascript:void(0);">Submissions</a>
             <a class="list-group-item" href="javascript:void(0);">Ranklist</a>
         </div>
     </div>
     <div class="col-lg-9">
-        @Html.Partial("~/Views/Shared/ProblemList.cshtml", Model.Problems)
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                Contest announcement
+            </div>
+            <div class="panel-body">
+                <span id="contestAnnouncement">Loading...</span>
+            </div>
+        </div>
+
+        <table class="table table-striped table-hover" id="contestProblemList">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Status</th>
+                    <th>Title</th>
+                    <th>Accept ratio</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="active" style="background-color: gray;">
+                    <td></td>
+                    <td>Loading...</td>
+                    <td>Loading...</td>
+                    <td>Loading...</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 
-<input type="hidden" id="contestId" value="@Model.ContestId"/>
+<input type="hidden" id="contestId" value="@ViewBag.ContestId"/>
 
 @section scripts {
-    <script type="text/javascript" src="~/Scripts/contest-add-archieve-problem.js"></script>
+    <script type="text/javascript" src="~/Scripts/Contests/show.js"></script>
 }
