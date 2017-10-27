@@ -211,5 +211,43 @@
                 return Buffer.IsByteArraysEqual(hash, contestData.PasswordHash);
             }
         }
+
+        /// <summary>
+        /// 将给定的用户添加至给定的比赛的注册用户列表中。
+        /// </summary>
+        /// <param name="contest">比赛句柄。</param>
+        /// <param name="user">要添加的用户句柄。</param>
+        /// <exception cref="ArgumentNullException"/>
+        public static void Register(ContestHandle contest, UserHandle user)
+        {
+            if (contest == null)
+                throw new ArgumentNullException(nameof(contest));
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
+
+            using (ContestDataProvider contestData = ContestDataProvider.Create(contest, false))
+            {
+                contestData.AddUserToAuthorizedList(user);
+            }
+        }
+
+        /// <summary>
+        /// 将给定的队伍添加至给定的比赛的注册队伍列表中。
+        /// </summary>
+        /// <param name="contest">比赛句柄。</param>
+        /// <param name="team">要添加的队伍句柄。</param>
+        /// <exception cref="ArgumentNullException"/>
+        public static void Register(ContestHandle contest, TeamHandle team)
+        {
+            if (contest == null)
+                throw new ArgumentNullException(nameof(contest));
+            if (team == null)
+                throw new ArgumentNullException(nameof(team));
+
+            using (ContestDataProvider contestData = ContestDataProvider.Create(contest, false))
+            {
+                contestData.AddTeamToAuthorizedList(team);
+            }
+        }
     }
 }

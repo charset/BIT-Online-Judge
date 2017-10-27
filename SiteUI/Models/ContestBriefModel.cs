@@ -4,7 +4,6 @@
     using BITOJ.Core.Data;
     using Newtonsoft.Json;
     using System;
-    using System.Text;
 
     public class ContestBriefModel
     {

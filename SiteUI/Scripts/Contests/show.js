@@ -18,9 +18,9 @@ function getContestStatusClassName(status) {
 }
 
 function getContestParticipateModeString(partMode) {
-    if (partMode === 0)
+    if (partMode === 1)
         return 'Individual ONLY';
-    else if (partMode === 1)
+    else if (partMode === 2)
         return 'Teamwork ONLY';
     else
         return 'Individual AND Teamwork';
@@ -77,35 +77,51 @@ function getTimespanString(timespan) {
     return days + ' d ' + hours + ' h ' + minutes + ' m ' + seconds + ' s';
 }
 
-function updateContestProgress(startTime, endTime) {
+function updateContestProgress(startTime, endTime, status) {
     var nowTime = new Date();
 
+    var nowstatus = null;
     if (nowTime < startTime) {
+        // Contest is pending.
+        nowstatus = 0;
+
         var timespan = startTime - nowTime;
 
         $('#contestCountdown').html(getTimespanString(timespan));
         $('#contestProgress > .progress-bar').width('0');
         $('#contestProgress > .progress-bar').attr('aria-valuenow', '0');
-
-        window.setTimeout(updateContestProgress, 1000, startTime, endTime);
     } else if (nowTime <= endTime) {
+        // Contest is running.
+        nowstatus = 1;
+
         var timespan = endTime - nowTime;
-        var percentage = (endTime.getTime() - nowTime.getTime()) / (endTime.getTime() - startTime.getTime()) * 100;
+        var percentage = (nowTime.getTime() - startTime.getTime()) / (endTime.getTime() - startTime.getTime()) * 100;
 
         $('#contestCountdown').html(getTimespanString(timespan));
         $('#contestProgress > .progress-bar').width(percentage + '%');
         $('#contestProgress > .progress-bar').attr('aria-valuenow', percentage);
-
-        window.setTimeout(updateContestProgress, 1000, startTime, endTime);
     } else {
+        // Contest is ended.
+        nowstatus = 2;
+
         $('#contestCountdown').html('00:00:00');
         $('#contestProgress > .progress-bar').width('100%');
         $('#contestProgress > .progress-bar').attr('aria-valuenow', 100);
         $('#contestProgress').removeClass('active');
     }
+
+    if (nowstatus != status) {
+        // Contest status is updated.
+        updateContestDisplay();
+    }
+
+    if (nowstatus != 2) {
+        // Contest is not ended.
+        window.setTimeout(updateContestProgress, 1000, startTime, endTime, nowstatus);
+    }
 }
 
-(function () {
+function updateContestDisplay() {
     var detailQueryUrl = "/Query/ContestDetail?id=" + $('#contestId').val();
     var registerIdQueryUrl = "/Query/ContestRegisterIdentity?id=" + $('#contestId').val();
     var accessQueryUrl = "/Query/ContestAccess?id=" + $('#contestId').val();
@@ -132,7 +148,10 @@ function updateContestProgress(startTime, endTime) {
             for (var i = 0; i < model.problems.length; ++i)
                 $('#contestProblemList > tbody').append(getProblemRowHtml(i + 1, model.problems[i]));
 
-            $('#contestAnnouncement').html('No published announcement yet.');
+            if (model.announcement === null || model.announcement === undefined || model.announcement === '')
+                $('#contestAnnouncement').html('No published announcement yet.');
+            else
+                $('#contestAnnouncement').html(model.announcement);
 
             // Update time trial and contest progress.
             var startTime = new Date();
@@ -141,7 +160,7 @@ function updateContestProgress(startTime, endTime) {
             var endTime = new Date();
             endTime.setTime(Date.parse(model.endTime));
 
-            updateContestProgress(startTime, endTime);
+            updateContestProgress(startTime, endTime, model.status);
         })(JSON.parse(data).data);
     });
 
@@ -152,14 +171,37 @@ function updateContestProgress(startTime, endTime) {
         })(JSON.parse(data).data);
     });
 
-    // Ftech user data access from server.
+    // Fetch user data access from server.
     $.get(accessQueryUrl, function (data, status) {
         (function (model) {
             if ((model & 0x00000002) !== 0)
                 $('#contestWriteRegion').removeAttr('hidden');
         })(JSON.parse(data).data);
     });
-})();
+}
+
+$('#publishAnnouncementButton').click(function () {
+    $('#announcementForm').submit();
+});
+
+$('#announcementForm').submit(function () {
+    event.preventDefault();
+
+    $('#publishAnnouncementButton').addClass('disabled');
+    $('#announcementContent').attr('readonly', 'readonly');
+
+    var actionUrl = '/Contest/SetAnnouncement?id=' + $('#contestId').val();
+    $.post(actionUrl, $('#announcementForm').serialize(), function (data, status) {
+        updateContestDisplay();
+
+        $('#publishAnnouncementButton').removeClass('disabled');
+        $('#announcementContent').removeAttr('readonly');
+
+        $('#announcementDialog').modal('hide');
+    });
+
+    return false;
+});
 
 $('#addArchieveProblemButton').click(function () {
     $('#addArchieveProblemForm').submit();
@@ -193,3 +235,14 @@ $('#addArchieveProblemForm').submit(function () {
 
     return false;
 });
+
+$('#deleteContestButton').click(function () {
+    $('#deleteContestButton').attr('disabled', 'disabled');
+
+    var actionUrl = '/Contest/Delete?id=' + $('#contestId').val();
+    $.post(actionUrl, function (data, status) {
+        window.location = '/Contest';
+    });
+});
+
+updateContestDisplay();

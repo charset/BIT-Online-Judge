@@ -2,6 +2,7 @@
 {
     using BITOJ.Core;
     using BITOJ.Core.Data;
+    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
 
@@ -13,21 +14,25 @@
         /// <summary>
         /// 获取或设置队伍 ID。
         /// </summary>
+        [JsonProperty("id")]
         public int TeamId { get; set; }
 
         /// <summary>
         /// 获取或设置队伍名称。
         /// </summary>
+        [JsonProperty("name")]
         public string TeamName { get; set; }
 
         /// <summary>
         /// 获取或设置队伍领队。
         /// </summary>
+        [JsonProperty("leader")]
         public string Leader { get; set; }
 
         /// <summary>
         /// 获取或设置队伍成员。
         /// </summary>
+        [JsonProperty("members")]
         public ICollection<UserProfileModel> Members { get; set; }
 
         /// <summary>

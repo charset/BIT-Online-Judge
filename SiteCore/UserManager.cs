@@ -350,12 +350,13 @@
         }
 
         /// <summary>
-        /// 检查给定句柄所对应的队伍实体对象是否存在于数据库中。
+        /// 检查给定句柄所对应的队伍 ID 是否存在于数据库中。
         /// </summary>
-        /// <returns></returns>
-        public bool IsTeamExist(TeamHandle handle)
+        /// <param name="teamId">队伍 ID。</param>
+        /// <returns>一个值，该值指示给定的队伍 ID 是否存在于数据库中。</returns>
+        public bool IsTeamExist(int teamId)
         {
-            return m_factory.WithContext(context => context.QueryTeamProfileEntity(handle.TeamId) != null);
+            return m_factory.WithContext(context => context.QueryTeamProfileEntity(teamId) != null);
         }
     }
 }

@@ -229,6 +229,7 @@
     <Content Include="Scripts\contest-detail-editor.js" />
     <Content Include="Scripts\Contests\index.js" />
     <Content Include="Scripts\Contests\show.js" />
+    <Content Include="Scripts\Contests\verify.js" />
     <Content Include="Scripts\create-team.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />

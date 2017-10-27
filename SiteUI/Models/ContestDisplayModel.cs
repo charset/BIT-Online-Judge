@@ -3,6 +3,7 @@
     using BITOJ.Core;
     using BITOJ.Core.Data;
     using Newtonsoft.Json;
+    using MarkdownSharp;
     using System;
 
     /// <summary>
@@ -27,6 +28,12 @@
         /// </summary>
         [JsonProperty("creator")]
         public string Creator { get; set; }
+
+        /// <summary>
+        /// 获取或设置比赛的 Announcement。
+        /// </summary>
+        [JsonProperty("announcement")]
+        public string Announcement { get; set; }
 
         /// <summary>
         /// 获取或设置比赛开始时间。
@@ -55,7 +62,7 @@
         /// <summary>
         /// 获取或设置比赛的身份验证模式。
         /// </summary>
-        [JsonProperty("autoMode")]
+        [JsonProperty("authMode")]
         public ContestAuthorizationMode AuthorizationMode { get; set; }
 
         /// <summary>
@@ -73,6 +80,7 @@
             ContestId = 0;
             Title = string.Empty;
             Creator = string.Empty;
+            Announcement = string.Empty;
             StartTime = default(DateTime);
             EndTime = default(DateTime);
             Status = ContestStatus.Pending;
@@ -85,9 +93,10 @@
         /// 从给定的比赛句柄创建 ContestDisplayMode 类的新实例。
         /// </summary>
         /// <param name="handle">比赛句柄。</param>
+        /// <param name="loadProblems">一个值，该值指示是否加载题目列表。</param>
         /// <returns>从给定比赛创建的 ContestDisplayModel 对象。</returns>
         /// <exception cref="ArgumentNullException"/>
-        public static ContestDisplayModel FromContestHandle(ContestHandle handle)
+        public static ContestDisplayModel FromContestHandle(ContestHandle handle, bool loadProblems)
         {
             if (handle == null)
                 throw new ArgumentNullException(nameof(handle));
@@ -98,18 +107,26 @@
                 model.ContestId = data.ContestId;
                 model.Title = data.Title;
                 model.Creator = data.Creator;
+                model.Announcement = new Markdown().Transform(data.Announcement);
                 model.StartTime = data.StartTime;
                 model.EndTime = data.EndTime;
                 model.Status = data.Status;
                 model.AuthorizationMode = data.AuthorizationMode;
                 model.ParticipationMode = data.ParticipationMode;
 
-                ProblemHandle[] handles = data.GetProblems();
-                model.Problems = new ProblemBriefModel[handles.Length];
-
-                for (int i = 0; i < handles.Length; ++i)
+                if (loadProblems)
                 {
-                    model.Problems[i] = ProblemBriefModel.FromProblemHandle(handles[i]);
+                    ProblemHandle[] handles = data.GetProblems();
+                    model.Problems = new ProblemBriefModel[handles.Length];
+
+                    for (int i = 0; i < handles.Length; ++i)
+                    {
+                        model.Problems[i] = ProblemBriefModel.FromProblemHandle(handles[i]);
+                    }
+                }
+                else
+                {
+                    model.Problems = new ProblemBriefModel[0];
                 }
             }
 

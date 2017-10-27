@@ -46,7 +46,6 @@
         private ContestEntity m_entity;
         private ContestAccessHandle m_access;
         private bool m_readonly;
-        private bool m_dirty;
         private bool m_disposed;
 
         /// <summary>
@@ -54,6 +53,7 @@
         /// </summary>
         /// <param name="context">数据上下文对象。</param>
         /// <param name="entity">比赛实体对象。</param>
+        /// <param name="access">比赛数据底层访问对象。</param>
         /// <param name="isReadonly">一个值，该值指示当前对象是否为只读对象。</param>
         /// <exception cref="ArgumentNullException"/>
         private ContestDataProvider(ContestDataContext context, ContestEntity entity, bool isReadonly)
@@ -62,7 +62,6 @@
             m_entity = entity ?? throw new ArgumentNullException(nameof(entity));
             m_access = new ContestAccessHandle(entity);
             m_readonly = isReadonly;
-            m_dirty = false;
             m_disposed = false;
         }
 
@@ -117,6 +116,19 @@
         }
 
         /// <summary>
+        /// 获取或设置比赛的 Announcement。
+        /// </summary>
+        public string Announcement
+        {
+            get => m_disposed ? throw new ObjectDisposedException(GetType().Name) : m_access.Configuration.Announcement;
+            set
+            {
+                CheckAccess();
+                m_access.Configuration.Announcement = value;
+            }
+        }
+
+        /// <summary>
         /// 获取或设置参与比赛所需的最低用户权限。
         /// </summary>
         public CoreUserGroup AuthorizationGroup
@@ -128,8 +140,6 @@
             {
                 CheckAccess();
                 m_access.Configuration.Authorization.AuthorizationGroup = (DatabaseUserGroup)value;
-
-                m_dirty = true;
             }
         }
 
@@ -202,8 +212,6 @@
             {
                 CheckAccess();
                 m_access.Configuration.Authorization.ParticipationMode = (DatabaseParticipationMode)value;
-
-                m_dirty = true;
             }
         }
 
@@ -240,9 +248,13 @@
         /// <summary>
         /// 获取当前比赛中的所有题目。
         /// </summary>
-        /// <returns></returns>
+        /// <returns>一个数组，其中包含了当前比赛中的所有题目的题目句柄。</returns>
+        /// <exception cref="ObjectDisposedException"/>
         public ProblemHandle[] GetProblems()
         {
+            if (m_disposed)
+                throw new ObjectDisposedException(GetType().Name);
+
             string[] problemIds = m_access.GetProblems();
             ProblemHandle[] handles = new ProblemHandle[problemIds.Length];
 
@@ -300,8 +312,6 @@
 
             CheckAccess();
             m_access.AddProblem(handle.ProblemId);
-
-            m_dirty = true;
         }
 
         /// <summary>
@@ -316,8 +326,6 @@
 
             CheckAccess();
             m_access.RemoveProblem(handle.ProblemId);
-
-            m_dirty = true;
         }
 
         /// <summary>
@@ -331,7 +339,6 @@
                 throw new ArgumentNullException(nameof(user));
 
             m_access.Configuration.Authorization.AuthorizedUsers.Add(user.Username);
-            m_dirty = true;
         }
 
         /// <summary>
@@ -353,8 +360,6 @@
                     m_access.Configuration.Authorization.AuthorizedUsers.Remove(username);
                 }
             }
-
-            m_dirty = true;
         }
 
         /// <summary>
@@ -369,8 +374,6 @@
 
             CheckAccess();
             m_access.Configuration.Authorization.AuthorizedTeams.Add(team.TeamId);
-
-            m_dirty = true;
         }
 
         /// <summary>
@@ -391,8 +394,6 @@
                     m_access.Configuration.Authorization.AuthorizedTeams.Remove(teamId);
                 }
             }
-
-            m_dirty = true;
         }
 
         /// <summary>
@@ -412,11 +413,7 @@
             if (!m_disposed && !m_readonly)
             {
                 m_context.SaveChanges();
-                if (m_dirty)
-                {
-                    m_access.Save();
-                    m_dirty = false;
-                }
+                m_access.Save();
             }
         }
 

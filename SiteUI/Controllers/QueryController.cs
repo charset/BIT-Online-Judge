@@ -253,12 +253,29 @@
 
             // 检查用户权限。
             ContestHandle contest = new ContestHandle(contestId);
-            if (ContestAuthorization.GetUserAccess(contest, UserSession.GetUserHandle(Session)) == DataAccess.None)
+            DataAccess access = ContestAuthorization.GetUserAccess(contest, UserSession.GetUserHandle(Session));
+            if (access == DataAccess.None)
             {
                 return QueryResult(3, "Access denied.");
             }
+            else if (access == DataAccess.Read)
+            {
+                // 用户对于该场比赛处于只读状态。检查比赛的执行状态。
+                bool loadProblems = true;
+                using (ContestDataProvider contestData = ContestDataProvider.Create(contest, true))
+                {
+                    if (contestData.Status == ContestStatus.Pending)
+                    {
+                        loadProblems = false;
+                    }
+                }
 
-            return QueryResult(ContestDisplayModel.FromContestHandle(contest));
+                return QueryResult(ContestDisplayModel.FromContestHandle(contest, loadProblems));
+            }
+            else
+            {
+                return QueryResult(ContestDisplayModel.FromContestHandle(contest, true));
+            }
         }
 
         // GET: /Query/ContestRegisterIdentity?id={ContestID}
@@ -327,6 +344,35 @@
             ContestHandle contest = new ContestHandle(contestId);
             UserHandle user = UserSession.GetUserHandle(Session);
             return QueryResult(ContestAuthorization.GetUserAccess(contest, user));
+        }
+
+        // GET: /Query/UserTeams?username={Username}
+        [HttpGet]
+        public ActionResult UserTeams()
+        {
+            string username = Request.QueryString["username"];
+            if (string.IsNullOrEmpty(username))
+            {
+                return QueryResult(1, "Username is required.");
+            }
+
+            if (!UserManager.Default.IsUserExist(username))
+            {
+                return QueryResult(2, "Username is not exist.");
+            }
+
+            UserHandle user = new UserHandle(username);
+
+            List<TeamDetailModel> teams = new List<TeamDetailModel>();
+            using (UserDataProvider userData = UserDataProvider.Create(user, true))
+            {
+                foreach (TeamHandle team in userData.GetTeams())
+                {
+                    teams.Add(TeamDetailModel.FromTeamHandle(team));
+                }
+            }
+
+            return QueryResult(teams);
         }
     }
 }

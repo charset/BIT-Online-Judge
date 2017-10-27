@@ -15,6 +15,12 @@
         public ContestAuthorizationModel Authorization { get; set; }
 
         /// <summary>
+        /// 获取或设置比赛的 Announcement。
+        /// </summary>
+        [JsonProperty("announcement")]
+        public string Announcement { get; set; }
+
+        /// <summary>
         /// 获取或设置比赛的题目集合。
         /// </summary>
         [JsonProperty("problems")]
@@ -27,6 +33,7 @@
         public ContestConfigurationModel()
         {
             Authorization = new ContestAuthorizationModel();
+            Announcement = string.Empty;
             Problems = new List<string>();
         }
     }
